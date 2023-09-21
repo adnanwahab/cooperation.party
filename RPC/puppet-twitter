@@ -1,0 +1,25 @@
+const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    
+    // Go to the Twitter homepage
+    await page.goto('https://twitter.com', { waitUntil: 'networkidle2' });
+    
+    // Wait for the page to load completely
+    await page.waitForSelector('.timeline');
+    
+    // Get all the tweets on the page
+    const tweets = await page.$$eval('.tweet', (tweets) => {
+        return tweets.map((tweet) => ({
+            text: tweet.querySelector('.text').innerText,
+            author: tweet.querySelector('.author').innerText,
+            date: tweet.querySelector('.date').innerText,
+        }));
+    });
+    
+    console.log(tweets);
+    
+    await browser.close();
+})();

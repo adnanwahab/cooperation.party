@@ -1,0 +1,8 @@
+# Local Netlify folder
+.netlify
+.venv/*
+.myenv/*
+myenv/
+node_modules/
+data/
+# vite-project/
