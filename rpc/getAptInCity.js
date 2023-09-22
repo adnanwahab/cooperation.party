@@ -4,6 +4,8 @@ const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
 const path = require('path')
 async function getApt(url, location) {
+    //location = location.replace(/\w|\,/g, '-')
+    console.log(location, 'GET apt')
     const browser = await puppeteer.launch({ headless: true });  // Change to false if you want to view the browser
     const page = await browser.newPage();
     const fp = path.resolve(`data/airbnb/apt/${location}.json`);
@@ -12,13 +14,18 @@ async function getApt(url, location) {
     const qs = '.cy5jw6o.dir.dir-ltr a';
   
     let tweets = [];
+    function urlToFileName(url) {
+        return url
+        return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
+      }
+
 
     try {
         await page.waitForSelector(qs);
   
         tweets = await page.$$eval(qs, (tweetNodes) => {
-            return tweetNodes.map(tweet => tweet.href );
-        });
+            return tweetNodes.map(tweet => (tweet.href) );
+        })
   
     } catch (error) {
         console.error('Error:', error);
@@ -28,9 +35,12 @@ async function getApt(url, location) {
     await browser.close();
 
     console.log(`writing ${location}.json`)
-    tweets = Array.from(new Set(tweets))
+    console.log(tweets)
+    tweets = Array.from(new Set(tweets.map(urlToFileName)))
     await fs.writeFile(fp, JSON.stringify(tweets, null, 2));
   
+    console.log(location, 'GET apt')
+
     return tweets;
 }
 

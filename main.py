@@ -176,7 +176,6 @@ def getEncodings(sentences):
     model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
     return model.encode(sentences, convert_to_tensor=True, device='cpu')
 
-
 def key_function (_):
     return _[1]
 
@@ -422,10 +421,10 @@ def cityRadio(_, __):
 
 
 
-def fetch_coffee_shops(longitude, latitude):
+def fetch_coffee_shops(longitude, latitude, amenities = ['cafe', 'library', 'bar']):
     if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
         return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
-    amenities = ['cafe', 'library', 'bar']
+   
     places = []
     for i in amenities:
         query = f"""
@@ -442,7 +441,7 @@ def fetch_coffee_shops(longitude, latitude):
             data = response.json()
             coffee_shops = data['elements']
             places += coffee_shops
-    #json.dump(places, open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'w'))
+    #json.dump(places, open(f'data/airbnb/poi/{listing}_places.json', 'w'))
     return places
 
 def getAirbnbs(_, componentData='cairo, egypt'):
@@ -580,7 +579,7 @@ def filter_by_distance_to_shopping_store(airbnbs, documentContext):
 
     geoCoordinates = [coord[0].split(':') for coord in geoCoordinates if len(coord) > 1]
     print(geoCoordinates)
-    _ = [isochroneLibrary(pt[0], pt[1]) for pt in geoCoordinates]
+    _ = [isochroneLibrary(pt[0], pt[1], get_room_id(airbnbs[idx])) for idx, pt in enumerate(geoCoordinates)]
 
     return [_ for _ in _ if _ != False]  
     #isochroneLibrary()
@@ -627,7 +626,7 @@ def trees_map(_, sentence):
     }
 
 
-def isochroneLibrary(longitude, latitude):
+def isochroneLibrary(longitude, latitude, listing):
     latitude = float(latitude)
     longitude = float(longitude)  
     print('get all the coffee shops within driving distance of this airbnb') 
@@ -637,7 +636,7 @@ def isochroneLibrary(longitude, latitude):
     isochrone_url = f'https://api.mapbox.com/isochrone/v1/mapbox/walking/{longitude}%2C{latitude}?contours_minutes={contours_minutes}&polygons=true&denoise=0&generalize=0&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
     geojson_data = requests.get(isochrone_url).json()
 
-    coffee_shops = fetch_coffee_shops(longitude, latitude, )
+    coffee_shops = fetch_coffee_shops(longitude, latitude)
     data = []
     for shop in coffee_shops: 
         if 'lat' not in shop or 'lon' not in shop: 
@@ -736,6 +735,18 @@ async def twitch_comments(streamers, sentenceComponentFormData):
     results = await asyncio.gather(*tasks)
     return results
 
+
+import glob
+def map_of_all_airbnbs(_,__):
+    
+    cities = [json.load(open(_)) for _ in  glob.glob('data/airbnb/apt/*')]
+    geoCode = [json.load(open(f'data/airbnb/geocoordinates/{get_room_id(listing)}.json')) 
+               for city in cities 
+               for listing in city 
+               if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(listing)}')
+               ]
+    return {'data': geoCode, 'component': '<map>'}
+
 jupyter_functions = { #read all functions in directory -> 
     'group them into topics': groupBySimilarity,
     'for each continent': continentRadio,
@@ -758,6 +769,8 @@ jupyter_functions = { #read all functions in directory ->
     'given a favorite pokemon': pokemon,
 
     'get all twitch comments': twitch_comments,
+
+    'map of all airbnbs': map_of_all_airbnbs
 }
 import asyncio
 import inspect
@@ -840,34 +853,87 @@ class UserInDB(BaseModel):
     _k: str
     _v: str
 
-def makeApt():
-    props = ['commuteDistance', 'library', 'bar', 'coffee'] 
-    coeffs = {}
-    for prop in props: coeffs[prop] = random.random()
-    return coeffs
 
-cities = {
-    'tokyo': [makeApt() for i in range(5)],
-    'houston': [makeApt() for i in range(5)],
-    'moscow': [makeApt() for i in range(5)],
-}
+
 @app.post("/callFn")
 async def admin(request: Request):
     print('val', await request.json())
-    # json = await request.json()
-    # cities = ['tokyo', 'houston', 'moscow', 'cairo', 'mumbai', 'delhi', 'shanghai', 'beijing', 'dhaka', 'osaka', 'chongqing', 'istanbul']
-    # def rankApt(personCoefficentPreferences, apt):
-    #     diff = 0
-    #     for key in apt:
-    #         diff += abs(apt[key] - personCoefficentPreferences[key])
-    #     return diff 
-    # cityAptChoice = {}
-    # personCoefficentPreferences = json['getCoefficents']
-    # for city_name in cities:
-    #     apt_list = cities[city_name]
-    #     sorted(apt_list, key=lambda apt: rankApt(personCoefficentPreferences, apt))
-    #     cityAptChoice[city_name] = apt_list[0]
-    return {}
+    json_data = await request.json()
+    city_name = 'Tokyo--Japan'
+    #json['city_name']
+
+    #cities = ['tokyo', 'houston', 'moscow', 'cairo', 'mumbai', 'delhi', 'shanghai', 'beijing', 'dhaka', 'osaka', 'chongqing', 'istanbul']
+    def rankApt(personCoefficentPreferences, apt):
+        diff = 0
+        for key in personCoefficentPreferences:
+            if key not in apt: continue
+            diff += abs(apt[key] - personCoefficentPreferences[key])
+        return diff 
+    cityAptChoice = {
+        'url':'https://www.airbnb.com/rooms/33676580?adults=1&children=0&enable_m3_private_room=true&infants=0&pets=0&check_in=2023-10-25&check_out=2023-10-30&source_impression_id=p3_1695411915_xw1FKQQa0V7znLzQ&previous_page_section_name=1000&federated_search_id=fec99c3c-b5f1-4547-9dda-2bc7758aec94'
+    }
+    personCoefficentPreferences = json_data['getCoefficents']
+
+    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))
+
+    def get_json_if_possible(apt):
+        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
+            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'))
+            if (len(data) > 0): 
+                data = data[0]
+                data = data.split(':')
+                data[0] = float(data[0])
+                data[1] = float(data[1])
+                return data
+            else: return [141.351192, 43.054404]
+        else:
+            return [141.351192, 43.054404]
+
+    geocoordinates = [get_json_if_possible(apt) for apt in apt_list]
+
+    coefficents = {'coffee': 1, 'library': 0, 'bar': .5}
+    keys = coefficents.keys()
+
+    apts  = []
+    print(geocoordinates)
+    for idx, _ in enumerate(geocoordinates): 
+        apt = {
+            'url': apt_list[idx],
+            'loc': geocoordinates[idx]
+        } 
+        for key in keys:
+            coords = _
+            apt[key] = len(fetch_coffee_shops(coords[0], coords[1], [key]))
+        apts.append(apt)
+
+    from collections import defaultdict
+    totals = defaultdict(int)
+    for apt in apts: 
+        for key in keys: 
+            print(totals, apt)
+            totals[key] += apt[key]
+
+    for apt in apts: 
+        for key in keys: 
+            if totals[key] == 0: totals[key] += .01
+            apt[key] = apt[key] / totals[key]
+    #apt = [[coffee_[idx], bar_[idx], libraries_[idx], _] for idx, _ in enumerate(apt_list)]
+
+    def makeApt():
+        props = ['commuteDistance', 'library', 'bar', 'coffee'] 
+        coeffs = {}
+        #for prop in props: coeffs[prop] = 
+        return coeffs
+
+
+    sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))
+    print('apts', apts[:5])
+    return apts[0]
+
+
+def makePercents(l):
+    max_ = max(l)
+    return [_ / max_ for _ in l]
 
 @app.get("/admin")
 async def admin():

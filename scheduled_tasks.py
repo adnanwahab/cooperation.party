@@ -1,9 +1,23 @@
-#scheduled_tasks
+# #scheduled_tasks
 
-import subprocess 
-import os
+# import subprocess 
+# import os
 
-location = 'tokyo--japan'
+# location = 'tokyo--japan'
+
+from main import imageToCoords
+import glob
+import json
+import re
+
+
+def get_room_id(url):
+    match = re.search(r'rooms/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
 
 cities = {
   "Europe": [
@@ -126,29 +140,28 @@ cities = {
   ]
 }
 
-for location in cities['Asia']:
-    #locations = cities[key]
-    #locations = key
-    #for location in locations:
-        #print(location)
+# for location in cities['Asia']:
+#     #locations = cities[key]
+#     #locations = key
+#     #for location in locations:
+#         #print(location)
      
-    args = [
-        "node",
-        "rpc/getAptInCity.js",
-        location
-    ]
-    location = location.replace(", ", "--")
-    # if not os.path.exists(f'data/airbnb/apt/{location}.json'):
-    #     #print('hellos')
-    #     5 + 5
-    #completed_process = subprocess.run(args)
-    #location = f'data/airbnb/apt/{location}.json'
-    args = [
-        "node",
-        "rpc/airbnb_get_img_url.js",
-        f'data/airbnb/apt/{location}.json'
-    ]
-    completed_process = subprocess.run(args)
+#     args = [
+#         "node",
+#         "rpc/getAptInCity.js",
+#         location
+#     ]
+#     location = location.replace(", ", "--")
+#     if not os.path.exists(f'data/airbnb/apt/{location}.json'):
+#       completed_process = subprocess.run(args)
+#     #location = f'data/airbnb/apt/{location}.json'
+#     args = [
+#         "node",
+#         "rpc/airbnb_get_img_url.js",
+#         f'data/airbnb/apt/{location}.json'
+#     ]
+#     if not os.path.exists(f'data/airbnb/gm/{location}.json'):
+#       completed_process = subprocess.run(args)
 
 
 
@@ -157,4 +170,71 @@ for location in cities['Asia']:
 
 #get 10 square miles from bounding box
 
-data/airbnb/apt/Toronto--Canada.json#
+
+import subprocess
+import os
+import concurrent.futures
+
+
+
+import re
+
+
+
+
+def run_scripts(location):
+    location_formatted = re.sub(r'[ ,]', '-', location)
+    print(location_formatted)
+    apt_file = f'data/airbnb/apt/{location_formatted}.json'
+    gm_file = f'data/airbnb/gm/{location_formatted}.json'
+    
+    #if not os.path.exists(apt_file):
+    #for each city -> get the bounding box 
+    #getAptInCity needs a bounding left-up corner and bottom right corner 
+    #get max zoom level -> get w+h in lat/long.1
+    #city centroid = 90,100
+    #bb = 80,90-90-110
+    #400 geo coordinates -> 4000 sq miles
+    #4000 "searches" + click next page -> sky scraper -> 100 apts in 1 block
+    #cache ocr a bit with a dictionary
+    subprocess.run(["node", "rpc/getAptInCity.js", location_formatted])
+    if not os.path.exists(gm_file):
+        subprocess.run(["node", "rpc/airbnb_get_img_url.js", apt_file])
+
+    for file_name in glob.glob('data/airbnb/apt/*'):
+        urls = json.load(open(file_name, 'w'))
+
+        for apt_url in urls:
+            print('apt_url', apt_url, 'ocr')
+            gm_list = json.load(open(f'data/airbnb/gm/{get_room_id(apt_url)}'))
+            imageToCoords(gm_list, location, apt_url)
+# Maximum number of concurrent threads
+MAX_THREADS = 1
+
+#with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+
+import sys
+print(sys.argv)
+if sys.argv[1] == '33676580':
+    print('running image to coords')
+    apt_url = 33676580
+    gm_list = json.load(open(f'data/airbnb/gm/{apt_url}.json'))
+    print(gm_list)
+    imageToCoords(gm_list, 'Tokyo--Japan', apt_url)
+# for file_name in glob.glob('data/airbnb/apt/*'):
+#     print(file_name)
+#     try: urls = json.load(open(file_name, 'w'))
+#     except Exception as err: 
+#         print('oh noe', err, file_name) 
+#         continue
+#     location = file_name.replace('.json', '')
+#     for apt_url in urls:
+#         print('apt_url')
+#         gm_list = json.load(open(f'data/airbnb/gm/{get_room_id(apt_url)}'))
+
+  
+#     imageToCoords(gm_list, location, apt_url)
+# for continent in cities:
+#   for city in cities[continent]:
+#     run_scripts(city)
+    #executor.map(run_scripts, cities[continent])
