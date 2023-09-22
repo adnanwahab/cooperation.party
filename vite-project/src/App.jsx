@@ -306,6 +306,7 @@ async function _() {
 if (useGPU || window.location.hostname !== 'localhost') {
    url = `https://pypypy.ngrok.io/makeFn/`
 }
+  console.log(url)
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
   // console.log(fn_);
@@ -462,51 +463,7 @@ function TextPresenter(props) {
   </div>
 }
 
-//server returns component: radio, data: cities['asia']
 
-//on client -> this returns a single city ID -> onchange -> send request to server and re-evaluate next line
-
-//key each one by distance to closest shopping area
-//     `
-//     pick a city in asia. 
-//     find best airbnb in every city -> 100,000 cities -> fetch all data 
-//     define criteria 
-//     find all airbnb that are not noisy
-//     find all airbnb that are noisy
-// :poll russia australia antarctica
-// :poll food options in poll.11
-// :poll activity options in poll.11
-// :plant-trees find places to plant trees nearby 20418 autumn shore drive
-// given a favorite food and shared interests, generate a schedule of places to see and eat
-// book for 1 month in each place -> 3 months of travel planning in 1 minute
-// `,
-// `choose a city in [asia, europe, africa]
-// find all airbnb in that city
-// filter by distance to shopping store`,
-//filter by 30 min walk to a coffee shop
-//filter by 30 min walk to train
-//choose 3 airbnb and make them 30 minute walk to each other
-//also choose a coworking space in each city
-//do this for 12 cities in 12 months
-//make it work perfectly
-
- //you and your research - answer the question much better than chat gpt -> configurable
-
-  //use satellite imaging to find all trees in any city -> find best place to plant them
-    //use 
-  
-
-    
-   
-    // `for each satellite images in area find anything that matches criteria`,
-
-
-//solve community - remote year
-//geospatial
-//astronomy
-//videogames
-//statstics for stream data
-//make a cool app (w/ data + ml + graphics) in 3-4 lines of english :) 
 
 let templates = {
   airbnb: `for each continent
@@ -538,19 +495,17 @@ let templates = {
   element counters
   schedule - spend 30 min in viridian city`,
 
-  `keenan+kel-humor-transcription`: 
-  `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial
-   find jokes that are duplicated in modern family
-   `,
-
-   // Traverse_job_postings: seeSkillsThatAreTrendingAndWhichAreStableAndBuildAdemoThatDemonstratesAbilityInAllOFthem
-  //  tree_planting: `find all trees in nyc 
-  //  plot on a map
-  // reccomend places to plant a tree based on h3
-  // visualize how many are of which species in a trees_histogram
-  // trees_map
-  // find a place to plant a new tree that is optimal
-  // `
+  // `keenan+kel-humor-transcription`: 
+  // `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial
+  //  find jokes that are duplicated in modern family
+  //  `,
+   tree_planting: `find all trees in nyc 
+   plot on a map
+  reccomend places to plant a tree based on h3
+  visualize how many are of which species in a trees_histogram
+  trees_map
+  find a place to plant a new tree that is optimal
+  `
 //  `dota`:  `
 //  make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
 //   should look like complements, counterThem, countersYou
@@ -570,12 +525,6 @@ let templates = {
 
 let templateNames = Object.keys(templates);
 let templateContent = Object.values(templates);
-
-
-// let dictionary = templateNames.reduce((prev, current) => {
-//   prev[current] = templateContent[templateNames.indexOf(current)]
-// }, {})
-//console.log(dictionary)
 
 
 function App() {
