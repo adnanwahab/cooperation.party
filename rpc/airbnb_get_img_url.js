@@ -12,7 +12,7 @@ async function getImgUrl(aptListing, idx) {
       }
       aptListing = urlToFileName(aptListing);
 
-    let url = path.resolve(`../data/airbnb/gm/${aptListing}.json`);
+    let url = path.resolve(__dirname, `../data/airbnb/gm/${aptListing}.json`);
     console.log(url, aptListing)
     //console.log(aptListing, idx);
     //if (aptListing in cache) {return}
