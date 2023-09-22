@@ -1,3 +1,30 @@
+# Paris, France: [48.8566, 2.3522]
+# Rome, Italy: [41.9028, 12.4964]
+# Barcelona, Spain: [41.3851, 2.1734]
+# Amsterdam, Netherlands: [52.3676, 4.9041]
+# London, United Kingdom: [51.5074, -0.1278]
+# Prague, Czech Republic: [50.0755, 14.4378]
+# Vienna, Austria: [48.2082, 16.3738]
+# Budapest, Hungary: [47.4979, 19.0402]
+# Berlin, Germany: [52.5200, 13.4050]
+# Athens, Greece: [37.9838, 23.7275]
+# Venice, Italy: [45.4408, 12.3155]
+# Lisbon, Portugal: [38.7223, -9.1393]
+# Copenhagen, Denmark: [55.6761, 12.5683]
+# Stockholm, Sweden: [59.3293, 18.0686]
+# Edinburgh, Scotland: [55.9533, -3.1883]
+# Dublin, Ireland: [53.3498, -6.2603]
+# Reykjavik, Iceland: [64.1466, -21.9426]
+# Madrid, Spain: [40.4168, -3.7038]
+# Oslo, Norway: [59.9139, 10.7522]
+# Zurich, Switzerland: [47.3769, 8.5417]
+# North America:
+
+# New York City, USA: [40.7128, -74.0060]
+# San Francisco, USA: [37.7749, -122.4194]
+# Vancouver, Canada: [49.2827, -123.1207]
+# New Orleans, USA: [29.9511, -90.0715]
+
 from shapely.geometry import shape, Point
 import random 
 #from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
