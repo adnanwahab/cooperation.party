@@ -141,14 +141,14 @@ for location in cities['Asia']:
     # if not os.path.exists(f'data/airbnb/apt/{location}.json'):
     #     #print('hellos')
     #     5 + 5
-    completed_process = subprocess.run(args)
+    #completed_process = subprocess.run(args)
     #location = f'data/airbnb/apt/{location}.json'
     args = [
         "node",
         "rpc/airbnb_get_img_url.js",
         f'data/airbnb/apt/{location}.json'
     ]
-    #completed_process = subprocess.run(args)
+    completed_process = subprocess.run(args)
 
 
 

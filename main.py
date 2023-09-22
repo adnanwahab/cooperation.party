@@ -442,7 +442,7 @@ def fetch_coffee_shops(longitude, latitude):
             data = response.json()
             coffee_shops = data['elements']
             places += coffee_shops
-    json.dump(places, open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'w'))
+    #json.dump(places, open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'w'))
     return places
 
 def getAirbnbs(_, componentData='cairo, egypt'):
@@ -452,7 +452,7 @@ def getAirbnbs(_, componentData='cairo, egypt'):
     location = location.replace(', ', '--')
     if location == '': return 'hello-world'
     fp = f'data/airbnb/apt/{location}.json'
-    fp_gm = lambda apt: f'/data/airbnb/gm/{get_room_id(apt["link"])}.json'
+    fp_gm = lambda apt: f'/data/airbnb/gm/{get_room_id(apt)}.json'
     # if os.path.exists(fp):
     #     apts = json.load(open(fp, 'r'))
     #     gm = [os.path.exists(fp_gm(apt)) for apt in apts]
@@ -464,17 +464,17 @@ def getAirbnbs(_, componentData='cairo, egypt'):
         "rpc/getAptInCity.js",
         location
     ]
-    completed_process = subprocess.run(args)
+    #completed_process = subprocess.run(args)
     args = [
         "node",
         "rpc/airbnb_get_img_url.js",
         f'data/airbnb/apt/{location}.json'
     ]
-    completed_process = subprocess.run(args)
+    #completed_process = subprocess.run(args)
     #print(location)
     apts = json.load(open(fp, 'r'))
 
-    return [apt['link'] for apt in apts]
+    return [apt for apt in apts]
 def url_to_file_name(url):
     return re.sub(r'[^a-zA-Z0-9]', '_', url)
 

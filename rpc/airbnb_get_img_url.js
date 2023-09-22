@@ -75,7 +75,7 @@ async function delay(ms) {
     console.log(urls, process.argv[2])
     for (let idx = 0; idx < urls.length; idx++) {
         const url = urls[idx];
-        const task = getImgUrl(url['link'], idx); // Replace 'link' with the appropriate key for your URLs
+        const task = getImgUrl(url, idx); // Replace 'link' with the appropriate key for your URLs
         await task; // If you wish to run these tasks concurrently, you can collect them in an array and use `Promise.all()`
     }
 })();
