@@ -18,6 +18,8 @@ async function getImgUrl(aptListing, idx) {
     //if (aptListing in cache) {return}
     cache[aptListing] = true;
     console.log(fs.existsSync(url), url);
+    
+    if (fs.existsSync(`data/airbnb/gm/${aptListing}.json`)) return console.log('cached url')
     //if (fs.existsSync(url)) return
 
     const browser = await puppeteer.launch({ headless: true }); // Replace true with false if you want to see the browser
@@ -26,23 +28,26 @@ async function getImgUrl(aptListing, idx) {
     await page.goto(origAptListing);
 
     await page.waitForSelector('section');
-
+    await page.waitForSelector('.hnwb2pb.dir.dir-ltr')
+      delay(3000)
     await page.evaluate(() => {
-        window.scrollBy(0, 100000);
+        //window.scrollBy(0, 100000);
+        setTimeout(function () {
+            document.querySelectorAll('.hnwb2pb.dir.dir-ltr')[3].scrollIntoView()
+
+        }, 1000)
     });
 
-    await delay(3000);
-
-    await page.evaluate(() => {
-        // Additional JavaScript code you may need to execute on the page.
-    });
-
-    await delay(1000);
-    
-    const imgUrls = await page.$$eval('.gm-style img', imgs => imgs.map(img => img.src).filter(src => src.indexOf("maps.googleapis.com") !== -1));
-
+    await page.waitForSelector('.gm-style img');
+    delay(3000)
+    let imgUrls = await page.$$eval('.gm-style img', imgs => imgs.map(img => img.src).filter(src => src.indexOf("maps.googleapis.com") !== -1));
+    if (imgUrls.length == 0) {
+        delay(3000)
+        imgUrls = await page.$$eval('.gm-style img', imgs => imgs.map(img => img.src).filter(src => src.indexOf("maps.googleapis.com") !== -1));
+    }
+    if (imgUrls.length === 0) { return console.log('could not render google maps')}
     console.log('saving to ' + url);
-    fs.writeFileSync(url, JSON.stringify(imgUrls));
+    fs.writeFileSync(url, JSON.stringify(imgUrls.slice(0, 6)));
 
     await browser.close();
 

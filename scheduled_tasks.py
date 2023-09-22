@@ -57,7 +57,7 @@ cities = {
     "Taipei, Taiwan",
     "Istanbul, Turkey",
     "Hanoi, Vietnam",
-    "Jerusalem, Israel",
+    #"Jerusalem, Israel",
     "Mumbai, India",
     "Kuala Lumpur, Malaysia",
     "Jaipur, India"
