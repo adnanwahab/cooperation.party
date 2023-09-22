@@ -22,7 +22,7 @@ async function getImgUrl(aptListing, idx) {
     if (fs.existsSync(url)) return console.log('cached url')
     //if (fs.existsSync(url)) return
 
-    const browser = await puppeteer.launch({ headless: false }); // Replace true with false if you want to see the browser
+    const browser = await puppeteer.launch({ headless: true }); // Replace true with false if you want to see the browser
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(origAptListing);
