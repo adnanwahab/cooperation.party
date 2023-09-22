@@ -17,9 +17,7 @@ async function getApt(url, location) {
         await page.waitForSelector(qs);
   
         tweets = await page.$$eval(qs, (tweetNodes) => {
-            return tweetNodes.map(tweet => ({
-                link: tweet.href
-            }));
+            return tweetNodes.map(tweet => tweet.href );
         });
   
     } catch (error) {
@@ -30,6 +28,7 @@ async function getApt(url, location) {
     await browser.close();
 
     console.log(`writing ${location}.json`)
+    tweets = Array.from(new Set(tweets))
     await fs.writeFile(fp, JSON.stringify(tweets, null, 2));
   
     return tweets;
