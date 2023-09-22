@@ -434,14 +434,14 @@ def getAirbnbs(_, componentData='cairo, egypt'):
     #     if len(apts) == len(gm) and len(gm) != 0: return [apt['link'] for apt in apts]
     args = [
         "node",
-        "getAptInCity.js",
+        "rpc/getAptInCity.js",
         location
     ]
     completed_process = subprocess.run(args)
     args = [
         "node",
-        "airbnb_get_img_url.js",
-        f'{location}_apt.json'
+        "rpc/airbnb_get_img_url.js",
+        f'data/airbnb/apt/{location}.json'
     ]
     completed_process = subprocess.run(args)
     #print(location)
@@ -748,7 +748,7 @@ app.mount("/demo", StaticFiles(directory="vite-project/dist/assets"), name="demo
 async def makeFn(FnText:FnText):
     print('FnText', FnText)
     functions = [substitute(fn) for fn in FnText.fn]
-    FnText.sentenceComponentData['setences'] = FnText.fn
+    FnText.sentenceComponentData['sentences'] = FnText.fn
     
     val = False
     args = []

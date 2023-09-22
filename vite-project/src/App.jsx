@@ -467,15 +467,10 @@ function TextPresenter(props) {
 //on client -> this returns a single city ID -> onchange -> send request to server and re-evaluate next line
 
 //key each one by distance to closest shopping area
-let templateContent = [
 //     `
 //     pick a city in asia. 
-
-
 //     find best airbnb in every city -> 100,000 cities -> fetch all data 
 //     define criteria 
-    
-
 //     find all airbnb that are not noisy
 //     find all airbnb that are noisy
 // :poll russia australia antarctica
@@ -485,16 +480,9 @@ let templateContent = [
 // given a favorite food and shared interests, generate a schedule of places to see and eat
 // book for 1 month in each place -> 3 months of travel planning in 1 minute
 // `,
-
 // `choose a city in [asia, europe, africa]
 // find all airbnb in that city
 // filter by distance to shopping store`,
-`for each continent
-choose a city in each
-find all airbnb in that city
-filter by 10 min train or drive to a library above 4 star
-plot on a map
-`,
 //filter by 30 min walk to a coffee shop
 //filter by 30 min walk to train
 //choose 3 airbnb and make them 30 minute walk to each other
@@ -502,57 +490,17 @@ plot on a map
 //do this for 12 cities in 12 months
 //make it work perfectly
 
-`find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
-get all diagrams
-get all tables
-get sentences that are highly similar or support the same thesis 
-:poll astronomy, physics, infoTheory
-    find all papers on arxiv relating to astronomy
-    predict papers that will be highly cited
-    or predict quality or relevance of paper that are too specific to have a lot of citations
-    
-    What are the most important problems in your field -> how would you work on them?.
-    `, //you and your research - answer the question much better than chat gpt -> configurable
+ //you and your research - answer the question much better than chat gpt -> configurable
 
-
-    `find all trees in nyc 
-       plot on a map
-      reccomend places to plant a tree based on h3
-      visualize how many are of which species in a trees_histogram
-      trees_map
-      find a place to plant a new tree that is optimal
-    `, //use satellite imaging to find all trees in any city -> find best place to plant them
+  //use satellite imaging to find all trees in any city -> find best place to plant them
     //use 
+  
 
-
-
-    `get all twitch comments from ['zackrawrr', 'elajjaz', 'arthars']
-    then group them into topics
-    when more than 5 comments about win trading or food -> order a pizza
-    detect spikes in user activity by recording timestamp
-    `,
-
-
-    `given a favorite pokemon - select
-    make best team that counters elite 4
-    element counters
-    schedule - spend 30 min in viridian city`,
     
-    `
-    make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
-     should look like complements, counterThem, countersYou
-    given a team pick - pick 5 best team that counters it`,
-
-    `for each satellite images in area find anything that matches criteria`,
-
-    `housing_intersection`,
+   
+    // `for each satellite images in area find anything that matches criteria`,
 
 
-    `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial
-     get all jokes from transcript
-     find jokes that are duplicated in modern family
-    `
-]
 //solve community - remote year
 //geospatial
 //astronomy
@@ -560,19 +508,68 @@ get sentences that are highly similar or support the same thesis
 //statstics for stream data
 //make a cool app (w/ data + ml + graphics) in 3-4 lines of english :) 
 
+let templates = {
+  airbnb: `for each continent
+  choose a city in each
+  find all airbnb in that city
+  filter by 10 min train or drive to a library above 4 star
+  plot on a map
+  `,
+  arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
+  find papers which are good but not highly cited yet and find papers that may be highly cited in future 
+  get all diagrams
+  get all tables
+  get sentences that are highly similar or support the same thesis 
+  :poll astronomy, physics, infoTheory
+      find all papers on arxiv relating to astronomy
+      predict papers that will be highly cited
+      or predict quality or relevance of paper that are too specific to have a lot of citations
+      
+      What are the most important problems in your field -> how would you work on them?.
+      `,
+
+  twitch_comments: `get all twitch comments from ['zackrawrr', 'elajjaz', 'arthars']
+  then group them into topics
+  when more than 5 comments about win trading or food -> order a pizza
+  detect spikes in user activity by recording timestamp
+  `,
+  pokemon: `given a favorite pokemon - select
+  make best team that counters elite 4
+  element counters
+  schedule - spend 30 min in viridian city`,
+
+  `keenan+kel-humor-transcription`: 
+  `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial
+   find jokes that are duplicated in modern family
+   `,
+
+   // Traverse_job_postings: seeSkillsThatAreTrendingAndWhichAreStableAndBuildAdemoThatDemonstratesAbilityInAllOFthem
+  //  tree_planting: `find all trees in nyc 
+  //  plot on a map
+  // reccomend places to plant a tree based on h3
+  // visualize how many are of which species in a trees_histogram
+  // trees_map
+  // find a place to plant a new tree that is optimal
+  // `
+//  `dota`:  `
+//  make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
+//   should look like complements, counterThem, countersYou
+//  given a team pick - pick 5 best team that counters it`,
+}
 
 
-let templateNames = [
-  'Group Travel Planning 4 Conferences - Remote Year',
-  'arxiv - find papers which are good but not highly cited yet and find papers that may be highly cited in future ',
-  'Tree visualization - find best place to plant tree ',
-  'stream comments -> topic -> automate',
-  'Pokedex - type + counters + ', //pick one of 250 -> pick best team of 3 or 6
-  'dota counters -> pick best team', //if red team picks _ hero -> pick _ hero to get best odds
-  'given a satellite image + join other data -> best place to plant a tree or build a house'
-  ,'find best house'
-  ,`_`
-] //request for contributions / cofounders / open source people to help build this
+// let templateNames = [
+  
+//   // 'Tree visualization - find best place to plant tree ',
+// //  'dota counters -> pick best team', //if red team picks _ hero -> pick _ hero to get best odds
+// //`'given a satellite image + join other data -> best place to plant a tree or build a house'
+//   ,`keenan + kel - sort transcript by sentiment`,
+//   'Pokedex - type + counters + ', //pick one of 250 -> pick best team of 3 or 6
+//   'stream comments -> topic -> automate',
+// ] //request for contributions / cofounders / open source people to help build this
+
+let templateNames = Object.keys(templates);
+let templateContent = Object.values(templates);
 
 
 // let dictionary = templateNames.reduce((prev, current) => {
