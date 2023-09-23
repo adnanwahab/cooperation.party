@@ -190,8 +190,18 @@ useEffect(() => {
   //returns function and then re-renders data
   console.log(getCoefficents, 'getCoefficents')
   let fn = async ()=>  {
-    let _ = await fetch('http://localhost:8000/callFn/', {
+    let _ = await fetch('http://pypypy.ngrok.io/callFn/', {
       method: 'POST',
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", 
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+//      credentials: "same-origin", 
+      credentials: 'omit',
+      headers: { "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": true,
+     // "Access-Control-Allow-Origin": "*"
+    },
       body: JSON.stringify({
         getCoefficents
         // _k: Object.keys(getCoefficents).join(','),
@@ -199,6 +209,7 @@ useEffect(() => {
             })
     })
     let data = await _.json()
+    console.log(data)
     return data
   }
   fn().then((_) => {})
@@ -215,7 +226,7 @@ useEffect(() => {
         latitude,
         zoom: 14
       }}
-      style={{width: 1000, height: 2000}}
+      style={{width: 1000, height: 500}}
       onClick={onClick}
       // mapStyle="mapbox://styles/mapbox/streets-v3"
       mapStyle="https://api.maptiler.com/maps/streets/style.json?key=D8xiby3LSvsdgkGzkOmN"

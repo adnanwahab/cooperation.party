@@ -192,9 +192,7 @@ city_coords = {
     ],
     "Victoria Falls, Zimbabwe/Zambia": [
         -17.9243,
-        25.8572,
-        null
-    ],
+        25.8572,    ],
     "Nairobi, Kenya": [
         -1.286389,
         36.817223
@@ -230,7 +228,7 @@ city_coords = {
     "Bali, Indonesia": [
         -8.3405,
         115.092,
-        null
+        
     ],
     "Santorini, Greece": [
         36.3932,
@@ -538,15 +536,15 @@ MAX_THREADS = 5
 
 #with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
 
-import sys
-print(sys.argv)
-if sys.argv[1] == '33676580':
-    print('running image to coords')
-    apt_url = 33676580
-    gm_list = json.load(open(f'data/airbnb/gm/{apt_url}.json'))
-    print(gm_list)
-    imageToCoords(gm_list, 'Tokyo--Japan', apt_url)
-# for file_name in glob.glob('data/airbnb/apt/*'):
+# import sys
+# print(sys.argv)
+# if sys.argv[1] == '33676580':
+#     print('running image to coords')
+#     apt_url = 33676580
+#     gm_list = json.load(open(f'data/airbnb/gm/{apt_url}.json'))
+#     print(gm_list)
+#     imageToCoords(gm_list, 'Tokyo--Japan', apt_url)
+# # for file_name in glob.glob('data/airbnb/apt/*'):
 #     print(file_name)
 #     try: urls = json.load(open(file_name, 'w'))
 #     except Exception as err: 
@@ -561,5 +559,6 @@ if sys.argv[1] == '33676580':
 #     imageToCoords(gm_list, location, apt_url)
 for continent in cities:
   for city in cities[continent]:
-    run_scripts(city)
-    executor.map(run_scripts, cities[continent])
+    print('city')
+    #run_scripts(city)
+    #executor.map(run_scripts, cities[continent])

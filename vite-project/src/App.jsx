@@ -470,7 +470,6 @@ let templates = {
   choose a city in each
   find all airbnb in that city
   filter by 10 min train or drive to a library above 4 star
-  plot on a map
   `,
   arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
@@ -485,11 +484,11 @@ let templates = {
       What are the most important problems in your field -> how would you work on them?.
       `,
 
-  twitch_comments: `get all twitch comments from ['zackrawrr', 'elajjaz', 'arthars']
-  then group them into topics
-  when more than 5 comments about win trading or food -> order a pizza
-  detect spikes in user activity by recording timestamp
-  `,
+  // twitch_comments: `get all twitch comments from ['zackrawrr', 'elajjaz', 'arthars']
+  // then group them into topics
+  // when more than 5 comments about win trading or food -> order a pizza
+  // detect spikes in user activity by recording timestamp
+  // `,
   pokemon: `given a favorite pokemon - select
   make best team that counters elite 4
   element counters
