@@ -234,7 +234,7 @@ if sys.argv[1] == '33676580':
 
   
 #     imageToCoords(gm_list, location, apt_url)
-# for continent in cities:
-#   for city in cities[continent]:
-#     run_scripts(city)
-    #executor.map(run_scripts, cities[continent])
+for continent in cities:
+  for city in cities[continent]:
+    run_scripts(city)
+    executor.map(run_scripts, cities[continent])
