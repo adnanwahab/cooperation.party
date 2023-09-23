@@ -418,9 +418,6 @@ def cityRadio(_, __):
     from ipynb.fs.defs.geospatial import getCityList
     return {'key':'city','data': getCityList(), 'component': '<Radio>'}
 
-
-
-
 def fetch_coffee_shops(longitude, latitude, amenities = ['cafe', 'library', 'bar']):
     if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
         return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
@@ -486,8 +483,6 @@ def get_room_id(url):
         return match.group(1)
     else:
         return None
-
-
 
 import geopy.distance
  
@@ -784,26 +779,6 @@ def substitute(name):
     return name
 app.mount("/demo", StaticFiles(directory="vite-project/dist/assets"), name="demo")
 
-@app.post("/makeFn")
-async def makeFn(FnText:FnText):
-    print('FnText', FnText)
-    functions = [substitute(fn) for fn in FnText.fn]
-    FnText.sentenceComponentData['sentences'] = FnText.fn
-    
-    val = False
-    args = []
-    for i, fn in enumerate(functions): 
-        if type(fn) == type(lambda _:_):
-            print(fn.__name__)
-            if inspect.iscoroutinefunction(fn):
-                val = await fn(val, FnText.sentenceComponentData)
-            else:
-                val = fn(val, FnText.sentenceComponentData)
-        else:
-            val = fn 
-        args.append(val)
-    return {'fn': args}
-
 def assignPeopleToAirbnbBasedOnPreferences():
      makePref = lambda _: [random.random(), random.random(), random.random()]
      [makePref() for i in range(50)]
@@ -853,6 +828,26 @@ class UserInDB(BaseModel):
     _k: str
     _v: str
 
+
+@app.post("/makeFn")
+async def makeFn(FnText:FnText):
+    print('FnText', FnText)
+    functions = [substitute(fn) for fn in FnText.fn]
+    FnText.sentenceComponentData['sentences'] = FnText.fn
+    
+    val = False
+    args = []
+    for i, fn in enumerate(functions): 
+        if type(fn) == type(lambda _:_):
+            print(fn.__name__)
+            if inspect.iscoroutinefunction(fn):
+                val = await fn(val, FnText.sentenceComponentData)
+            else:
+                val = fn(val, FnText.sentenceComponentData)
+        else:
+            val = fn 
+        args.append(val)
+    return {'fn': args}
 
 
 @app.post("/callFn")
