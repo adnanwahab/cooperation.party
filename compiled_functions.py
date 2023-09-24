@@ -34,6 +34,7 @@ def key_function (_):
     return _[1]
 
 
+
 def ocrImage(fp):
     reader = easyocr.Reader(['en'])
     extract_info = reader.readtext(fp)
@@ -54,7 +55,7 @@ def geoCode(address, city):
 isochroneLibraryCache = {}
 
 def isochroneLibrary(longitude, latitude, listing):
-    if latitude in isochroneLibrary:  
+    if latitude in isochroneLibraryCache:  
         return isochroneLibraryCache[latitude]
     latitude = float(latitude)
     longitude = float(longitude) 
