@@ -147,27 +147,6 @@ def getEncodings(sentences):
     model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
     return model.encode(sentences, convert_to_tensor=True, device='cpu')
 
-def key_function (_):
-    return _[1]
-
-
-
-def ocrImage(fp):
-    reader = easyocr.Reader(['en'])
-    extract_info = reader.readtext(fp)
-    from time import time
-    sorted(extract_info, key=key_function)
-    if (not extract_info): return False
-    return extract_info[0][1]   
-
-def geoCode(address, city):
-    accessToken = "pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg"  # Replace with your actual access token
-    geocodeUrl = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{address}%2C%20{city}.json?access_token={accessToken}"
-    response = requests.get(geocodeUrl)
-    data = response.json()
-    if 'features' in data and len(data['features']) > 0:
-        location = data['features'][0]['geometry']['coordinates']
-        return location
 
 def computeSimilarity(s1, s2):
     if (s1 == s2): return False
@@ -307,22 +286,8 @@ def findAirbnb(previous, sentence):
     return data
 
 import os
-
-
 hasRendered = False
 hasRenderedContent = False
-
-
-
-
-
-
-
-
-
-
-
-
 def url_to_file_name(url):
     return re.sub(r'[^a-zA-Z0-9]', '_', url)
 
@@ -492,9 +457,6 @@ async def twitch_comments(streamers, sentenceComponentFormData):
     results = await asyncio.gather(*tasks)
     return results
 
-
-
-
 def substitute(name):
     for k in jupyter_functions:
         if (len(name)) < 1: return name
@@ -553,13 +515,11 @@ class UserInDB(BaseModel):
     _k: str
     _v: str
 
-
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
     print('FnText', FnText)
     functions = [substitute(fn) for fn in FnText.fn]
     FnText.sentenceComponentData['sentences'] = FnText.fn
-    
     val = False
     args = []
     for i, fn in enumerate(functions): 
@@ -574,15 +534,11 @@ async def makeFn(FnText:FnText):
         args.append(val)
     return {'fn': args}
 
-
 @app.post("/callFn")
 async def admin(request: Request):
     print('val', await request.json())
     json_data = await request.json()
     city_name = 'Tokyo--Japan'
-    #json['city_name']
-
-    #cities = ['tokyo', 'houston', 'moscow', 'cairo', 'mumbai', 'delhi', 'shanghai', 'beijing', 'dhaka', 'osaka', 'chongqing', 'istanbul']
     def rankApt(personCoefficentPreferences, apt):
         diff = 0
         for key in personCoefficentPreferences:
@@ -630,7 +586,6 @@ async def admin(request: Request):
             apt[key] = random.random()
             #len(fetch_coffee_shops(coords[0], coords[1], [key]))
         apts.append(apt)
-    print('did some shit')
 
     from collections import defaultdict
     totals = defaultdict(int)
@@ -643,12 +598,7 @@ async def admin(request: Request):
         for key in keys: 
             if totals[key] == 0: totals[key] += .01
             apt[key] = apt[key] / totals[key]
-    #apt = [[coffee_[idx], bar_[idx], libraries_[idx], _] for idx, _ in enumerate(apt_list)]
-
-    print(apts[:10])
-    #return apts[0]
     return sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))[0]
-
 
 def makePercents(l):
     max_ = max(l)
@@ -671,11 +621,3 @@ async def js():
 @app.get("/data/george.txt")
 async def george():
     return FileResponse('/data/george.txt', media_type="text/plain")
-
-
-
-
-
-
-
-

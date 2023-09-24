@@ -30,10 +30,34 @@ nltk.download('punkt')
 nltk.download('universal_tagset')
 nltk.download('words')
 
+def key_function (_):
+    return _[1]
+
+
+def ocrImage(fp):
+    reader = easyocr.Reader(['en'])
+    extract_info = reader.readtext(fp)
+    from time import time
+    sorted(extract_info, key=key_function)
+    if (not extract_info): return False
+    return extract_info[0][1]   
+
+def geoCode(address, city):
+    accessToken = "pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg"  # Replace with your actual access token
+    geocodeUrl = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{address}%2C%20{city}.json?access_token={accessToken}"
+    response = requests.get(geocodeUrl)
+    data = response.json()
+    if 'features' in data and len(data['features']) > 0:
+        location = data['features'][0]['geometry']['coordinates']
+        return location
+
+isochroneLibraryCache = {}
 
 def isochroneLibrary(longitude, latitude, listing):
+    if latitude in isochroneLibrary:  
+        return isochroneLibraryCache[latitude]
     latitude = float(latitude)
-    longitude = float(longitude)  
+    longitude = float(longitude) 
     print('get all the coffee shops within driving distance of this airbnb') 
     contours_minutes = 15
     contours_minutes = 30
@@ -53,11 +77,10 @@ def isochroneLibrary(longitude, latitude, listing):
             if polygon.contains(point_to_check):
                 data.append(shop)
     print('cofee shops within geojson', len(data))
-    if len(data) > 0: 
+    if len(data) > 0:
+        isochroneLibraryCache[latitude] = [data, geojson_data, latitude, longitude] 
         return [data, geojson_data, latitude, longitude]
     else : return False
-
-
 
 def imageToCoords(url_list, location='_', apt_url='_'):
     fp = f'data/airbnb/geocoordinates/{apt_url}_geoCoordinates.json'
@@ -94,13 +117,16 @@ def map_of_all_airbnbs(_,__, i):
                for listing in city 
                if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(listing)}')
                ]
-    return {'data': geoCode, 'component': '<map>'}
+    return {'data': geoCode, 'component': '<map>', 
+            'geoCoordCache': geoCoordCache
+            
+            }
 
 def filter_by_poi(_, sentenceComponentFormData, i):
     print('sentenceComponentFormData', sentenceComponentFormData)
     poi = 'coffee'
-    poi = sentenceComponentFormData['sentences'][i].split(' ')[2]
-    i += 1
+    poi = sentenceComponentFormData['sentences'][i].strip().split(' ')[2]
+    print('poi', poi)
     #fetch_coffee_shops() -> return a curry with fetch_coffee_shops that finds cached POI percentage? for the previous ones
 
     #function should return _ on server side compose
@@ -111,7 +137,6 @@ def filter_by_poi(_, sentenceComponentFormData, i):
 
 
 def groupBySimilarity(sentences, documents, i):
-    print(sentences)
     from sentence_transformers import SentenceTransformer,util
     model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
     sentences = [item for sublist in sentences for item in sublist]
