@@ -15,6 +15,7 @@
     "@deck.gl/react": "^8.9.27",
     "@groundbear/housing123": "https://api.observablehq.com/@groundbear/housing123.tgz?v=3",
     "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
     "@nharrisanalyst/deck-gl": "https://api.observablehq.com/@nharrisanalyst/deck-gl.tgz?v=3",
     "@observablehq/plot-bivariate-choropleth-explained": "https://api.observablehq.com/@observablehq/plot-bivariate-choropleth-explained.tgz?v=3",
     "@observablehq/runtime": "5",

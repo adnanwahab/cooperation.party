@@ -9,6 +9,9 @@ import Favicon from "react-favicon";
 import {Runtime, Inspector} from "@observablehq/runtime";
 import notebook from "@uwdata/mosaic-cross-filter-flights-10m";
 import notebook2 from "35ca09d7f1457ad3";
+import Header from './Header'
+
+import Footer from './Footer'
 //import notebook from "3f6e237936d0a0c7";
 // import { MapContainer } from 'react-leaflet/MapContainer'
 // import { TileLayer } from 'react-leaflet/TileLayer'
@@ -17,6 +20,26 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
 //import _, {map} from 'underscore';
 import MapComponent from './Map'
 import * as d3 from 'd3'
+import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-explained.js?v=3";
+
+function BarChart() {
+  const chartRef = useRef();
+  console.log('BAR CHART')
+  useEffect(() => {
+    const runtime = new Runtime();
+    runtime.module(barchartNotebook, name => {
+      if (name === "chart") return new Inspector(chartRef.current);
+    });
+    return () => runtime.dispose();
+  }, []);
+
+  return (
+    <>
+      <div ref={chartRef} />
+    </>
+  );
+}
+
 
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
@@ -28,8 +51,11 @@ import * as d3 from 'd3'
 //map heatmap water_fountains
 //select regions on above 3 maps and then sort by most likely to appreciate in value
 //return list of houses 
-function Slider (data) {
-  return <input type="range" onChange={(e) => setFormData(data, e.target.value)} />
+function Slider (props) {
+  return <div class="block">
+  <label>{props.label}</label>
+  <input type="range" onChange={(e) => setFormData(props.label, e.target.value)} />
+  </div>
 }
 
 
@@ -68,22 +94,32 @@ function isNestedArray (arr) {
   return Array.isArray(arr['Asia']) 
 }
 
-
+let hasBeenFlagged = false
 function Radio(props) {
+
   let cities = props.cities
 
-  let [getCity, setCity] = useState('')
+  let default_value = ''
+
+  if (! hasBeenFlagged) {
+    if (cities.indexOf('Tokyo, Japan') == -1) return 
+    hasBeenFlagged = true
+    default_value = 'Tokyo, Japan'
+  }
+
+  let [getCity, setCity] = useState(default_value)
   let [_, set_] = useState(false)
 
   let apply_ = props.apply_
 
   useEffect(() => {
-    console.log(props)
     setFormData(props.formDataKey, getCity)
     apply_() //dont just send text -> send the data on the client 
     //get all satellite images for every country in america
     //tune contrast -> see if there are any patterns
   }, [getCity])
+
+  
 
   return (
     <div>
@@ -433,7 +469,7 @@ function compile (dataList, apply_) {
       return <Map data={datum}></Map>
     }
     if (datum.component === '<slider>') {
-      return <><label>{datum.label}</label><Slider data={datum.label}/></>
+      return <><Slider label={datum.label}/></>
     }
 
     if (datum.component === '<Radio>') {
@@ -470,8 +506,6 @@ function TextPresenter(props) {
     {props.text}
   </div>
 }
-
-
 
 let templates = {
   airbnb: `for each continent
@@ -522,20 +556,8 @@ let templates = {
 //  given a team pick - pick 5 best team that counters it`,
 }
 
-
-// let templateNames = [
-  
-//   // 'Tree visualization - find best place to plant tree ',
-// //  'dota counters -> pick best team', //if red team picks _ hero -> pick _ hero to get best odds
-// //`'given a satellite image + join other data -> best place to plant a tree or build a house'
-//   ,`keenan + kel - sort transcript by sentiment`,
-//   'Pokedex - type + counters + ', //pick one of 250 -> pick best team of 3 or 6
-//   'stream comments -> topic -> automate',
-// ] //request for contributions / cofounders / open source people to help build this
-
 let templateNames = Object.keys(templates);
 let templateContent = Object.values(templates);
-
 
 function App() {
   const [count, setCount] = useState(0)
@@ -562,34 +584,48 @@ function App() {
     fetchData()
     
   }, [count])
+
+  const leftPanel = (
+    <div>
+    <label>pick a template</label>
+      <select 
+      onChange={(e) => {
+      get('textarea').value = templateContent[e.target.selectedIndex]
+        setCount(count + 1)
+      }
+      }
+      className="w-64 m-5 border border-bluegray-800 border-dashed">
+      {templateNames.map((key, index) => <option value={index}>{key}</option>)}
+    </select>
+    <Favicon url={cat} />
+    <CodeEditor apply_={apply_}></CodeEditor>        
+  </div>
+  )
   
   return (
-    <div className="grid grid-cols-2">
-      <div>
-        <label>pick a template</label>
-          <select 
-          onChange={(e) => {
-          get('textarea').value = templateContent[e.target.selectedIndex]
-            setCount(count + 1)
-          }
-          }
-          className="w-64 m-5 border border-bluegray-800 border-dashed">
-          {templateNames.map((key, index) => <option value={index}>{key}</option>)}
-        </select>
-        <Favicon 
-        url={cat}
-         />
-
-        <CodeEditor apply_={apply_}></CodeEditor>        
-        {/* <Histogram2 /> */}
-        {/* <vennDiagram /> */}
-        {/* <VisualizingTheNightSkyWorkingWithDCelestial /> */}
-        {/* <Notebook /> */}
-
+  <>
+  <Header />
+    <div className="grid grid-cols-3">
+      {leftPanel}
+      <div class="col-span-2">{components}
+      <div class="h-96 w-full"><BarChart></BarChart></div>
       </div>
-      <ProgressBar></ProgressBar>
-      <div className="card">{components}</div>
+      {/* <div>
+      1. proximity to water
+      2. land usage
+      3. POI density by travel time
+      4. parking
+      5. pubs
+      6. touristy things
+      7. town hall
+      8. distinctive buildings
+      9. Atlas Obscura - cool things to visit
+      10. tweet/review - get hipster/family-friendly
+      11. light pollution - street lamp density
+      </div> */}
     </div>
+    <Footer />
+</>
   )
 }
 
@@ -715,3 +751,6 @@ function Poll() {
 //linked diagrams
 //javascript -> display + run queries on UI
 //python -> automatically create services on infinte data streams 
+
+
+

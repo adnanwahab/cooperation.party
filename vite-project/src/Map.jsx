@@ -152,7 +152,6 @@ function Map(props) {
   let geoJson = props.data.map((listing, idx) => {
     return listing[1]
   })
-  console.log('geoJson', geoJson);
 
   geoJson = merge(geoJson)
 
@@ -189,7 +188,6 @@ useEffect(() => {
   //sentence -> returns a component
   //on interaction -> sends a networkRequest -> /rpc/function_name with json = parameters
   //returns function and then re-renders data
-  console.log(getCoefficents, 'getCoefficents')
   let fn = async ()=>  {
     let _ = await fetch('https://pypypy.ngrok.io/callFn/', {
       method: 'POST',
@@ -197,21 +195,13 @@ useEffect(() => {
       referrerPolicy: "no-referrer", 
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-//      credentials: "same-origin", 
       credentials: 'omit',
       headers: { "Content-Type": "application/json",
       "ngrok-skip-browser-warning": true,
-     // "Access-Control-Allow-Origin": "*"
     },
-      body: JSON.stringify({
-        getCoefficents
-        // _k: Object.keys(getCoefficents).join(','),
-        // _v: Object.values(getCoefficents).join(','),
-            })
+      body: JSON.stringify({ getCoefficents })
     })
     let data = await _.json()
-
-
 
     return data
   }
@@ -220,8 +210,6 @@ useEffect(() => {
     You selected Coffee Shops as most Important and there are 300 per square mile near this airbnb
     You Selected libraries as not Important and there none near this airbnb
     You selected Bars as somewhat important and there are a handful close to this airbnb by Train
-
-
     You selected Bars as important and there is a really good one called Disco Gay Bar thats a 5 min walk
     `
 
