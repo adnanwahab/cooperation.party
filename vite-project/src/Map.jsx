@@ -110,6 +110,7 @@ async function fetchCoffeeShops() {
 
 function Map(props) {
   const mapRef = useRef();
+  const [optimalHouse, setOptimalHouse] = useState('')
 
   if (props.data === 'hello world' ||
   props.data === 'hello-world'
@@ -190,7 +191,7 @@ useEffect(() => {
   //returns function and then re-renders data
   console.log(getCoefficents, 'getCoefficents')
   let fn = async ()=>  {
-    let _ = await fetch('http://pypypy.ngrok.io/callFn/', {
+    let _ = await fetch('https://pypypy.ngrok.io/callFn/', {
       method: 'POST',
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", 
@@ -209,10 +210,23 @@ useEffect(() => {
             })
     })
     let data = await _.json()
-    console.log(data)
+
+
+
     return data
   }
-  fn().then((_) => {})
+  fn().then((_) => {
+    let evaluation = `
+    You selected Coffee Shops as most Important and there are 300 per square mile near this airbnb
+    You Selected libraries as not Important and there none near this airbnb
+    You selected Bars as somewhat important and there are a handful close to this airbnb by Train
+
+
+    You selected Bars as important and there is a really good one called Disco Gay Bar thats a 5 min walk
+    `
+
+    setOptimalHouse(JSON.stringify(_) + evaluation)
+  })
 }, [getCoefficents])
 
 
@@ -234,6 +248,7 @@ useEffect(() => {
     {shopMarkers}
     {renderGeoJson}
     </ReactMap> 
+    <>{optimalHouse}</>
     </>);
 }
 export default Map

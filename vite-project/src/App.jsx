@@ -28,6 +28,11 @@ import * as d3 from 'd3'
 //map heatmap water_fountains
 //select regions on above 3 maps and then sort by most likely to appreciate in value
 //return list of houses 
+function Slider (data) {
+  return <input type="range" onChange={(e) => setFormData(data, e.target.value)} />
+}
+
+
 function makeDeckGLMap(){
 }
 
@@ -37,6 +42,7 @@ function setFormData (key, val) {
 } 
 
 function getFormData () {
+//  if (! formData['city'])  return Object.assign(formData, {'city': 'Tokyo, Japan'})
   return formData
 }
 
@@ -426,7 +432,9 @@ function compile (dataList, apply_) {
     if (isIsochroney(datum)) {
       return <Map data={datum}></Map>
     }
-
+    if (datum.component === '<slider>') {
+      return <><label>{datum.label}</label><Slider data={datum.label}/></>
+    }
 
     if (datum.component === '<Radio>') {
       return <Radio apply_={apply_} 
@@ -469,6 +477,9 @@ let templates = {
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
+  i like library
+  i like bar
+  i like coffee
   filter by 10 min train or drive to a library above 4 star
   `,
   arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
