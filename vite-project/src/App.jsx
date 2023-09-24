@@ -22,23 +22,6 @@ import MapComponent from './Map'
 import * as d3 from 'd3'
 import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-explained.js?v=3";
 
-function BarChart() {
-  const chartRef = useRef();
-  console.log('BAR CHART')
-  useEffect(() => {
-    const runtime = new Runtime();
-    runtime.module(barchartNotebook, name => {
-      if (name === "chart") return new Inspector(chartRef.current);
-    });
-    return () => runtime.dispose();
-  }, []);
-
-  return (
-    <>
-      <div ref={chartRef} />
-    </>
-  );
-}
 
 
 //pick optimal housing location for next 10-30 years 
@@ -466,6 +449,7 @@ function compile (dataList, apply_) {
     if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>
 
     if (isIsochroney(datum)) {
+      console.log('____', datum)
       return <Map data={datum}></Map>
     }
     if (datum.component === '<slider>') {
@@ -608,7 +592,7 @@ function App() {
     <div className="grid grid-cols-3">
       {leftPanel}
       <div class="col-span-2">{components}
-      <div class="h-96 w-full"><BarChart></BarChart></div>
+      {/* <div class="h-96 w-full"><BarChart></BarChart></div> */}
       </div>
       {/* <div>
       1. proximity to water

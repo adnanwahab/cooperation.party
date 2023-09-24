@@ -7,6 +7,58 @@ import {scaleQuantile} from 'd3-scale';
 import { Listbox } from '@headlessui/react'
 
 
+
+
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/@marialuisacp/pie-chart.js?v=3";
+import define2 from "https://api.observablehq.com/d/84ce55045edfd14f.js?v=3";
+
+
+function BarChart(props) {
+  console.log(props.data)
+  const chartRef = useRef();
+  console.log('BAR CHART')
+  useEffect(() => {
+    const runtime = new Runtime();
+    runtime.module(define2, name => {
+      if (name === "chart") return new Inspector(chartRef.current);
+    }).redefine('alphabet', props.data)
+    return () => runtime.dispose();
+  }, []);
+
+  return (
+    <>
+      <div ref={chartRef} />
+    </>
+  );
+}
+
+
+function Chart (props) { 
+  console.log(props.getCoefficents)
+  const chartRef = useRef();
+  useEffect(() => {
+    const runtime = new Runtime();
+    new Runtime().module(define, name => {
+      if (name === "chart") return new Inspector(chartRef.current);
+    }).redefine('dataset', 
+    props.getCoefficents
+    //({ 'A': 35 * Math.random(), 'B': 30, 'C':25, 'D': 20, 'E': 15, 'F': 10})
+    )
+    return () => runtime.dispose();
+  }, []);
+
+  return (
+    <>
+      <div ref={chartRef} />
+    </>
+  );
+}
+
+
+
+const apt_choice = [35, 139]
+
 const typesOfPlaces = [
   { id: 1, name: 'coffee', unavailable: false },
   { id: 2, name: 'Bar', unavailable: false },
@@ -109,6 +161,7 @@ async function fetchCoffeeShops() {
 }
 
 function Map(props) {
+  console.log(props)
   const mapRef = useRef();
   const [optimalHouse, setOptimalHouse] = useState('')
 
@@ -166,7 +219,7 @@ function Map(props) {
 let places = ['commuteDistance', 'library', 'bar', 'coffee']
 let placeCoefficents = {} 
 places.forEach(place => {
-  placeCoefficents[place] = 0
+  placeCoefficents[place] = .5
 })
 //sentences + componentData = list of component + states from props
 //makeFn - for now just re-render and redo whole document - con might be slow w/o caching??
@@ -213,7 +266,9 @@ useEffect(() => {
     You selected Bars as important and there is a really good one called Disco Gay Bar thats a 5 min walk
     `
 
-    setOptimalHouse(JSON.stringify(_) + evaluation)
+
+
+    setOptimalHouse(JSON.stringify(_, null, 2) + evaluation)
   })
 }, [getCoefficents])
 
@@ -237,6 +292,21 @@ useEffect(() => {
     {renderGeoJson}
     </ReactMap> 
     <>{optimalHouse}</>
+    <Chart getCoefficents={getCoefficents}/>
+    <BarChart data={
+      props.data.map(_ => _[0]).flat().map(_ => {
+        function dist(one, two) {
+          let dx = one[0] - two[0]
+          let dy = one[1] - two[1]
+          return dx * dx * dy * dy
+        }
+
+        return {
+          frequency: dist([_.lat, _.lon], apt_choice), //dist from apt
+          letter: _.tags.amenity + _.tags.name
+        }
+      })
+    }></BarChart>
     </>);
 }
 export default Map
