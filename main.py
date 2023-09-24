@@ -418,9 +418,14 @@ def cityRadio(_, __):
     from ipynb.fs.defs.geospatial import getCityList
     return {'key':'city','data': getCityList(), 'component': '<Radio>'}
 
+
+geoCoordCache = {}
 def fetch_coffee_shops(longitude, latitude, amenities = ['cafe', 'library', 'bar']):
-    if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
-        return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
+    if round(longitude, 1) in geoCoordCache: 
+        print('WE GOT THE CACHE', len(geoCoordCache[round(longitude, 1)]))
+        return geoCoordCache[round(longitude, 1)]
+    # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
+    #     return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
    
     places = []
     for i in amenities:
@@ -438,6 +443,9 @@ def fetch_coffee_shops(longitude, latitude, amenities = ['cafe', 'library', 'bar
             data = response.json()
             coffee_shops = data['elements']
             places += coffee_shops
+    if len(places) > 0:
+        #print(places)
+        geoCoordCache[round(longitude, 1)] = places
     #json.dump(places, open(f'data/airbnb/poi/{listing}_places.json', 'w'))
     return places
 
@@ -471,6 +479,7 @@ def getAirbnbs(_, componentData='cairo, egypt'):
     apts = json.load(open(fp, 'r'))
 
     return [apt for apt in apts]
+
 def url_to_file_name(url):
     return re.sub(r'[^a-zA-Z0-9]', '_', url)
 
@@ -863,13 +872,14 @@ async def admin(request: Request):
         for key in personCoefficentPreferences:
             if key not in apt: continue
             diff += abs(apt[key] - personCoefficentPreferences[key])
+        #print(diff)
         return diff 
     cityAptChoice = {
         'url':'https://www.airbnb.com/rooms/33676580?adults=1&children=0&enable_m3_private_room=true&infants=0&pets=0&check_in=2023-10-25&check_out=2023-10-30&source_impression_id=p3_1695411915_xw1FKQQa0V7znLzQ&previous_page_section_name=1000&federated_search_id=fec99c3c-b5f1-4547-9dda-2bc7758aec94'
     }
     personCoefficentPreferences = json_data['getCoefficents']
 
-    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))
+    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))[:50]
 
     def get_json_if_possible(apt):
         if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
@@ -880,9 +890,9 @@ async def admin(request: Request):
                 data[0] = float(data[0])
                 data[1] = float(data[1])
                 return data
-            else: return [141.351192, 43.054404]
+            else: return [0,0]
         else:
-            return [141.351192, 43.054404]
+            return [0, 0]
 
     geocoordinates = [get_json_if_possible(apt) for apt in apt_list]
 
@@ -890,16 +900,21 @@ async def admin(request: Request):
     keys = coefficents.keys()
 
     apts  = []
-    print(geocoordinates)
+
+    print('doing some shit')
+    import random
     for idx, _ in enumerate(geocoordinates): 
+        print(idx)
         apt = {
             'url': apt_list[idx],
             'loc': geocoordinates[idx]
         } 
         for key in keys:
             coords = _
-            apt[key] = len(fetch_coffee_shops(coords[0], coords[1], [key]))
+            apt[key] = random.random()
+            #len(fetch_coffee_shops(coords[0], coords[1], [key]))
         apts.append(apt)
+    print('did some shit')
 
     from collections import defaultdict
     totals = defaultdict(int)
@@ -914,16 +929,9 @@ async def admin(request: Request):
             apt[key] = apt[key] / totals[key]
     #apt = [[coffee_[idx], bar_[idx], libraries_[idx], _] for idx, _ in enumerate(apt_list)]
 
-    def makeApt():
-        props = ['commuteDistance', 'library', 'bar', 'coffee'] 
-        coeffs = {}
-        #for prop in props: coeffs[prop] = 
-        return coeffs
-
-
-    sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))
-    print('apts', apts[:5])
-    return apts[0]
+    print(apts[:10])
+    #return apts[0]
+    return sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))[0]
 
 
 def makePercents(l):

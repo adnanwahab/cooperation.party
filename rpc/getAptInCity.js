@@ -356,8 +356,8 @@ const makeURL = ({ne_lng, ne_lat, sw_lat, sw_lng, city_name, zoom_level}) => `ht
 const fetch100Pages = (location) => {
     let coord = geo_coords[location]
     let BB = [[coord[0] - 2, coord[1] - 2], [coord[1] + 2, coord[1] + 2]]
-    for (let i = 0; i < 10; i++ ) {
-        for (let j = 0; j < 10; j++ ) {
+    for (let i = 0; i < 5; i++ ) {
+        for (let j = 0; j < 5; j++ ) {
             let bb = BB.slice()
             let ne_lng = bb[0][0] + i * .1
             let ne_lat = bb[0][1] + j * .1
@@ -375,6 +375,7 @@ const fetch100Pages = (location) => {
         }
     }
 }
+
 let location = process.argv[2]
 location = location.replace(', ','--')
 fetch100Pages(location)

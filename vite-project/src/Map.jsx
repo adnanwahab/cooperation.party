@@ -117,8 +117,8 @@ function Map(props) {
 
   // const geoJson = props.data[0]
   // const coffeeShops = props.data[0][0]
-  const latitude = props.data[1][2]
-  const longitude = props.data[1][3]
+  const latitude = props.data[0][2]
+  const longitude = props.data[0][3]
 
   const onClick = () => {
     console.log('hello')
@@ -190,7 +190,8 @@ useEffect(() => {
   //returns function and then re-renders data
   console.log(getCoefficents, 'getCoefficents')
   let fn = async ()=>  {
-    let _ = await fetch('http://pypypy.ngrok.io/callFn/', {
+                      //https://pypypy.ngrok.io/makeFn/
+    let _ = await fetch('https://pypypy.ngrok.io/callFn/', {
       method: 'POST',
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", 
