@@ -218,7 +218,7 @@ useEffect(() => {
 
 
   return (<>
-  {coefficentsSliders}
+  {/* {coefficentsSliders} */}
     <ReactMap
        ref={mapRef}
         mapboxAccessToken="pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg"

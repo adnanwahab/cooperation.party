@@ -416,6 +416,8 @@ function isIsochroney(datum) {
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
 
+
+
 function compile (dataList, apply_) {
   if (! dataList.fn) return dataList
   console.log(dataList)
@@ -426,7 +428,6 @@ function compile (dataList, apply_) {
     if (isIsochroney(datum)) {
       return <Map data={datum}></Map>
     }
-
 
     if (datum.component === '<Radio>') {
       return <Radio apply_={apply_} 
@@ -469,6 +470,9 @@ let templates = {
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
+  i like library
+  i like bar
+  i like coffee
   filter by 10 min train or drive to a library above 4 star
   `,
   arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
