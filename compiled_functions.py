@@ -401,12 +401,10 @@ def fetch_coffee_shops(longitude, latitude, amenities = []):
         geoCoordCache[round(longitude, 1)] = places
     #json.dump(places, open(f'data/airbnb/poi/{listing}_places.json', 'w'))
     return places
-
-
  
-def attempt_at_building_communities():
-    pass    
-
+def attempt_at_building_communities(_, documentContext, sentence):
+    from ipynb.fs.defs.geospatial import attempt_at_building_communities
+    return attempt_at_building_communities
 jupyter_functions = { 
     'find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - ': attempt_at_building_communities,
     'group them into topics': groupBySimilarity,
