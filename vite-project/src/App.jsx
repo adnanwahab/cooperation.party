@@ -328,7 +328,7 @@ if (useGPU || window.location.hostname !== 'localhost') {
                 })
     })
     fn = await fn.json()
-    console.log(fn)
+
     return fn
 
 
@@ -528,6 +528,8 @@ let templates = {
 
 let templateNames = Object.keys(templates);
 let templateContent = Object.values(templates);
+
+
 
 
 function App() {

@@ -182,11 +182,10 @@ def map_of_all_airbnbs(_,__, i):
 def filter_by_poi(_, documentContext, sentence):
     poi = sentence.strip().split(' ')[2]
     if 'sliders' not in documentContext: documentContext['sliders'] = {}
-    documentContext['sliders'][poi] = .5
+    if poi not in documentContext['sliders']: documentContext['sliders'][poi] = .5
     if (_ == 'hello-world'): return {'component': '<slider>', 'data': _, 'label': poi}
     if (type(_) is not list): _ = _['data']
     return {'component': '<slider>', 'data': _, 'label': poi}
-
 
 def groupBySimilarity(sentences, documents, i):
     from sentence_transformers import SentenceTransformer,util
@@ -244,7 +243,7 @@ def getAirbnbs(_, componentData, i):
     #print(location)
     apts = json.load(open(fp, 'r'))
 
-    return [apt for apt in apts]
+    return [apt for apt in apts] #return component:list -> keep consistent no implicit schemas
 
 def filter_by_distance_to_shopping_store(airbnbs, documentContext, i):
     if (type(airbnbs) is dict): airbnbs = airbnbs['data']
@@ -319,6 +318,8 @@ def poll(_, second, i):
     return 'lots of cool polling data'
     return open('./poll.json', 'r').read()
 
+hasRendered = False
+hasRenderedContent = False
 def arxiv (_, sentence, i):
     global hasRendered, hasRenderedContent  # Declare as global to modify
     #print('ARXIV')
@@ -390,7 +391,7 @@ def fetch_coffee_shops(longitude, latitude, amenities = []):
         """ 
         overpass_url = "https://overpass-api.de/api/interpreter"
         response = requests.get(overpass_url, params={'data': query})
-    
+        print(response.status_code, longitude, latitude, amenities)
         if response.status_code == 200:
             data = response.json()
             coffee_shops = data['elements']
@@ -402,14 +403,19 @@ def fetch_coffee_shops(longitude, latitude, amenities = []):
     return places
 
 
+ 
+def attempt_at_building_communities():
+    pass    
+
 jupyter_functions = { 
+    'find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - ': attempt_at_building_communities,
     'group them into topics': groupBySimilarity,
     'for each continent': continentRadio,
     'choose a city in each': cityRadio,
     'find all airbnb in that city': getAirbnbs,
     'filter by distance to shopping store': filter_by_distance_to_shopping_store,
     'filter by 10 min train or drive to a library above 4 star': filter_by_distance_to_shopping_store,
-    'plot on a map': lambda x,y: x,
+    'plot on a map': lambda _, __, ___: .5,
     'get transcript from ': getYoutube,
     'poll': poll,
     'plant-trees': lambda _,__: 'put map here',

@@ -24,6 +24,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, FileResponse
 from collections import defaultdict
 from pydantic import BaseModel
+from typing import List, Optional
 import json
 import os.path
 import nltk
@@ -279,8 +280,6 @@ def findAirbnb(previous, sentence):
     return data
 
 import os
-hasRendered = False
-hasRenderedContent = False
 def url_to_file_name(url):
     return re.sub(r'[^a-zA-Z0-9]', '_', url)
 
@@ -505,6 +504,7 @@ class UserInDB(BaseModel):
 class FnText(BaseModel):
     fn: list[str]
     documentContext: dict
+    hashUrl: Optional[str] = ''
 
 #document write on client -> sentenceComponent
 #server says -> data[0:5] + componentType + documentContext 4 state
@@ -515,12 +515,15 @@ class FnText(BaseModel):
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
     #print('FnText', FnText)
-    functions = [substitute(fn) for fn in FnText.fn]
     sentences = FnText.fn
+    if len(FnText.hashUrl):
+        sentences = json.load(open('documents/' + FnText.hashUrl))
+    functions = [substitute(fn) for fn in sentences]
+    
     val = False
     args = []
     documentContext = FnText.documentContext
-    print(documentContext)
+    print('documentContext', documentContext)
     for i, fn in enumerate(functions): 
         if type(fn) == type(lambda _:_):
             #print(fn.__name__)
@@ -531,7 +534,7 @@ async def makeFn(FnText:FnText):
         else:
             val = fn 
         args.append(val)
-    return {'fn': args, 'documentContext': documentContext}
+    return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
 
 @app.post("/callFn")
 async def admin(request: Request):
@@ -617,3 +620,16 @@ async def js():
 @app.get("/data/george.txt")
 async def george():
     return FileResponse('/data/george.txt', media_type="text/plain")
+
+
+
+import uuid 
+
+@app.post("/share")
+async def makeFn(fnText:FnText):
+    id = str(uuid.uuid4())
+    print(fnText, id)
+    with open('documents/' + id, 'w+') as f:
+        json.dump(fnText.fn, f)
+    return id
+
