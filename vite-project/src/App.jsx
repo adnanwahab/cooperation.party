@@ -35,24 +35,34 @@ import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-ex
 //select regions on above 3 maps and then sort by most likely to appreciate in value
 //return list of houses 
 function Slider (props) {
+  let _ = {}
+  _[props.label] = .5
   return <div class="block">
   <label>{props.label}</label>
-  <input type="range" onChange={(e) => setFormData(props.label, e.target.value)} />
+  <input type="range" onChange={(e) => {
+      _[props.label] = e.target.value / 100;
+      setFormData('sliders', Object.assign(getFormData('sliders'), _))
+      props.apply_()
+      }
+  } />
   </div>
 }
 
 
-function makeDeckGLMap(){
-}
+let documentContext = {}
+Object.defineProperties({}, {
+  set: function () {
+    //send document context to server using _
+  }
+})
 
-let formData = {}
 function setFormData (key, val) {
-  formData[key] = val
+  documentContext[key] = val
 } 
 
-function getFormData () {
+function getFormData (key) {
 //  if (! formData['city'])  return Object.assign(formData, {'city': 'Tokyo, Japan'})
-  return formData
+  return key ? documentContext[key] : documentContext
 }
 
 let percent = 0
@@ -73,7 +83,6 @@ function ProgressBar () {
 
 
 function isNestedArray (arr) {  
-  console.log('arr',arr)
   return Array.isArray(arr['Asia']) 
 }
 
@@ -249,7 +258,6 @@ function Histogram(props) {
   const chartRef = useRef();
 
   useEffect(() => {
-    console.log('HISTOGRAM', props)
     const runtime = new Runtime();
     runtime.module(notebook4, name => {
       if (name === "chart") return new Inspector(chartRef.current);
@@ -310,7 +318,6 @@ function MosaicCrossFilterFlightsM() {
     // const module0 = runtime.module(notebook, name => {
     //   if (name === "viewof flights") return new Inspector(viewofFlightsRef.current);
     // }).redefine('redefineColor', 'purple')
-    console.log('hi')
     return () => runtime.dispose();
   }, []);
 
@@ -331,7 +338,6 @@ async function _() {
 if (useGPU || window.location.hostname !== 'localhost') {
    url = `https://pypypy.ngrok.io/makeFn/`
 }
-  console.log(url)
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
   // console.log(fn_);
@@ -349,12 +355,12 @@ if (useGPU || window.location.hostname !== 'localhost') {
       "Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,
-                                      sentenceComponentData: getFormData()
+                                      documentContext: getFormData()
                 })
     })
-    fn = await fn.json()
-    console.log(fn)
-    return fn
+    fn = await fn.json() //
+    documentContext = fn.documentContext
+    return fn.fn //fn return vals + components to render them
 
 
   // let fn2 = await fetch(url, {
@@ -437,15 +443,14 @@ const isGeoCoordinate = (pair) => {
 }
 
 function isIsochroney(datum) {
-  console.log(datum)
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
 
 function compile (dataList, apply_) {
-  if (! dataList.fn) return dataList
   console.log(dataList)
+
   // console.log(getFormData(), 'shit')
-  return dataList.fn.map(function (datum) {
+  return dataList.map(function (datum) {
     if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>
 
     if (isIsochroney(datum)) {
@@ -453,7 +458,7 @@ function compile (dataList, apply_) {
       return <Map data={datum}></Map>
     }
     if (datum.component === '<slider>') {
-      return <><Slider label={datum.label}/></>
+      return <><Slider apply_={apply_}  label={datum.label}/></>
     }
 
     if (datum.component === '<Radio>') {
@@ -499,6 +504,7 @@ let templates = {
   i like bar
   i like coffee
   filter by 10 min train or drive to a library above 4 star
+  find best house
   `,
   arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
@@ -550,7 +556,6 @@ function App() {
   const apply_ = function () {
     async function apply_(){
       let data = await _()
-      console.log(data)
       data = compile(data, apply_);
   
       setComponents(data)
@@ -576,6 +581,7 @@ function App() {
       onChange={(e) => {
       get('textarea').value = templateContent[e.target.selectedIndex]
         setCount(count + 1)
+        formData = {city: 'Tokyo, Japan'}
       }
       }
       className="w-64 m-5 border border-bluegray-800 border-dashed">
