@@ -60,7 +60,6 @@ def makeFunctionFromText(text):
 
 def makeFnFromEnglish(english):
     fnText = makeFunctionFromText(english)
-    print('fnText', fnText)
     return fnText
 
 def is_real_word(word):
@@ -237,7 +236,6 @@ async def receive_message(message: MessageInput):
     cells[cellName] = [text for text in text if len(text) > 0]
     messages = [cell for cell in list(cells.values()) if len(cell) > 0]
     if (len(messages) < 1): return JSONResponse(content=[])
-    print('processMessages', result)
     with open('database.txt', 'w') as db: json.dump(result, db)
     return JSONResponse(content=message)
 
@@ -256,16 +254,11 @@ class RPCBlahBlah(BaseModel):
 
 @app.post("/rpc")
 async def rpc(message: RPCBlahBlah):
-    print(message.text)
     return {'demo': exec(message.text)}
 
 @app.get("/nexus")
 async def index():
     return JSONResponse(content={'456':123})
-
-class FnText(BaseModel):
-    fn: list[str]
-    sentenceComponentData: dict
 
 def getProgram(_, sentence):
     encodings = getEncodings(sentence)
@@ -307,7 +300,6 @@ def geoDistance(one, two):
     return geopy.distance.geodesic(one, two).km
 
 def getPlacesOfInterest(aptGeoLocation):
-    print('aptGeoLocation', aptGeoLocation)
     aptGeoLocation = aptGeoLocation.split(':')
     aptGeoLocation =  [float(aptGeoLocation[0]), float(aptGeoLocation[1])]
     all_json = []
@@ -404,8 +396,6 @@ async def delay(time):
     await asyncio.sleep(time)
 import pyppeteer
 async def get_html(channel_name):
-    print(f"hi, {channel_name}")
-
     browser = await pyppeteer.launch(headless=True)
     page = await browser.newPage()
 
@@ -433,14 +423,11 @@ async def get_html(channel_name):
 
     await browser.close()
 
-    print(f"texts: {texts}")
-
     with open(f"twitch-{channel_name}.json", "w") as f:
         json.dump(texts, f)
 
     return texts
 async def twitch_comments(streamers, sentenceComponentFormData):
-    print('_', sentenceComponentFormData)
     sentence = sentenceComponentFormData['setences'][0]
     pattern = r"\[([^\]]+)\]"
     match = re.search(pattern, sentence)
@@ -515,28 +502,40 @@ class UserInDB(BaseModel):
     _k: str
     _v: str
 
+class FnText(BaseModel):
+    fn: list[str]
+    documentContext: dict
+
+#document write on client -> sentenceComponent
+#server says -> data[0:5] + componentType + documentContext 4 state
+#ui state writes to documentContext -> rerun functions that read from it
+#documentContext.suitabilitySliders = {coffee: 1, library: 1}
+
+
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
-    print('FnText', FnText)
+    #print('FnText', FnText)
     functions = [substitute(fn) for fn in FnText.fn]
-    FnText.sentenceComponentData['sentences'] = FnText.fn
+    sentences = FnText.fn
     val = False
     args = []
+    documentContext = FnText.documentContext
+    print(documentContext)
     for i, fn in enumerate(functions): 
         if type(fn) == type(lambda _:_):
-            print(fn.__name__)
+            #print(fn.__name__)
             if inspect.iscoroutinefunction(fn):
-                val = await fn(val, FnText.sentenceComponentData, i=i)
+                val = await fn(val, documentContext, sentences[i])
             else:
-                val = fn(val, FnText.sentenceComponentData, i=i)
+                val = fn(val, documentContext, sentences[i])
         else:
             val = fn 
         args.append(val)
-    return {'fn': args}
+    return {'fn': args, 'documentContext': documentContext}
 
 @app.post("/callFn")
 async def admin(request: Request):
-    print('val', await request.json())
+    #print('val', await request.json())
     json_data = await request.json()
     city_name = 'Tokyo--Japan'
     def rankApt(personCoefficentPreferences, apt):
@@ -573,10 +572,9 @@ async def admin(request: Request):
 
     apts  = []
 
-    print('doing some shit')
     import random
     for idx, _ in enumerate(geocoordinates): 
-        print(idx)
+        #print(idx)
         apt = {
             'url': apt_list[idx],
             'loc': geocoordinates[idx]
@@ -591,7 +589,6 @@ async def admin(request: Request):
     totals = defaultdict(int)
     for apt in apts: 
         for key in keys: 
-            print(totals, apt)
             totals[key] += apt[key]
 
     for apt in apts: 
@@ -607,7 +604,6 @@ def makePercents(l):
 @app.get("/admin")
 async def admin():
     cells.clear()
-    print('Clearing')
     return FileResponse('admin.html')
 
 @app.get("/")

@@ -34,6 +34,65 @@ def key_function (_):
     return _[1]
 
 
+def find_best_house(apt, documentContext, i):
+    city_name = 'Tokyo--Japan'
+    def rankApt(personCoefficentPreferences, apt):
+        diff = 0
+        for key in personCoefficentPreferences:
+            if key not in apt: continue
+            diff += abs(apt[key] - personCoefficentPreferences[key])
+        #print(diff)
+        return diff 
+    print('documentContext', documentContext)
+    
+    personCoefficentPreferences = documentContext['sliders']
+    #{'library': 0, 'coffee': 0, 'bar': 0}
+
+    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))[:50]
+
+    def get_json_if_possible(apt):
+        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
+            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'))
+            if (len(data) > 0): 
+                data = data[0]
+                data = data.split(':')
+                data[0] = float(data[0])
+                data[1] = float(data[1])
+                return data
+            else: return [0,0]
+        else:
+            return [0, 0]
+
+    geocoordinates = [get_json_if_possible(apt) for apt in apt_list]
+    keys = personCoefficentPreferences.keys()
+
+    apts  = []
+
+    import random
+    for idx, _ in enumerate(geocoordinates): 
+        #print(idx) optimize
+        apt = {
+            'url': apt_list[idx],
+            'loc': geocoordinates[idx]
+        } 
+        for key in keys:
+            coords = _
+            apt[key] = random.random()
+        apts.append(apt)
+
+    from collections import defaultdict
+    totals = defaultdict(int)
+    for apt in apts: 
+        for key in keys: 
+            totals[key] += apt[key]
+
+    for apt in apts: 
+        for key in keys: 
+            if totals[key] == 0: totals[key] += .01
+            apt[key] = apt[key] / totals[key]
+    return sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))[0]
+
+
 
 def ocrImage(fp):
     reader = easyocr.Reader(['en'])
@@ -54,30 +113,27 @@ def geoCode(address, city):
 
 isochroneLibraryCache = {}
 
-def isochroneLibrary(longitude, latitude, listing):
+def isochroneLibrary(longitude, latitude, documentContext):
     if latitude in isochroneLibraryCache:  
         return isochroneLibraryCache[latitude]
     latitude = float(latitude)
     longitude = float(longitude) 
-    print('get all the coffee shops within driving distance of this airbnb') 
     contours_minutes = 15
     contours_minutes = 30
     assert(latitude < 90 and latitude > -90)
     isochrone_url = f'https://api.mapbox.com/isochrone/v1/mapbox/walking/{longitude}%2C{latitude}?contours_minutes={contours_minutes}&polygons=true&denoise=0&generalize=0&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
     geojson_data = requests.get(isochrone_url).json()
 
-    coffee_shops = fetch_coffee_shops(longitude, latitude)
+    coffee_shops = fetch_coffee_shops(longitude, latitude, documentContext['sliders'].keys())
     data = []
     for shop in coffee_shops: 
         if 'lat' not in shop or 'lon' not in shop: 
-            print(shop)
             continue
         point_to_check = Point(shop['lon'], shop['lat'])
         for feature in geojson_data['features']:
             polygon = shape(feature['geometry'])
             if polygon.contains(point_to_check):
                 data.append(shop)
-    print('cofee shops within geojson', len(data))
     if len(data) > 0:
         isochroneLibraryCache[latitude] = [data, geojson_data, latitude, longitude] 
         return [data, geojson_data, latitude, longitude]
@@ -85,7 +141,7 @@ def isochroneLibrary(longitude, latitude, listing):
 
 def imageToCoords(url_list, location='_', apt_url='_'):
     fp = f'data/airbnb/geocoordinates/{apt_url}_geoCoordinates.json'
-    print('reading cache ', os.path.exists(fp))
+    #print('reading cache ', os.path.exists(fp))
     if os.path.exists(fp):
         return json.load(open(fp, 'r'))
     cache = set()
@@ -94,13 +150,13 @@ def imageToCoords(url_list, location='_', apt_url='_'):
         if response.status_code == 200:
             with open(_[-50:-1], 'wb') as f:
                 f.write(response.content)
-        print('OCR', fp)
+        #print('OCR', fp)
         ocr = ocrImage(_[-50:-1])
         if not ocr: continue
         coords = geoCode(ocr, location)
         if not coords: continue
         cache.add(str(coords[0]) + ':' + str(coords[1]))
-    print ('writing to' + fp)
+    #print ('writing to' + fp)
     json.dump(list(cache), open(fp, 'w'))
     return list(cache)
 
@@ -123,15 +179,10 @@ def map_of_all_airbnbs(_,__, i):
             
             }
 
-def filter_by_poi(_, sentenceComponentFormData, i):
-    print('sentenceComponentFormData', sentenceComponentFormData)
-    poi = 'coffee'
-    poi = sentenceComponentFormData['sentences'][i].strip().split(' ')[2]
-    print('poi', poi)
-    #fetch_coffee_shops() -> return a curry with fetch_coffee_shops that finds cached POI percentage? for the previous ones
-
-    #function should return _ on server side compose
-    #on client returns a slider which edits the componentFormData -> which runs a filter on the server 
+def filter_by_poi(_, documentContext, sentence):
+    poi = sentence.strip().split(' ')[2]
+    if 'sliders' not in documentContext: documentContext['sliders'] = {}
+    documentContext['sliders'][poi] = .5
     if (_ == 'hello-world'): return {'component': '<slider>', 'data': _, 'label': poi}
     if (type(_) is not list): _ = _['data']
     return {'component': '<slider>', 'data': _, 'label': poi}
@@ -217,6 +268,9 @@ def filter_by_distance_to_shopping_store(airbnbs, documentContext, i):
     #print ('airbnbs', airbnbs)
     #for each apt
     #return airbnbs[:10]
+
+    #document -> compile to fn -> each one 
+    #please one night of peace and quiet it and i promise you'll see code you couldn't imagine. no matter how many decades you've written code. i promise.
     cache = {}
     def doesExist(url):
         if url not in cache: 
@@ -232,9 +286,27 @@ def filter_by_distance_to_shopping_store(airbnbs, documentContext, i):
     geoCoordinates = [imageToCoords(_, documentContext['city'], get_room_id(airbnbs[idx]) ) for idx, _ in enumerate(gm_urls[:18])]
 
     geoCoordinates = [coord[0].split(':') for coord in geoCoordinates if len(coord) > 1]
-    _ = [isochroneLibrary(pt[0], pt[1], get_room_id(airbnbs[idx])) for idx, pt in enumerate(geoCoordinates)]
+    _ = [isochroneLibrary(pt[0], pt[1], documentContext) for idx, pt in enumerate(geoCoordinates)]
 
-    return [_ for _ in _ if _ != False]  
+    return [_ for _ in _ if _ != False]
+
+# def createDocumentContext():
+#     liveUpdateWhenWrittenTo = {} #client reads from val, push update to client w/ SSE
+#     _ = {}
+#     savedGet = _.__getitem__
+#     savedWrite = _.__setitem__
+
+#     def registerWatch(key):
+#         liveUpdateWhenWrittenTo[key] = registerWatch.__closure__
+#         return savedGet(key)
+#     def registerWatch(key, value):
+#         liveUpdateWhenWrittenTo[key]
+#         return savedWrite(key, value)
+    
+#     _.__getitem__ = registerWatch
+#     _.__setitem__ = rerunGetters
+
+#     return _
 
 def getYoutube(url, i):
     youtube_dl.YoutubeDL({'outtmpl': '%(id)s%(ext)s'}).download(['https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial'])
@@ -249,15 +321,13 @@ def poll(_, second, i):
 
 def arxiv (_, sentence, i):
     global hasRendered, hasRenderedContent  # Declare as global to modify
-    print('ARXIV')
+    #print('ARXIV')
     import pdfplumber
     import glob
     fileList = glob.glob('./*.pdf')[:3]
-    print(fileList)
     content = []
     if hasRendered: return hasRenderedContent
     for f in fileList:
-        print(f)
         with pdfplumber.open(f) as pdf:
             # Loop through each page
             for i, page in enumerate(pdf.pages):
@@ -271,7 +341,6 @@ def arxiv (_, sentence, i):
 
 def trees_histogram(_, sentence, i):
     from ipynb.fs.defs.geospatial import trees_histogram
-    print('trees histogram')
     return trees_histogram()
 
 def twitch_comments(_, sentence, i):
@@ -302,12 +371,10 @@ def satellite_housing(_, sentence):
     return 'for each satellite images in area find anything that matches criteria'
 
 
-
-
 geoCoordCache = {}
-def fetch_coffee_shops(longitude, latitude, amenities = ['cafe', 'library', 'bar']):
+def fetch_coffee_shops(longitude, latitude, amenities = []):
     if round(longitude, 1) in geoCoordCache: 
-        print('WE GOT THE CACHE', len(geoCoordCache[round(longitude, 1)]))
+        #print('WE GOT THE CACHE', len(geoCoordCache[round(longitude, 1)]))
         return geoCoordCache[round(longitude, 1)]
     # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
     #     return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
@@ -356,6 +423,7 @@ jupyter_functions = {
     'given a favorite pokemon': pokemon,
     'get all twitch comments': twitch_comments,
     'map of all airbnbs': map_of_all_airbnbs,
-    'i like ': filter_by_poi
+    'i like ': filter_by_poi,
+    'find best house': find_best_house
 }
 
