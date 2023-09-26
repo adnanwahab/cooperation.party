@@ -355,11 +355,13 @@ if (useGPU || window.location.hostname !== 'localhost') {
       "Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,
-                                      documentContext: getFormData()
+                                      documentContext: getFormData(),
+                                      hashUrl: window.location.hash.slice(1)
                 })
     })
     fn = await fn.json() //
     documentContext = fn.documentContext
+    if (fn.isFromDisk) document.querySelector('textarea').value =  fn.fn
     return fn.fn //fn return vals + components to render them
 
 
@@ -450,7 +452,19 @@ function compile (dataList, apply_) {
   console.log(dataList)
 
   // console.log(getFormData(), 'shit')
+  console.log(dataList)
   return dataList.map(function (datum) {
+    if (datum[0] && datum[0].house_suggestion) {
+      return datum.map(_ => {
+        const reasons = _['reasoning_explanation'].split('\n')
+        return <><div>{_['name']}</div>
+                <div>{_['house_suggestion']}</div>
+                <div>{reasons[0]}</div>
+                <div>{reasons[1]}</div>
+
+              </>
+      })
+    }
     if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>
 
     if (isIsochroney(datum)) {
@@ -494,9 +508,20 @@ function TextPresenter(props) {
   return <div class=" border border-purple-500">
     {props.text}
   </div>
+
+
+  //rock climbing
+  //yoga 
+  //kick boxing
+  //library
+  //bookstore
+  //disco
+  //karaoke
 }
 
 let templates = {
+
+  optimalhousematchingforgroups:  `find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - `,
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
@@ -539,11 +564,18 @@ let templates = {
   visualize how many are of which species in a trees_histogram
   trees_map
   find a place to plant a new tree that is optimal
-  `
+  `,
 //  `dota`:  `
 //  make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
 //   should look like complements, counterThem, countersYou
 //  given a team pick - pick 5 best team that counters it`,
+
+  yt_humor_database: `
+  for all keenan and kel
+  get all transcript
+  then find the jokes
+  then categorize the jokes and the other context 
+  `
 }
 
 let templateNames = Object.keys(templates);
@@ -581,7 +613,7 @@ function App() {
       onChange={(e) => {
       get('textarea').value = templateContent[e.target.selectedIndex]
         setCount(count + 1)
-        formData = {city: 'Tokyo, Japan'}
+        documentContext = {city: 'Tokyo, Japan'}
       }
       }
       className="w-64 m-5 border border-bluegray-800 border-dashed">
@@ -594,10 +626,11 @@ function App() {
   
   return (
   <>
-  <Header />
+  {/* <Header /> */}
     <div className="grid grid-cols-3">
       {leftPanel}
-      <div class="col-span-2">{components}
+{/* h-96 overflow-scroll */}
+      <div class="col-span-2 ">{components} 
       {/* <div class="h-96 w-full"><BarChart></BarChart></div> */}
       </div>
       {/* <div>
@@ -614,7 +647,7 @@ function App() {
       11. light pollution - street lamp density
       </div> */}
     </div>
-    <Footer />
+    {/* <Footer /> */}
 </>
   )
 }
