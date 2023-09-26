@@ -1,3 +1,10 @@
+from collections import defaultdict
+import concurrent.futures
+import time 
+import h3
+import re
+import random
+import json
 import glob
 import asyncio
 import inspect
@@ -30,8 +37,8 @@ nltk.download('punkt')
 nltk.download('universal_tagset')
 nltk.download('words')
 
-def key_function (_):
-    return _[1]
+# def key_function (_):
+#     return _[1]
 
 
 def find_best_house(apt, documentContext, i):
@@ -41,7 +48,6 @@ def find_best_house(apt, documentContext, i):
         for key in personCoefficentPreferences:
             if key not in apt: continue
             diff += abs(apt[key] - personCoefficentPreferences[key])
-        #print(diff)
         return diff 
     print('documentContext', documentContext)
     
@@ -51,8 +57,8 @@ def find_best_house(apt, documentContext, i):
     apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))[:50]
 
     def get_json_if_possible(apt):
-        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
-            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'))
+        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}.json'):
+            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}.json'))
             if (len(data) > 0): 
                 data = data[0]
                 data = data.split(':')
@@ -140,7 +146,7 @@ def isochroneLibrary(longitude, latitude, documentContext):
     else : return False
 
 def imageToCoords(url_list, location='_', apt_url='_'):
-    fp = f'data/airbnb/geocoordinates/{apt_url}_geoCoordinates.json'
+    fp = f'data/airbnb/geocoordinates/{apt_url}.json'
     #print('reading cache ', os.path.exists(fp))
     if os.path.exists(fp):
         return json.load(open(fp, 'r'))
@@ -172,7 +178,7 @@ def map_of_all_airbnbs(_,__, i):
     geoCode = [json.load(open(f'data/airbnb/geocoordinates/{get_room_id(listing)}.json')) 
                for city in cities 
                for listing in city 
-               if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(listing)}')
+               if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(listing)}.json')
                ]
     return {'data': geoCode, 'component': '<map>', 
             'geoCoordCache': geoCoordCache
@@ -401,12 +407,271 @@ def fetch_coffee_shops(longitude, latitude, amenities = []):
         geoCoordCache[round(longitude, 1)] = places
     #json.dump(places, open(f'data/airbnb/poi/{listing}_places.json', 'w'))
     return places
+
+
+import os
+def storeAggregation(h3_cells, columns):
+    _ = {}
+    for col in columns: _[col] = {}
+    for cell in h3_cells:
+        for col in columns: _[col][cell] = h3_cells[cell][col]
+    for col in columns:
+        json.dump(_[col], open(f'data/airbnb/h3_poi/{col}.json', 'w+'))
+    
+
+def retrieveAggregation(columns):
+    _ = {}
+    for col in columns:
+        if not os.path.exists(f'data/airbnb/h3_poi/{col}.json'): continue
+        cell_poi_count = json.load(open(f'data/airbnb/h3_poi/{col}.json'))
+        for cell in cell_poi_count:
+            if cell not in _:
+                _[cell] = {}
+            _[cell][col] = cell_poi_count[cell]
+    return _
+
+#data/airbnb/h3/poi/{hex :count}
+from collections import defaultdict
+def fetch_coffee_shops(longitude, latitude, amenities=''):
+    #if round(longitude, 2) in geoCoordCache: 
+        #print('WE GOT THE CACHE', len(geoCoordCache[round(longitude, 1)]))
+        #return geoCoordCache[round(longitude, 2)]
+    # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
+    #     return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
+    places = []
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node["amenity"="{amenities}"]({latitude - 0.01},{longitude - 0.01},{latitude + 0.01},{longitude + 0.01});
+    );
+    out body;
+    """ 
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    response = requests.get(overpass_url, params={'data': query})
+
+    if response.status_code == 200:
+        data = response.json()
  
-def attempt_at_building_communities(_, documentContext, sentence):
-    from ipynb.fs.defs.geospatial import attempt_at_building_communities
-    return attempt_at_building_communities
+        coffee_shops = data['elements']
+        places += coffee_shops
+    #print(len(places), longitude, latitude)
+
+    if len(places) > 0:
+        #print(places)
+        geoCoordCache[round(longitude, 2)] = places
+    #json.dump(places, open(f'data/airbnb/poi/{listing}_places.json', 'w'))
+    return places
+
+
+#delete from here to json 
+def get_room_id(url):
+    match = re.search(r'rooms/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+def get_lat_long(url): 
+    apt = get_room_id(url)
+    data = json.load(open(f'data/airbnb/geocoordinates/{apt}.json'))
+    if len(data) == 0: data = [0,0]
+    else: 
+        data = data[0]
+        data = data.split(':')
+    data = [float(data[1]), float(data[0])]
+    return data
+
+def _housing(url, h3_cells,idx ):
+    shit = get_lat_long(url)
+    lat = shit[0]
+    lng = shit[1]
+    h3_cell_id = h3.geo_to_h3(lat, lng, resolution=7)
+    _coefficents = h3_cells[h3_cell_id]
+    #print('_coefficents', h3_cell_id)
+    ret = {
+        'url': url,
+        'location': shit,
+        'h3_cell': h3_cell_id,  
+        'coefficents': _coefficents
+    }
+    # for key in _coefficents: total += h3_cells[h3_cell_id][key]
+    # for key in _coefficents: ret['coefficents'][key] = h3_cells[h3_cell_id][key] / total
+    return ret 
+
+def key_function(apt, preferences_poi, idx):
+    dist = 0
+    for key in apt['coefficents']:
+        #if (apt['coefficents'][key]) == -1: apt['coefficents'][key] = 0 dont write code like this
+        dist += apt['coefficents'][key] - preferences_poi[key][idx]
+    return dist
+    #make sure each house is in walking distance 30 minutes or train 30 minutes from each other
+    #10 * 10 coefficents -> grid of checkboxes 
+
+    
+    
+def make_fetch_shops_for_cell(poi_names, h3_cells):
+    def fetch_shops_for_cell(hex_id):
+        results = h3_cells[hex_id]
+        ll = h3.h3_to_geo(hex_id)
+        poi_names = ['restaurant',
+                        'library',
+                        'atm',
+                        'vending_machine',
+                        'bench',
+                        'parking_space',
+                        'bank',
+                        'clinic',
+                        'place_of_worship',
+                        'research_institute']
+        for key in poi_names:
+            if key not in results or results[key] == 0:
+                #print(key, ll[1])
+                val = len(fetch_coffee_shops(ll[1], ll[0], key))
+                if val == 0: val = .0000000000000001
+                results[key] = val
+        return (hex_id, results)
+    return fetch_shops_for_cell
+
+def aggregate_poi_in_h3_cell(h3_cells, fn):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        for hex_id, results in executor.map(fn, h3_cells.keys()):
+            pass
+            #h3_cells[hex_id] = results
+    return h3_cells
+
+
+poi_names = ['restaurant',
+                'library',
+                'atm',
+                'vending_machine',
+                'bench',
+                'parking_space',
+                'bank',
+                'clinic',
+                'place_of_worship',
+                'bar',
+                'research_institute']
+import random
+preferences = {}
+
+for i in poi_names: preferences[i] = [random.random() for _ in range(10)]
+coefficents = preferences
+people_names = 'fred bob sally panda velma gis mercator machester xml parsing'.split(' ')
+
+people_preferences = {}
+
+for person in people_names: people_preferences[person] = [random.random() for _ in range(10)]
+# for key in preferences:
+#     for index,val in enumerate(preferences[key]):
+#         people_preferences[index].append(val)
+
+#print('coeffecients, preferences', coefficents)
+people_preferences = {
+ 'fred': [1, 0, 0, 0, 0, 0, 0, 0, 0, .5],
+ 'bob': [0, 1, 0, 0, 0, 0, 0, 0, .5, 0],
+ 'sally': [0, 1, 0, 0, 0, 0, .5, 0, 0, 0],
+ 'panda': [0, 0, 1, 0, 0, .5, 0, 0, 0, 0],
+ 'velma': [0, 0, 0, 1, .5, 0, 0, 0, 0, 0],
+ 'gis': [0, 0, 0, 0, .5, 1, 0, 0, 0, 0],
+ 'mercator': [0, 0, .5, 0, 1, 0, 0, 0, 0, 0],
+ 'machester': [0, .5, 0, 0, 0, 1, 0, 0, 0, 0],
+ 'xml': [0, 0, .5, 0, 0, 0, 0, 0, 1, 0],
+ 'parsing': [.5, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+ }
+def max_index(lst): return lst.index(max(lst))
+def second_largest_index(lst):
+    index_of_max = lst.index(max(lst))
+    lst_without_max = lst[:index_of_max] + lst[index_of_max+1:]
+    second_largest = max(lst_without_max)
+    return lst.index(second_largest)
+
+import copy
+async def attempt_at_building_communities(_, documentContext, sentence):
+    all_houses = json.load(open('data/airbnb/apt/Tokyo--Japan.json'))
+    geo_coords = [get_lat_long(url) for url in all_houses] #tODO flip geo coordinates or re-parse 
+    people_housing_list = {}
+
+    totals = defaultdict(int) #todo get from document context or sentence
+    #this would be a good function
+    h3_cells = retrieveAggregation(poi_names) #{}
+    for location in geo_coords: 
+        hex_id = h3.geo_to_h3(location[0], location[1], 7)
+        if hex_id not in h3_cells: 
+            h3_cells[hex_id] = {}
+            for col in poi_names: 
+                #if col not in h3_cells[hex_id]:
+                    h3_cells[hex_id][col] = random.random()
+     ##for each column read all h3 cells
+    
+    aggregate_poi_in_h3_cell(h3_cells, make_fetch_shops_for_cell(poi_names, h3_cells))
+    #storeAggregation(h3_cells, poi_names)
+    
+    for hex_id in h3_cells:
+        for key in coefficents:
+            #if key in h3_cells[hex_id]:
+            totals[key] = max(totals[key], h3_cells[hex_id][key])
+            
+    h3_cell_counts = copy.deepcopy(h3_cells)
+
+    for hex_id in h3_cells:
+        for key in coefficents:
+            h3_cells[hex_id][key] = h3_cells[hex_id][key] / totals[key]
+            
+    #print('h3_cells', h3_cells)
+    _houses = [_housing(url, h3_cells,idx) for idx, url in enumerate(all_houses)]
+    json.dump(_houses, open('_houses.json', 'w+'))
+    json.dump(h3_cells, open('h3_cells.json', 'w+'))
+    print('_houses')
+    #print('totals', totals)
+    #print(_houses)
+    #max per neighborhood per column 
+    #each house has 
+    #mutate housing - get max for each poi
+    #maxs = {}
+    #for key in poi_names: maxs = 0
+
+    #print(_houses)
+    # for idx, person in enumerate(people_names):
+    #     people_housing_list[person] = sorted(_houses, key=lambda apt: key_function(apt, preferences, idx))
+    reports = []
+    for idx, person in enumerate(people_names):
+        people_housing_list = sorted(_houses, key=lambda apt: key_function(apt, preferences, idx))
+        house = people_housing_list[math.floor(random.random() * len(people_housing_list))]
+        report = {
+            'name': person,
+            'house_suggestion':house['url'] ,
+            'house': house,
+            'reasoning_explanation': get_reasoning_explanation(people_preferences[person], house, totals, h3_cell_counts),
+        }
+        reports.append(report)
+    #print(_houses)
+    return reports
+
+
+def get_reasoning_explanation(prefs, house, totals, h3_cell_counts):
+    reasoning_explanation = ''
+    max_idx = max_index(prefs)
+    max_2nd_index = second_largest_index(prefs)
+    max_key_name = poi_names[max_idx]
+    hex_number = house['h3_cell']
+    num_studios = h3_cell_counts[hex_number][max_key_name]
+    num_studios_2nd = h3_cell_counts[hex_number][poi_names[max_2nd_index]]
+    # reasoning_explanation += f'you selected {max_key_name} as the most important and there are {num_studios} studios in that region :) \n'
+    # reasoning_explanation += f'you selected {poi_names[max_2nd_index]} as the most important and there are {num_studios_2nd} studios in that region :)'
+    reasoning_explanation += f'1. {max_key_name}  =  {num_studios} / {totals[max_key_name]} \n'
+    reasoning_explanation += f'2. {poi_names[max_2nd_index]} = {num_studios_2nd} / {totals[poi_names[max_2nd_index]]}'
+    return reasoning_explanation
+# first = time.time()
+# _ = attempt_at_building_communities('', {}, '')
+# print(_)
+# time.time( )- first
+import math
+import asyncio
+# def attempt_at_building_communities(_, documentContext, sentence):
+#     from ipynb.fs.defs.geospatial import attempt_at_building_communities
+#     return attempt_at_building_communities(_, documentContext, sentence)
 jupyter_functions = { 
-    'find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - ': attempt_at_building_communities,
+    'find 3-5 houses': attempt_at_building_communities,
     'group them into topics': groupBySimilarity,
     'for each continent': continentRadio,
     'choose a city in each': cityRadio,
