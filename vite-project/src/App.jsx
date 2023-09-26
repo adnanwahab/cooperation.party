@@ -21,7 +21,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
 import MapComponent from './Map'
 import * as d3 from 'd3'
 import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-explained.js?v=3";
-
+import OtherMap from './OtherMap' //commute and so on
 
 
 //pick optimal housing location for next 10-30 years 
@@ -452,18 +452,24 @@ function compile (dataList, apply_) {
   console.log(dataList)
 
   // console.log(getFormData(), 'shit')
-  console.log(dataList)
   return dataList.map(function (datum) {
     if (datum[0] && datum[0].house_suggestion) {
-      return datum.map(_ => {
+      let _ = datum.map(_ => {
         const reasons = _['reasoning_explanation'].split('\n')
         return <><div>{_['name']}</div>
                 <div>{_['house_suggestion']}</div>
                 <div>{reasons[0]}</div>
                 <div>{reasons[1]}</div>
-
+                <div>{JSON.stringify(_['commutes'], null, 2)}</div>
               </>
       })
+
+      
+      return <>
+        <OtherMap></OtherMap>
+        {[...Array(8).keys()].map(_ => <br/>)}
+        {_}
+      </>
     }
     if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>
 
@@ -520,17 +526,8 @@ function TextPresenter(props) {
 }
 
 let templates = {
-
-  optimalhousematchingforgroups:  `find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - `,
-  airbnb: `for each continent
-  choose a city in each
-  find all airbnb in that city
-  i like library
-  i like bar
-  i like coffee
-  filter by 10 min train or drive to a library above 4 star
-  find best house
-  `,
+  optimalhousematchingforgroups:  `find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - they all want to be less than 90 min train distance to Sensō-ji`,
+  airbnb: `find 10 houses and each house is close to the residents favorite preferences (two people like library, two people like atm,  two people like vending_machine,  all of them like bench and they all dislike parking_space but half like bank and the other half prefer clinic and some prefer place_of_worship while others prefer research_institute and some like disco and the others prefer country)`,
   arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
   get all diagrams
