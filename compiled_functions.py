@@ -644,6 +644,14 @@ async def attempt_at_building_communities(_, documentContext, sentence):
             'reasoning_explanation': get_reasoning_explanation(people_preferences[person], house, totals, h3_cell_counts),
         }
         reports.append(report)
+    for report in reports: 
+        distances = {}
+        for other_person in reports: 
+            key = other_person['name']
+            coords_1 = other_person['house']['location']
+            coords_2 = report['house']['location']
+            distances[key] = str(round(h3.point_dist(coords_1, coords_2, unit='m') / 2200, 2)) + 'mi'
+        report['commutes'] = distances
     #print(_houses)
     return reports
 
