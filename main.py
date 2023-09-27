@@ -1,47 +1,4 @@
-import os
-import openai
 
-# from dotenv import load_dotenv
-# load_dotenv('.env')
-
-env_var = open('.env').read().split('=')[1]
-
-
-def unstructured_geoSpatial_house_template_query():
-    openai.api_key = env_var
-    openai.organization = "org-Yz814AiRJVl9JGvXXiL9ZXPl"
-
-    response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {
-        "role": "system",
-        "content": "\"transform '`find 10 houses and each house is close to the residents favorite preferences (two people like library, two people like atm,  two people like vending_machine,  all of them like bench and they all dislike parking_space but half like bank and the other half prefer clinic and some prefer place_of_worship while others prefer research_institute and some like disco and the others prefer country)`' to a JSON of preferences from 0 to 1 in this format {'prefs': [{<key>: <val>}]}\""
-        },
-        {
-        "role": "user",
-        "content": ""
-        },
-        {
-        "role": "assistant",
-        "content": "The given preferences can be transformed into a 2D matrix as follows:\n\n```\n                        library    atm    vending_machine    bench    parking_space    bank    clinic    place_of_worship    research_institute    disco    country\nHouse 1                   1      0               0           1           0            0        1             0                  1                    1        0\nHouse 2                   1      0               0           1           0            0        1             0                  0                    0        1\nHouse 3                   0      1               0           1           0            0        0             1                  1                    1        0\nHouse 4                   0      1               0           1           0            0        0             1                  0                    0        1\nHouse 5                   0      0               1           1           0            1        0             1                  1                    1        0\nHouse 6                   0      0               1           1           0            1        "
-        },
-        {
-        "role": "assistant",
-        "content": "{\n  \"preferences\": [\n    {\n      \"house_number\": 1,\n      \"library\": 1,\n      \"atm\": 0,\n      \"vending_machine\": 0,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0.5,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0.5,\n      \"disco\": 0,\n      \"country\": 0.5\n    },\n    {\n      \"house_number\": 2,\n      \"library\": 1,\n      \"atm\": 0,\n      \"vending_machine\": 0,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0.5,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0,\n      \"disco\": 1,\n      \"country\": 0\n    },\n    {\n      \"house_number\": 3,\n      \"library\": 0,\n      \"atm\": 1,\n      \"vending_machine\": "
-        },
-        {
-        "role": "assistant",
-        "content": "{\n  \"prefs\": [\n    {\n      \"library\": 1,\n      \"atm\": 0,\n      \"vending_machine\": 0,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0.5,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0.5,\n      \"disco\": 0,\n      \"country\": 0.5\n    },\n    {\n      \"library\": 1,\n      \"atm\": 0,\n      \"vending_machine\": 0,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0.5,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0,\n      \"disco\": 1,\n      \"country\": 0\n    },\n    {\n      \"library\": 0,\n      \"atm\": 1,\n      \"vending_machine\": 0,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0.5,\n      \"disco\": 0,\n      \"country\": 0.5\n    },\n    {\n      \"library\": 0,\n      \"atm\": 1,\n      \"vending_machine\": 0,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0.5,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0,\n      \"disco\": 1,\n      \"country\": 0\n    },\n    {\n      \"library\": 0,\n      \"atm\": 0,\n      \"vending_machine\": 1,\n      \"bench\": 1,\n      \"parking_space\": 0,\n      \"bank\": 0.5,\n      \"clinic\": 0.5,\n      \"place_of_worship\": 0.5,\n      \"research_institute\": 0.5,\n      \"disco\": 0,\n      \"country\": 0.5\n    }\n  ]\n}"
-        }
-    ],
-    temperature=1,
-    max_tokens=1345,
-    top_p=1,
-    frequency_penalty=0,
-    presence_penalty=0
-    )
-    return json.loads(response['choices'][0]['message']['content'])
 
 import json
 from compiled_functions import jupyter_functions
