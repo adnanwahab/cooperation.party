@@ -8,7 +8,6 @@ import { Listbox } from '@headlessui/react'
 
 import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
 import define from "https://api.observablehq.com/@marialuisacp/pie-chart.js?v=3";
-import define2 from "https://api.observablehq.com/d/84ce55045edfd14f.js?v=3";
 
 function PlaceHolder() {
 return  <>
@@ -73,6 +72,7 @@ return  <>
   </>
 }
 
+import define2 from "https://api.observablehq.com/d/84ce55045edfd14f.js?v=3";
 
 function BarChart(props) {
   console.log(props.data)

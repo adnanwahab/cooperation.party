@@ -72,7 +72,7 @@ const material = {
 
 //139.65,34.99038
 const INITIAL_VIEW_STATE = {
-    longitude: 139.6503,
+    longitude: 139.7503,
     latitude: 35.6762,
     zoom: 11,
     maxZoom: 20,
@@ -139,24 +139,24 @@ console.log(reports)
         getSize: d => 5,
         getColor: d => [Math.random() * 255, 140, 0]
       }),
-    new H3HexagonLayer({
-      id: 'heatmap',
-      colorRange,
-      coverage,
-      getFillColor: d => [255, (Math.random * 500) * 255, 0],
-      data: Object.entries(reports),
-      elevationRange: [0, 0],
-      elevationScale: 1,
-      getHexagon: d => d[0],
-      pickable: true,
-      radius,
-      upperPercentile,
-      material,
-      opacity:.1,
-    //   transitions: {
-    //     elevationScale: 3000
-    //   }
-    }),
+    // new H3HexagonLayer({
+    //   id: 'heatmap',
+    //   colorRange,
+    //   coverage,
+    //   getFillColor: d => [255, (Math.random * 500) * 255, 0],
+    //   data: Object.entries(reports),
+    //   elevationRange: [0, 0],
+    //   elevationScale: 1,
+    //   getHexagon: d => d[0],
+    //   pickable: true,
+    //   radius,
+    //   upperPercentile,
+    //   material,
+    //   opacity:.1,
+    // //   transitions: {
+    // //     elevationScale: 3000
+    // //   }
+    // }),
     new GeoJsonLayer({
         id: 'geojson-layer',
         data: isochrone.features[0],
