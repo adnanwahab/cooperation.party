@@ -727,23 +727,22 @@ async def attempt_at_building_communities(_, documentContext, sentence):
     indices = [i for i in range(100)]
     candidate = [people_housing_list[person][int(random.random()* 2000)] for idx in indices]
     isochrone = getIsoChrone([1,2])
-    # while iterations > 0:
-    #     for idx, person in enumerate(people_housing_list):
-    #         candidate = [people_housing_list[person][indices[idx]] for idx in indices]
-    #         point = getCentroid(candidate)
-    #         isochrone = getIsoChrone([1,2])
-    #         feature = isochrone['features'][0]
-    #         polygon = shape(feature['geometry'])
-    #         def house_test(house):
-    #             l = house['location']
-    #             pt = Point(l[0], l[1])
-    #             return polygon.contains(pt)
-    #         within_commute_distance = len([True for house in candidate if house_test(house)]) == len(candidate)
-    #         iterations -= 1
-    #         print(iterations)
-    #         if within_commute_distance: break
-    #         else: 
-    #             indices[idx] += 1
+    while iterations > 0:
+        for idx, person in enumerate(people_housing_list):
+            candidate = [people_housing_list[person][indices[idx]] for idx in indices]
+            point = getCentroid(candidate)
+            isochrone = getIsoChrone([1,2])
+            feature = isochrone['features'][0]
+            polygon = shape(feature['geometry'])
+            def house_test(house):
+                l = house['location']
+                pt = Point(l[0], l[1])
+                return polygon.contains(pt)
+            within_commute_distance = len([True for house in candidate if house_test(house)]) == len(candidate)
+            iterations -= 1
+            if within_commute_distance: break
+            else: 
+                indices[idx] += 1
 
     reports = []
     for idx, person in enumerate(people_names):
