@@ -17,7 +17,7 @@ import Footer from './Footer'
 // import { TileLayer } from 'react-leaflet/TileLayer'
 // import { useMap } from 'react-leaflet/hooks'
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
-//import _, {map} from 'underscore';
+import underscore from 'underscore';
 import MapComponent from './Map'
 import * as d3 from 'd3'
 import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-explained.js?v=3";
@@ -37,7 +37,7 @@ import OtherMap from './OtherMap' //commute and so on
 function Slider (props) {
   let _ = {}
   _[props.label] = .5
-  return <div class="block">
+  return <div className="block">
   <label>{props.label}</label>
   <input type="range" onChange={(e) => {
       _[props.label] = e.target.value / 100;
@@ -267,7 +267,7 @@ function Histogram(props) {
 
   return (
     <>
-      <div class="w-128" ref={chartRef} />
+      <div className="w-128" ref={chartRef} />
     </>
   );
 }
@@ -348,8 +348,6 @@ if (useGPU || window.location.hostname !== 'localhost') {
       referrerPolicy: "no-referrer", 
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-//      credentials: "same-origin", 
-      credentials: 'include',
       headers: { "Content-Type": "application/json",
       "ngrok-skip-browser-warning": true,
       "Access-Control-Allow-Origin": "*"
@@ -396,7 +394,7 @@ function CodeEditor({apply_}) {
 }
 
 const List = (list) => 
-  (<ul class="overflow-scroll h-64">
+  (<ul className="overflow-scroll h-64">
     <li key="item font-white">{list.length}</li>
     {list.map((item, idx) => <li key={idx}>{item}</li>)}
   </ul>)
@@ -449,32 +447,36 @@ function isIsochroney(datum) {
 }
 
 function compile (dataList, apply_) {
-  console.log(dataList)
+  //console.log(dataList)
 
   // console.log(getFormData(), 'shit')
   return dataList.map(function (datum) {
-    if (datum[0] && datum[0].house_suggestion) {
-      let _ = datum.map(_ => {
+    //console.log(datum)
+    if (datum.isochrone) {
+    
+      let _ = datum.reports.map((_, idx) => {
         const reasons = _['reasoning_explanation'].split('\n')
-        return <><div>{_['name']}</div>
+        return <div key={idx}>
+                <div>{_['name']}</div>
                 <div>{_['house_suggestion']}</div>
                 <div>{reasons[0]}</div>
                 <div>{reasons[1]}</div>
                 <div>{JSON.stringify(_['commutes'], null, 2)}</div>
-              </>
+              </div>
       })
 
       
       return <>
-        <OtherMap></OtherMap>
-        {[...Array(8).keys()].map(_ => <br/>)}
+        {/* <OtherMap isochrone={datum.isochrone} houses={datum._houses}></OtherMap> */}
+                <OtherMap reports={datum.hexes}  isochrone={datum.isochrone} houses={datum.reports.map(_=>_.house)}></OtherMap>
+
+        {[...Array(8).keys()].map(_ => <br key={_}/>)}
         {_}
       </>
     }
-    if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>
+    if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
 
     if (isIsochroney(datum)) {
-      console.log('____', datum)
       return <Map data={datum}></Map>
     }
     if (datum.component === '<slider>') {
@@ -482,7 +484,9 @@ function compile (dataList, apply_) {
     }
 
     if (datum.component === '<Radio>') {
-      return <Radio apply_={apply_} 
+      return <Radio 
+      key={Math.random()}
+      apply_={apply_} 
         formDataKey={datum.key}
        cities={Array.isArray(datum.data) ? datum.data : datum.data[getFormData()['continent'] || 'Asia']}></Radio>
     }
@@ -511,7 +515,7 @@ function compile (dataList, apply_) {
 
 
 function TextPresenter(props) {
-  return <div class=" border border-purple-500">
+  return <div className=" border border-purple-500">
     {props.text}
   </div>
 
@@ -526,7 +530,7 @@ function TextPresenter(props) {
 }
 
 let templates = {
-  optimalhousematchingforgroups:  `find 3-5 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - they all want to be less than 90 min train distance to Sensō-ji`,
+  optimalhousematchingforgroups:  `find 10 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - they all want to be less than 90 min train distance to Sensō-ji`,
   airbnb: `find 10 houses and each house is close to the residents favorite preferences (two people like library, two people like atm,  two people like vending_machine,  all of them like bench and they all dislike parking_space but half like bank and the other half prefer clinic and some prefer place_of_worship while others prefer research_institute and some like disco and the others prefer country)`,
   arxiv: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
@@ -582,7 +586,7 @@ function App() {
   const [count, setCount] = useState(0)
   const [components, setComponents] = useState([])
 
-  const apply_ = function () {
+  const apply_ = underscore.throttle(function () {
     async function apply_(){
       let data = await _()
       data = compile(data, apply_);
@@ -590,7 +594,7 @@ function App() {
       setComponents(data)
     }
     apply_()
-  }
+  }, 5 * 1000)
   
   useEffect(() => { 
     const fetchData = async () => {
@@ -606,7 +610,7 @@ function App() {
   const leftPanel = (
     <div>
     <label>pick a template</label>
-      <select 
+      <select key={Math.random()}
       onChange={(e) => {
       get('textarea').value = templateContent[e.target.selectedIndex]
         setCount(count + 1)
@@ -614,7 +618,7 @@ function App() {
       }
       }
       className="w-64 m-5 border border-bluegray-800 border-dashed">
-      {templateNames.map((key, index) => <option value={index}>{key}</option>)}
+      {templateNames.map((key, index) => <option key={Math.random() } value={index}>{key}</option>)}
     </select>
     <Favicon url={cat} />
     <CodeEditor apply_={apply_}></CodeEditor>        
@@ -627,7 +631,7 @@ function App() {
     <div className="grid grid-cols-3">
       {leftPanel}
 {/* h-96 overflow-scroll */}
-      <div class="col-span-2 ">{components} 
+      <div className="col-span-2 ">{components} 
       {/* <div class="h-96 w-full"><BarChart></BarChart></div> */}
       </div>
       {/* <div>

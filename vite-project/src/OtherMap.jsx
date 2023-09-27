@@ -6,8 +6,9 @@ import HexagonMap from './HexagonMap' //commute and so on
 
 function OtherMap(props) {
   const mapRef = useRef();
-  return (<div class="relative h-96">
-      <HexagonMap />
+
+  return (<div className="relative h-96">
+      <HexagonMap reports={props.reports} isochrone={props.isochrone} houses={props.houses}/>
     </div>);
 }
 export default OtherMap
