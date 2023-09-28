@@ -5,7 +5,6 @@ import define2 from "https://api.observablehq.com/d/84ce55045edfd14f.js?v=3";
 
 export default function BarChart(props) {
   const chartRef = useRef();
-  console.log('BAR CHART', props.data)
   useEffect(() => {
     const runtime = new Runtime();
     runtime.module(define2, name => {

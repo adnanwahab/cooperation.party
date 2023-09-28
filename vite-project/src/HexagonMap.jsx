@@ -66,7 +66,7 @@ const lightingEffect = new LightingEffect({ambientLight, pointLight1, pointLight
 const material = {
   ambient: 0.64,
   diffuse: 0.6,
-  shininess: 32,
+shininess: 32,
   specularColor: [51, 51, 51]
 };
 
@@ -93,10 +93,7 @@ export const colorRange = [
 
 function getTooltip(params) {
     if (! params.picked) return 
-
-
-
-
+    return JSON.stringify(params.object, null, 2)
     return params.object.url
 }
 // const getCsv = await d3.csv(DATA_URL, (data) => {
@@ -122,7 +119,7 @@ reports,
   coverage = 1
 }) {
 //const data = getCsv
-console.log(reports)
+console.log('reports', reports)
   const layers = [
     new IconLayer({
         id: 'icon-layer',
@@ -139,24 +136,25 @@ console.log(reports)
         getSize: d => 5,
         getColor: d => [Math.random() * 255, 140, 0]
       }),
-    // new H3HexagonLayer({
-    //   id: 'heatmap',
-    //   colorRange,
-    //   coverage,
-    //   getFillColor: d => [255, (Math.random * 500) * 255, 0],
-    //   data: Object.entries(reports),
-    //   elevationRange: [0, 0],
-    //   elevationScale: 1,
-    //   getHexagon: d => d[0],
-    //   pickable: true,
-    //   radius,
-    //   upperPercentile,
-    //   material,
-    //   opacity:.1,
-    // //   transitions: {
-    // //     elevationScale: 3000
-    // //   }
-    // }),
+    new H3HexagonLayer({
+      id: 'h3',
+      colorRange,
+      coverage,
+      getFillColor: d => [255, 0, Math.random() * 255],
+      data: Object.entries(reports),
+      elevationRange: [0, 0],
+      elevationScale: 1,
+      getHexagon: d => d[0],
+      pickable: true,
+      radius,
+      upperPercentile,
+      material,
+      opacity:.9,
+      extruded: false,
+    //   transitions: {
+    //     elevationScale: 3000
+    //   }
+    }),
     new GeoJsonLayer({
         id: 'geojson-layer',
         data: isochrone.features[0],

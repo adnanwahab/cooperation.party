@@ -11,6 +11,8 @@ import notebook from "@uwdata/mosaic-cross-filter-flights-10m";
 import notebook2 from "35ca09d7f1457ad3";
 import Header from './Header'
 
+import {interpolatePurples} from  'd3-scale-chromatic'
+
 import Footer from './Footer'
 //import notebook from "3f6e237936d0a0c7";
 // import { MapContainer } from 'react-leaflet/MapContainer'
@@ -437,6 +439,34 @@ function Notebook2() {
   );
 }
 
+function Isochronemap(props) {
+  let datum = props.datum
+  let _ = datum.reports.map((_, idx) => {
+    const reasons = _['reasoning_explanation']
+    return <div key={idx}>
+            
+            <div>{_['name']}</div>
+            <div>{_['house_suggestion']}</div>
+            <div>{reasons.split('\n').map(_ => <div>{_}</div>)}</div>
+            <div>
+               <BarChart data={Object.entries(_['commutes']).map(_ => {
+                  return { letter: _[0], frequency: parseFloat(_[1].replace('mi', '')) }
+                })}></BarChart>
+            </div>
+          </div>
+  })
+
+  
+  return <>
+    {/* <OtherMap isochrone={datum.isochrone} houses={datum._houses}></OtherMap> */}
+            <OtherMap reports={datum.hexes}  isochrone={datum.isochrone} houses={datum.reports.map(_=>_.house)}></OtherMap>
+            {[...Array(8).keys()].map(_ => <br key={_}/>)}
+
+    {_}
+    <div>{datum.reasoning_adjustment}</div>
+  </>
+}
+
 const isGeoCoordinate = (pair) => {
 
   return Array.isArray(pair) && parseFloat(pair[0][0]) && parseFloat(pair[0][1])
@@ -454,30 +484,7 @@ function compile (dataList, apply_) {
     //console.log(datum)
     if (datum.isochrone) {
 
-      let _ = datum.reports.map((_, idx) => {
-        const reasons = _['reasoning_explanation'].split('\n')
-        return <div key={idx}>
-                <div>{_['name']}</div>
-                <div>{_['house_suggestion']}</div>
-                <div>{reasons[0]}</div>
-                <div>{reasons[1]}</div>
-                <div>{JSON.stringify(_['commutes'], null, 2)}</div>
-                <div>
-                   <BarChart data={Object.entries(_['commutes']).map(_ => {
-                      return { letter: _[0], frequency: parseFloat(_[1].replace('mi', '')) }
-                    })}></BarChart>
-                </div>
-              </div>
-      })
-
-      
-      return <>
-        {/* <OtherMap isochrone={datum.isochrone} houses={datum._houses}></OtherMap> */}
-                <OtherMap reports={datum.hexes}  isochrone={datum.isochrone} houses={datum.reports.map(_=>_.house)}></OtherMap>
-
-        {[...Array(8).keys()].map(_ => <br key={_}/>)}
-        {_}
-      </>
+      return <Isochronemap datum={datum}></Isochronemap>
     }
     if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
 
@@ -535,7 +542,7 @@ function TextPresenter(props) {
 }
 
 let templates = {
-  optimalhousematchingforgroups:  `find 10 houses and each house is close to the residents favorite preferences (two people like yoga, two people like kick boxing,  two people like rock climbing,  all of them like wind-surufing and they all dislike bars but half like libraries and the other half prefer bookstores and some prefer high rates of appreciation while others prefer to rent and some like disco and the others prefer country) - they all want to be less than 90 min train distance to Sensō-ji`,
+  optimalhousematchingforgroups: `find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
