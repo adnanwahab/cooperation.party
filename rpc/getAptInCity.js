@@ -319,19 +319,42 @@ const geo_coords = {
     ]
 }
 const puppeteer = require('puppeteer');
-const fs = require('fs').promises;
+const fs = require('fs').promises
 const path = require('path')
+const fs2 = require('fs')
 
-async function getApt(url, location, page) {
+
+async function getApt(url, location, page, dx, dy) {
     //location = location.replace(/\w|\,/g, '-')
+    console.log('URL', url)
     console.log(location, 'GET apt')
     
     const fp = path.resolve(`data/airbnb/apt/${location}.json`);
-    await page.goto(url);
+    
+    const startX = page.viewport().width - 100
+    //console.log(startX)
+    //page.viewport().width
+    const startY = page.viewport().height / 2;
+
+    // Define how far you want to drag the map in pixels
+    const offsetX = (dy % 2 == 1 ?-1 : 1) * 100;
+    const offsetY = (dx % 2 == 1 ?-1 : 1) * 100;
+
+    // const offsetX = dx * 100;
+    // const offsetY = dy * 100;
+
+    // Perform the drag operation
+    await page.mouse.move(startX, startY, {steps: 100});
+    await page.mouse.down();
+    await page.mouse.move(startX - offsetX, startY - offsetY, {steps: 100});
+    await page.mouse.up();
+    //await page.mouse.drag({x:startX, y:startY}, {x: startX - offsetX, y: offsetY})
+
+    console.log(url)
     const qs = '.cy5jw6o.dir.dir-ltr a';
     let tweets = [];
     function urlToFileName(url) {
-        return url
+        //return url
         return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
       }
     try {
@@ -343,10 +366,18 @@ async function getApt(url, location, page) {
         console.error('Error:', error);
         return [];
     }
-    await browser.close();
+    console.log('finish demo today')
+
+
     console.log(`writing ${location}.json`)
-  
-    let apt = await fs.readFile(fp);
+    if (! fs2.existsSync(fp)) {
+        fs2.openSync(fp, 'a')
+        fs2.writeFileSync(fp, '[]')
+        console.log('making a new file', fp)
+    }
+    console.log('shit', (await fs.readFile(fp)).toString().length)
+    let previous = (await fs.readFile(fp, 'utf-8'))
+    let apt = JSON.parse(previous || '[]')
     tweets = Array.from(new Set(tweets.map(urlToFileName).concat(apt)))
     console.log(apt.length, tweets.length)
     await fs.writeFile(fp, JSON.stringify(tweets, null, 2));
@@ -359,7 +390,7 @@ const withPrices = `https://www.airbnb.com/s/Tokyo--Japan/homes?price_filter_inp
 
 
 
-const backup = `https://www.airbnb.com/s/Tokyo--Japan/homes?channel=EXPLORE&zoom_level=16.4source=structured_search_input_header&ne_lat=35.717527724403716&ne_lng=139.74784758181784&sw_lat=35.67707424677273&sw_lng=139.72193090386088&zoom=14.407908990644037&search_by_map=true`
+const backup = (city) => `https://www.airbnb.com/s/${city}/homes`
 
 const makeURL = ({ne_lng, ne_lat, sw_lat, sw_lng, city_name, zoom_level}) => 
 `https://www.airbnb.com/s/Tokyo--Japan/homes?channel=EXPLORE&zoom_level=16.4source=structured_search_input_header&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=14.407908990644037&search_by_map=true`
@@ -368,10 +399,24 @@ const fetch100Pages = async (city_name) => {
     console.log(city_name)
     let coord = geo_coords[city_name]
     let BB = [[coord[0] - .1, coord[1] - .1], [coord[1] + .5, coord[1] + .5]]
-    const browser = await puppeteer.launch({ headless: false });  // Change to false if you want to view the browser
+    console.log(coord)
+;
+    const browser = await puppeteer.launch({ 
+        args: [`--window-size=1920,1080`],
+        headless: true });  // Change to false if you want to view the browser
     const page = await browser.newPage();
-    for (let i = 0; i < 5; i++ ) {
-        for (let j = 0; j < 5; j++ ) {
+    page.setViewport({
+        width: 2000,
+        height: 1000,
+        deviceScaleFactor: 1,
+      })
+
+    console.log('____')
+    const url = backup(city_name)
+    await page.goto(url);
+    const spiral = generateSpiral(10)
+    for (let i = 0; i < spiral.length; i++ ) {
+        //for (let j = 0; j < 20; j++ ) {
             // let bb = BB.slice()
             // let ne_lat = bb[0][0] + i * .02
             // let ne_lng = bb[0][1] + j * .02
@@ -385,13 +430,72 @@ const fetch100Pages = async (city_name) => {
             // const url = makeURL(params)
             // console.log(url)
             // console.log(params)
-
-            await page.mouse.drag({x: 1300,  y: 500 }, {x: 1000,  y: 500})
-            await getApt(url, city_name, page)
-        }
+            console.log('---')
+            await delay(1000)
+            let pair = spiral[i]
+            await getApt(url, city_name, page, pair[0], pair[1])
+        //}
     }
+    // .forEach(async function (pair) {
+    //     await delay(1000)
+    //     await getApt(url, city_name, page, i, j)
+    // })
+    await browser.close();
 }
 
+function delay(ms) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, ms)
+    })
+}
 let location = process.argv[2]
 location = location.replace(', ','--')
 fetch100Pages(location)
+
+
+function generateSpiral(steps) {
+    const results = [];
+    let x = 0, y = 0; // Starting point
+    let stepLength = 1; // Initial step length
+    let increment = 1; // Amount by which to increase step length
+
+    for (let i = 0; i < steps; i++) {
+        // Move right
+        for (let j = 0; j < stepLength; j += increment) {
+            x += increment;
+            results.push([x, y]);
+        }
+
+        // Move up
+        stepLength += increment;
+        for (let j = 0; j < stepLength; j += increment) {
+            y += increment;
+            results.push([x, y]);
+        }
+
+        // Move left
+        stepLength += increment;
+        for (let j = 0; j < stepLength; j += increment) {
+            x -= increment;
+            results.push([x, y]);
+        }
+
+        // Move down
+        stepLength += increment;
+        for (let j = 0; j < stepLength; j += increment) {
+            y -= increment;
+            results.push([x, y]);
+        }
+    }
+
+    // Clip results to stay within [-1, 1]
+    for (const point of results) {
+        point[0] = Math.min(1, Math.max(-1, point[0]));
+        point[1] = Math.min(1, Math.max(-1, point[1]));
+    }
+
+    return results;
+}
+
+const spiral = generateSpiral(10);
+console.log(spiral);

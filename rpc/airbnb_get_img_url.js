@@ -63,6 +63,9 @@ async function getImgUrl(aptListing, idx) {
     fs.writeFileSync(url, JSON.stringify(imgUrls.slice(0, 6)));
 
     //await browser.close();
+    //get apt details
+
+
 
     return imgUrls;
 }
