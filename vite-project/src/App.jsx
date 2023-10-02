@@ -420,7 +420,6 @@ function isIsochroney(datum) {
 
 function compile (dataList, apply_) {
   if (! dataList.fn) return dataList
-  console.log(dataList)
   // console.log(getFormData(), 'shit')
   return dataList.fn.map(function (datum) {
     if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>

@@ -8,11 +8,13 @@ async function getImgUrl(aptListing, idx) {
     let origAptListing = aptListing;
 
     function urlToFileName(url) {
-        return url.match(/rooms\/(\d+)/)[1]
+        let val = url.match(/rooms\/(\d+)/)
+
+        return val ? val[1] : ''
       }
       aptListing = urlToFileName(aptListing);
-
-    let url = path.resolve(__dirname, `../data/airbnb/gm/${aptListing}.json`);
+      if (!aptListing ) return console.log('error shit not work ' + aptListing)
+    let url = path.resolve(__dirname, `../data/airbnb/gm/${aptListing}`);
     console.log(url, aptListing)
     //console.log(aptListing, idx);
     //if (aptListing in cache) {return}
