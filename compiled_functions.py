@@ -965,8 +965,11 @@ def forEachCity(_, __, ___):
         'Zanzibar-City--Tanzania.json',
     ]
     path = 'data/osm_way_residential/'
-    cities = ['Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
-    return cities
+    cities = [
+        'Toronto--Canada', 'Lisbon--Portugal', 'Boston--USA',
+        'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
+        'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
+    return cities #os.listdir('airbnb/apt')
     return [json.load(open(path + city)) for city in cities]
     return [f'data/osm_homes/Melbourne--Australia_houses.json']
     #_ = glob.glob(f'data/osm_homes/*_houses.json')
