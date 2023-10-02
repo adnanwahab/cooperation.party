@@ -7,12 +7,10 @@ import './App.css'
 import Favicon from "react-favicon";
 //npm install react-favicon --save
 import {Runtime, Inspector} from "@observablehq/runtime";
-import notebook from "@uwdata/mosaic-cross-filter-flights-10m";
 import notebook2 from "35ca09d7f1457ad3";
 import Header from './Header'
 
-import {interpolatePurples} from  'd3-scale-chromatic'
-
+import HexagonWorld from './hexagon_world';
 import Footer from './Footer'
 //import notebook from "3f6e237936d0a0c7";
 // import { MapContainer } from 'react-leaflet/MapContainer'
@@ -23,7 +21,7 @@ import underscore from 'underscore';
 import MapComponent from './Map'
 import * as d3 from 'd3'
 import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-explained.js?v=3";
-import OtherMap from './OtherMap' //commute and so on
+import HexagonMap from './HexagonMap' //commute and so on
 
 import BarChart from './BarChart';
 //pick optimal housing location for next 10-30 years 
@@ -141,7 +139,7 @@ function Radio(props) {
   )
 }
 
-import notebook3 from "@groundbear/housing123";
+//import notebook3 from "@groundbear/housing123";
 
 // let houses = await d3.csv('/calif_housing.csv')
 // console.log(houses)
@@ -254,25 +252,25 @@ function vennDiagram() {
     </svg>)
 }
 
-import notebook4 from "6c8bcf8857e3482e";
+// import notebook4 from "6c8bcf8857e3482e";
 
-function Histogram(props) {
-  const chartRef = useRef();
+// function Histogram(props) {
+//   const chartRef = useRef();
 
-  useEffect(() => {
-    const runtime = new Runtime();
-    runtime.module(notebook4, name => {
-      if (name === "chart") return new Inspector(chartRef.current);
-    }).redefine('data', props.data)
-    return () => runtime.dispose();
-  }, []);
+//   useEffect(() => {
+//     const runtime = new Runtime();
+//     runtime.module(notebook4, name => {
+//       if (name === "chart") return new Inspector(chartRef.current);
+//     }).redefine('data', props.data)
+//     return () => runtime.dispose();
+//   }, []);
 
-  return (
-    <>
-      <div className="w-128" ref={chartRef} />
-    </>
-  );
-}
+//   return (
+//     <>
+//       <div className="w-128" ref={chartRef} />
+//     </>
+//   );
+// }
 //<iframe width="100%" height="1004" frameborder="0"
 //src="https://observablehq.com/embed/@ankitak/stars?cells=chart"></iframe>
 
@@ -301,7 +299,7 @@ import React, {useRef, useEffect} from "react";
 // }
 
 const diagrams = {
-  'histogram': Histogram,
+//  'histogram': Histogram,
   'timeSeries': Notebook
 }
 
@@ -312,24 +310,24 @@ function get (query) {
   return document.querySelector(query)
 }
 
-function MosaicCrossFilterFlightsM() {
-  const viewofFlightsRef = useRef();
+// function MosaicCrossFilterFlightsM() {
+//   const viewofFlightsRef = useRef();
 
-  useEffect(() => {
-    const runtime = new Runtime();
-    // const module0 = runtime.module(notebook, name => {
-    //   if (name === "viewof flights") return new Inspector(viewofFlightsRef.current);
-    // }).redefine('redefineColor', 'purple')
-    return () => runtime.dispose();
-  }, []);
+//   useEffect(() => {
+//     const runtime = new Runtime();
+//     // const module0 = runtime.module(notebook, name => {
+//     //   if (name === "viewof flights") return new Inspector(viewofFlightsRef.current);
+//     // }).redefine('redefineColor', 'purple')
+//     return () => runtime.dispose();
+//   }, []);
 
-  return (
-    <>
-      <div ref={viewofFlightsRef} />
-      <p>Credit: <a href="https://observablehq.com/@uwdata/mosaic-cross-filter-flights-10m">Mosaic Cross-Filter Flights 10M by UW Interactive Data Lab</a></p>
-    </>
-  );
-}
+//   return (
+//     <>
+//       <div ref={viewofFlightsRef} />
+//       <p>Credit: <a href="https://observablehq.com/@uwdata/mosaic-cross-filter-flights-10m">Mosaic Cross-Filter Flights 10M by UW Interactive Data Lab</a></p>
+//     </>
+//   );
+// }
 
 async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
@@ -445,9 +443,9 @@ function Isochronemap(props) {
     const reasons = _['reasoning_explanation']
     return <div key={idx}>
             
-            <div>{_['name']}</div>
-            <div>{_['house_suggestion']}</div>
-            <div>{reasons.split('\n').map(_ => <div>{_}</div>)}</div>
+            <div>{_['name'] + '  ' + _.house.url}</div>
+            {/* <div>{'https://www.openstreetmap.org/node/' + _['house_suggestion'].id}</div> */}
+            <div>{reasons.split('\n').map(_ => <div>{_}</div>)}</div> 
             <div>
                <BarChart data={Object.entries(_['commutes']).map(_ => {
                   return { letter: _[0], frequency: parseFloat(_[1].replace('mi', '')) }
@@ -478,23 +476,26 @@ function isIsochroney(datum) {
 
 function compile (dataList, apply_) {
   //console.log(dataList)
-
   // console.log(getFormData(), 'shit')
   return dataList.map(function (datum) {
-    //console.log(datum)
-    if (datum.isochrone) {
+    if (datum.component === '<Hexagonworld>') {
+      return <HexagonWorld data={datum.data}/>
+      //return datum.map(datum => <Isochronemap datum={datum}></Isochronemap>)
+    }
 
-      return <Isochronemap datum={datum}></Isochronemap>
+
+    if (datum[0] && datum[0].isochrone) {
+      //return <HexagonWorld />
+      console.log(datum)
+      return datum.map((datum, idx) => <HexagonMap key={idx} {...datum}></HexagonMap>)
     }
     if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
-
     if (isIsochroney(datum)) {
       return <Map data={datum}></Map>
     }
     if (datum.component === '<slider>') {
       return <><Slider apply_={apply_}  label={datum.label}/></>
     }
-
     if (datum.component === '<Radio>') {
       return <Radio 
       key={Math.random()}
@@ -502,47 +503,33 @@ function compile (dataList, apply_) {
         formDataKey={datum.key}
        cities={Array.isArray(datum.data) ? datum.data : datum.data[getFormData()['continent'] || 'Asia']}></Radio>
     }
-
-
-    if (typeof datum === 'object' && ! Array.isArray(datum)) { 
-      return <Histogram data={Object.values(datum)}/>
-    }
-
+    // if (typeof datum === 'object' && ! Array.isArray(datum)) { 
+    //   return <Histogram data={Object.values(datum)}/>
+    // }
     // if (isGeoCoordinate(datum)) {
     //   return MapTrees(datum)
     // }
-
     if (Array.isArray(datum)) return List(datum)
     // //if (datum === 'lots of cool polling data') return Poll()
     // if (datum === 'timeseries') {
     // }
-
     // if (datum === 'housing_intersection') {
     //     return <HousingIntersectionFinder />
     // }
-
     return <TextPresenter text={datum} />
   })
 }
-
 
 function TextPresenter(props) {
   return <div className=" border border-purple-500">
     {props.text}
   </div>
-
-
-  //rock climbing
-  //yoga 
-  //kick boxing
-  //library
-  //bookstore
-  //disco
-  //karaoke
 }
 
 let templates = {
-  optimalhousematchingforgroups: `find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
+  optimalhousematchingforgroups: `
+  for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
+  find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
@@ -605,6 +592,8 @@ function App() {
   const [count, setCount] = useState(0)
   const [components, setComponents] = useState([])
 
+  const [getSelect, setSelected] = useState(0)
+
   const apply_ = underscore.throttle(function () {
     async function apply_(){
       let data = await _()
@@ -629,15 +618,17 @@ function App() {
   const leftPanel = (
     <div>
     <label>pick a template</label>
-      <select key={Math.random()}
+      <select
       onChange={(e) => {
+        console.log(e.target.value)
+        setSelected(e.target.value)
       get('textarea').value = templateContent[e.target.selectedIndex]
         setCount(count + 1)
         documentContext = {city: 'Tokyo, Japan'}
       }
       }
       className="w-64 m-5 border border-bluegray-800 border-dashed">
-      {templateNames.map((key, index) => <option key={Math.random() } value={index}>{key}</option>)}
+      {templateNames.map((key, index) => <option selected={key === getSelect} key={key} value={index}>{key}</option>)}
     </select>
     <Favicon url={cat} />
     <CodeEditor apply_={apply_}></CodeEditor>        

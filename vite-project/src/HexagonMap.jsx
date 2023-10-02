@@ -9,6 +9,8 @@ import ReactMap, {Source, Layer, Marker} from 'react-map-gl';
 
 import {GeoJsonLayer} from '@deck.gl/layers';
 import {IconLayer} from '@deck.gl/layers';
+//import {interpolatePurples} from  'https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3'
+import {interpolatePurples} from "https://cdn.skypack.dev/d3-scale-chromatic@3";
 
 const ICON_MAPPING = {
     marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -71,14 +73,7 @@ shininess: 32,
 };
 
 //139.65,34.99038
-const INITIAL_VIEW_STATE = {
-    longitude: 139.7503,
-    latitude: 35.6762,
-    zoom: 11,
-    maxZoom: 20,
-    pitch: 0,
-    bearing: 0
-  }
+
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
 
@@ -110,20 +105,22 @@ function getTooltip(params) {
 
 export default function App({
     // find centroid -> draw isochrone and ensure that all people are within 20 min train
+    centroid,
 reports,
     isochrone,
-    houses,
+    _houses,
   mapStyle = MAP_STYLE,
   radius = 1000,
   upperPercentile = 100,
   coverage = 1
 }) {
+  console.log(centroid, 'centroid')
 //const data = getCsv
-console.log('reports', reports)
+
   const layers = [
     new IconLayer({
         id: 'icon-layer',
-        data: houses,
+        data: _houses,
         pickable: true,
         // iconAtlas and iconMapping are required
         // getIcon: return a string
@@ -138,37 +135,36 @@ console.log('reports', reports)
       }),
     new H3HexagonLayer({
       id: 'h3',
-      colorRange,
-      coverage,
-      getFillColor: d => [255, 0, Math.random() * 255],
+      getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
       data: Object.entries(reports),
       elevationRange: [0, 0],
       elevationScale: 1,
       getHexagon: d => d[0],
       pickable: true,
       radius,
-      upperPercentile,
+      onClick: (_) => console.log(_),
+      //upperPercentile,
       material,
-      opacity:.9,
+      //opacity:.9,
       extruded: false,
     //   transitions: {
     //     elevationScale: 3000
     //   }
     }),
-    new GeoJsonLayer({
-        id: 'geojson-layer',
-        data: isochrone.features[0],
-    // data: isochrone,
-        pickable: false,
-        //lineWidthScale: 20,
-        lineWidthMinPixels: 2,
-        getFillColor: [160, 160, 180, 200],
-        // getPointRadius: 100,
-        getLineWidth: 10,
-        opacity: .3,
-        getFillColor: (f) => colorScale(Math.random()),
-        getElevation: -1
-    }),
+    // new GeoJsonLayer({
+    //     id: 'geojson-layer',
+    //     data: isochrone.features[0],
+    // // data: isochrone,
+    //     pickable: false,
+    //     //lineWidthScale: 20,
+    //     lineWidthMinPixels: 2,
+    //     getFillColor: [160, 160, 180, 200],
+    //     // getPointRadius: 100,
+    //     getLineWidth: 10,
+    //     opacity: .3,
+    //     getFillColor: (f) => colorScale(Math.random()),
+    //     getElevation: -1
+    // }),
 
    
   ];
@@ -190,9 +186,15 @@ console.log('reports', reports)
         {/* <Pin /> */}
         </Marker>)
   }
-let        markers = houses.map(_ => {
-    return renderMarker(_['location'])
-})
+
+const INITIAL_VIEW_STATE = {
+  longitude: centroid[0],
+  latitude: centroid[1],
+  zoom: 11,
+  maxZoom: 20,
+  pitch: 0,
+  bearing: 0
+}
 
   return (
 <div>
