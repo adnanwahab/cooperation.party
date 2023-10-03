@@ -473,7 +473,7 @@ function isIsochroney(datum) {
 
 
 function compile (dataList, apply_) {
-  if (! dataList.fn) return dataList
+  //if (! dataList.fn) return dataList
   // console.log(getFormData(), 'shit')
   return dataList.map(function (datum) {
     if (datum.component === '<Hexagonworld>') {
