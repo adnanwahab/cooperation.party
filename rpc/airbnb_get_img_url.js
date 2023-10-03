@@ -8,10 +8,12 @@ async function getImgUrl(aptListing, idx) {
     let origAptListing = aptListing;
 
     function urlToFileName(url) {
-        return url.match(/rooms\/(\d+)/)[1]
+        let val = url.match(/rooms\/(\d+)/)
+
+        return val ? val[1] : ''
       }
       aptListing = urlToFileName(aptListing);
-
+      if (!aptListing ) return console.log('error shit not work ' + aptListing)
     let url = path.resolve(__dirname, `../data/airbnb/gm/${aptListing}.json`);
     console.log(url, aptListing)
     //console.log(aptListing, idx);
@@ -28,7 +30,7 @@ async function getImgUrl(aptListing, idx) {
     await page.goto(origAptListing);
 
     await page.waitForSelector('section');
-    await page.waitForSelector('.hnwb2pb.dir.dir-ltr')
+    //await page.waitForSelector('.hnwb2pb.dir.dir-ltr')
 
       await page.waitForSelector('.l1ovpqvx.c1h5tsj6.dir.dir-ltr');
       await page.keyboard.press('Enter')
@@ -62,6 +64,9 @@ async function getImgUrl(aptListing, idx) {
     fs.writeFileSync(url, JSON.stringify(imgUrls.slice(0, 6)));
 
     //await browser.close();
+    //get apt details
+
+
 
     return imgUrls;
 }
@@ -72,7 +77,8 @@ async function delay(ms) {
 }
 
 (async () => {
-    const urls = JSON.parse(fs.readFileSync(process.argv[2]))
+    let city_name = process.argv[2]
+    const urls = JSON.parse(fs.readFileSync(`data/airbnb/apt/${city_name}`))
     console.log(urls, process.argv[2])
     for (let idx = 0; idx < urls.length; idx++) {
         const url = urls[idx];

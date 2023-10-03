@@ -1,7 +1,9 @@
 //f(location) -> list of appartments in that city
 function urlToFileName(url) {
     //return url
-    return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
+    let id = url.match(/rooms\/(\d+)/)
+    if (! id) console.log(id)
+    return id ? ('https://www.airbnb.com/rooms/' + id[1]) : ''
   }
 
 const geo_coords = {
@@ -372,7 +374,7 @@ async function getApt(url, location, page, dx, dy) {
                 let hasMore = document.querySelector('.l1ovpqvx.c1ytbx3a.dir.dir-ltr')
                 console.log(hasMore)
                 hasMore?.click()
-                hasMore = hasMore.disabled ? false : true
+                hasMore = hasMore?.disabled ? false : true
                 console.log('hasMore', hasMore)
 
                 return new Promise(function (resolve) {
@@ -444,7 +446,7 @@ const fetch100Pages = async (city_name) => {
     console.log('____')
     const url = backup(city_name)
     await page.goto(url);
-    const spiral = generateSpiral(100)
+    const spiral = generateSpiral(2)
     for (let i = 0; i < spiral.length; i++ ) {
         //for (let j = 0; j < 20; j++ ) {
             // let bb = BB.slice()

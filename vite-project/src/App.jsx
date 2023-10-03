@@ -470,8 +470,10 @@ function isIsochroney(datum) {
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
 
+
+
 function compile (dataList, apply_) {
-  //console.log(dataList)
+  if (! dataList.fn) return dataList
   // console.log(getFormData(), 'shit')
   return dataList.map(function (datum) {
     if (datum.component === '<Hexagonworld>') {

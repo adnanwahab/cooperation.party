@@ -231,8 +231,8 @@ function Map(props) {
 
   // const geoJson = props.data[0]
   // const coffeeShops = props.data[0][0]
-  const latitude = props.data[1][2]
-  const longitude = props.data[1][3]
+  const latitude = props.data[0][2]
+  const longitude = props.data[0][3]
 
   const onClick = () => {
     console.log('hello')
@@ -302,6 +302,7 @@ useEffect(() => {
   //on interaction -> sends a networkRequest -> /rpc/function_name with json = parameters
   //returns function and then re-renders data
   let fn = async ()=>  {
+                      //https://pypypy.ngrok.io/makeFn/
     let _ = await fetch('https://pypypy.ngrok.io/callFn/', {
       method: 'POST',
       redirect: "follow", // manual, *follow, error
@@ -334,7 +335,7 @@ useEffect(() => {
 
 
   return (<>
-  {coefficentsSliders}
+  {/* {coefficentsSliders} */}
     <ReactMap
        ref={mapRef}
         mapboxAccessToken="pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg"

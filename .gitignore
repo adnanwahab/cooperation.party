@@ -5,5 +5,6 @@
 myenv/
 node_modules/
 data/
+.env
 # vite-project/
 .env
