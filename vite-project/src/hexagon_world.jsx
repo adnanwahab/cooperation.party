@@ -1,8 +1,10 @@
 import React from 'react';
 import {useState, useMemo, useCallback} from 'react';
-
+import {Map} from 'react-map-gl';
+import maplibregl from 'maplibre-gl';
 import {createRoot} from 'react-dom/client';
 import { ScatterplotLayer } from '@deck.gl/layers';
+import {H3ClusterLayer} from '@deck.gl/geo-layers';
 
 import DeckGL from '@deck.gl/react';
 import {
@@ -23,14 +25,18 @@ import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {latLngToCell} from "h3-js";
 //const h3 = require("h3-js");
 
+import {HexagonLayer} from '@deck.gl/aggregation-layers';
+import * as d3 from 'd3'
+
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
+
+
 const resolution = 7;
 
 // Create an empty array to store H3 cell data
 const h3Data = [];
-
 // Generate random points within each H3 cell
 const numPointsPerCell = 1000;
-
 function generateRandomData(numPoints) {
   const data = [];
   for (let i = 0; i < numPoints; i++) {
@@ -61,11 +67,13 @@ for (let i = 0; i < numPointsPerCell; i++) {
 const DATA_URL = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/globe';
 
 const INITIAL_VIEW_STATE = {
-  longitude: 0,
-  latitude: 20,
-  zoom: 0
+  longitude: 139,
+  latitude: 35,
+  zoom: 11,
 };
-
+//let benches = await d3.json('https://pypypy.ngrok.io/data/airbnb/h3_poi/bench.json')
+//console.log(benches)
+const benches = []
 const TIME_WINDOW = 900; // 15 minutes
 const EARTH_RADIUS_METERS = 6.3e6;
 const SEC_PER_DAY = 60 * 60 * 24;
@@ -83,7 +91,9 @@ const sunLight = new SunLight({
 const lightingEffect = new LightingEffect({ambientLight, sunLight});
 
 /* eslint-disable react/no-deprecated */
-export default function App({data}) {
+export default function App(props) {
+  let data = props.data
+  console.log(props)
   const [currentTime, setCurrentTime] = useState(0);
 
   const timeRange = [currentTime, currentTime + TIME_WINDOW];
@@ -117,17 +127,23 @@ export default function App({data}) {
     []
   );
 
-  const hexagon = new H3HexagonLayer({
+
+  const _data = [...Array(1e6).keys()].map(_ => [Math.random() * 90, Math.random() * 180])
+  .map(_ => latLngToCell(_[0], _[1], 4))
+  
+    console.log(_data)
+
+  const hexagon = new H3ClusterLayer({
     id: 'h3',
     //getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
-    getFillColor: [255, 255, 255, 0],
-    data: h3Data,
+    getFillColor: [255, 0, 255, 0],
+    data: _data,
     elevationRange: [0, 0],
     elevationScale: 1,
-    getHexagon: d => console.log('_' + d.h3Index) || d.h3Index,
+    getHexagon: d => d[0],
     pickable: true,
-    radius: 100000,
-    //onClick: (_) => console.log(_),
+    radius: 10000,
+    onClick: (_) => console.log(_),
     //upperPercentile,
     //material,
     //opacity:.9,
@@ -137,7 +153,29 @@ export default function App({data}) {
   //   }
   });
 
-  
+  let hexagonList = Object.entries(data).map((pair) => {
+    console.log(pair)
+    const hexagon2 = new H3HexagonLayer({
+      id: pair[0],
+      //getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
+      getFillColor: [255, 0, 255, 0],
+      data: Object.entries(pair[1]),
+      elevationRange: [0, 20],
+      elevationScale: 20,
+      getHexagon: d => d[0],
+      pickable: true,
+      radius: 10000,
+      onClick: (_) => console.log(_),
+      //upperPercentile,
+      //material,
+      //opacity:.9,
+      extruded: false,
+    //   transitions: {
+    //     elevationScale: 3000
+    //   }
+    });
+    return hexagon2
+  })
 
   const layer2 = new ScatterplotLayer({
     id: 'scatterplot-layer',
@@ -145,9 +183,9 @@ export default function App({data}) {
     getPosition: (d) => d.position,
     getRadius: (d) => d.size,
     getColor: (d) => d.color,
-    radiusScale: 1,
-    radiusMinPixels: 2,
-    radiusMaxPixels: 20,
+    radiusScale: 10,
+    radiusMinPixels: 20,
+    radiusMaxPixels: 200,
   });
 
   // const dataLayers =
@@ -169,59 +207,37 @@ export default function App({data}) {
   //       })
   //   );
 
+  const attemptLayer = new HexagonLayer({
+    id: 'hexagon-layer',
+    data: [...Array(1e6).keys()].map(_=> {return {COORDINATES: [Math.random() * 180, Math.random() * 90]}}),
+    pickable: true,
+    extruded: true,
+    radius: 10000,
+    elevationScale: 4,
+    opacity:0,
+    getPosition: d => d.COORDINATES
+  });
+
   return (
     <> 
+    <div class="relative w-full h-full" style={{height: '750px'}}>
       <DeckGL
-        views={new GlobeView()}
+        // views={new GlobeView()}
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
-        effects={[lightingEffect]}
-        layers={[backgroundLayers, hexagon, layer2]}
-      />
+        // effects={[lightingEffect]}
+        layers={[
+        backgroundLayers, 
+        hexagon, 
+        layer2, 
+        attemptLayer, 
+        ...hexagonList
+        ]}
+      >
+           <Map reuseMaps mapLib={maplibregl} mapStyle={MAP_STYLE} preventStyleDiffing={true}></Map>
+      </DeckGL>
+      </div>
     </>
-  );
-}
+);
 
-function getDate(data, t) {
-  const index = Math.min(data.length - 1, Math.floor(t / SEC_PER_DAY));
-  const date = data[index].date;
-  const timestamp = new Date(`${date}T00:00:00Z`).getTime() + (t % SEC_PER_DAY) * 1000;
-  return new Date(timestamp);
-}
-
-export function renderToDOM(container) {
-  const root = createRoot(container);
-  root.render(<App />);
-
-  async function loadData(dates) {
-    const data = [];
-    for (const date of dates) {
-      const url = `${DATA_URL}/${date}.csv`;
-      const flights = await load(url, CSVLoader, {csv: {skipEmptyLines: true}});
-
-      // Join flight data from multiple dates into one continuous animation
-      const offset = SEC_PER_DAY * data.length;
-      for (const f of flights) {
-        f.time1 += offset;
-        f.time2 += offset;
-      }
-      data.push({flights, date});
-      root.render(<App data={data} />);
-    }
-  }
-
-  loadData([
-    '2020-01-14',
-    '2020-02-11',
-    '2020-03-10',
-    '2020-04-14',
-    '2020-05-12',
-    '2020-06-09',
-    '2020-07-14',
-    '2020-08-11',
-    '2020-09-08',
-    '2020-10-13',
-    '2020-11-10',
-    '2020-12-08'
-  ]);
 }

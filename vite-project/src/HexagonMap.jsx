@@ -99,8 +99,7 @@ function getTooltip(params) {
 //(error, response) => { return response.map(d => ) }
 /* eslint-disable react/no-deprecated */
 
-// let benches = await d3.json('https://pypypy.ngrok.io/data/airbnb/h3_poi/bench.json')
-// console.log(benches)
+
 
 
 export default function App({
