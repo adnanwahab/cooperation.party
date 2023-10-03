@@ -941,6 +941,7 @@ def attempt_at_building_communities(_, documentContext, sentence):
     all_houses = json.load(open('data/airbnb/apt/'+_))
     if len(all_houses) is 0: return []
     geo_coords = [get_lat_long(url, _) for url in all_houses]
+    print(geo_coords, 'attempt_at_building_communities')
     people_housing_list = {}
 
     user_preferences = unstructured_geoSpatial_house_template_query(sentence)
@@ -950,7 +951,7 @@ def attempt_at_building_communities(_, documentContext, sentence):
         people_preferences[name] = [user_preferences[person][key] for key in user_preferences[person]
                                     if key in poi_names
                                     ]
-
+    print('selected_poi_names', selected_poi_names)
     totals = defaultdict(int) 
     h3_cells = retrieveAggregation(selected_poi_names) #{}
     for location in geo_coords: 
@@ -981,7 +982,6 @@ def attempt_at_building_communities(_, documentContext, sentence):
 
     def distanceToTokyo(house):
         point = house['location']
-        print(_)
         city_location = cities[_.replace('.json', '')]
         __ = point[1] - city_location[1]
         ____ = point[0] - city_location[0]
@@ -1201,7 +1201,6 @@ def getCityList():
 }
 
 def forEachCity(_, __, ___):
-    #
     cities = ['Accra--Ghana.json',
         'Addis-Ababa--Ethiopia.json',
         'Cairo--Egypt.json',
@@ -1235,8 +1234,11 @@ def forEachCity(_, __, ___):
 
 
 def world_map(_, __, ___):
-    print('world map')
-    return {'data': {_:json.load(open(_)) for _ in glob.glob('data/osm_way_residential/*.json')},
+    print('world map' + 'fix bugs?')
+    cols = [s.replace('.json', '') for s in os.listdir('data/airbnb/h3_poi/')]
+
+    return {'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
+            'hexAgonations': retrieveAggregation(cols),
             'component': '<Hexagonworld>'
     }
 
@@ -1265,6 +1267,7 @@ jupyter_functions = { #use regexes + spelling corrector + llm to match sentences
     'map of all airbnbs': map_of_all_airbnbs,
     'i like ': filter_by_poi,
     'find best house': find_best_house,
-    'make a world': world_map
+    'make a world': world_map,
+    'map of the future - all airbnbs + pois in the world': world_map
 }
 
