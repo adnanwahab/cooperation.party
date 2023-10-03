@@ -1,4 +1,8 @@
 //f(location) -> list of appartments in that city
+function urlToFileName(url) {
+    //return url
+    return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
+  }
 
 const geo_coords = {
     "New-York-City--USA": [
@@ -332,25 +336,16 @@ async function getApt(url, location, page, dx, dy) {
     const fp = path.resolve(`data/airbnb/apt/${location}.json`);
     
     const startX = page.viewport().width - 100
-    //console.log(startX)
-    //page.viewport().width
     const startY = page.viewport().height / 2;
-
-    // Define how far you want to drag the map in pixels
     const offsetX = dx * 100;
     const offsetY = dy * 100;
-
-    // const offsetX = dx * 100;
-    // const offsetY = dy * 100;
-
-    // Perform the drag operation
-
     await page.mouse.move(startX, startY, {steps: 5});
     if (! shitHasZoomed) { 
         for (let i = 0; i < 10; i++)
-            await page.mouse.wheel({deltaY: -100})
+            await page.mouse.wheel({deltaY: -200})
             shitHasZoomed = true
     }
+    //await delay(10000)
     await page.mouse.down();
     await page.mouse.move(startX - offsetX, startY - offsetY, {steps: 5});
     await page.mouse.up();
@@ -359,11 +354,42 @@ async function getApt(url, location, page, dx, dy) {
     console.log(url)
     const qs = '.cy5jw6o.dir.dir-ltr a';
     let tweets = [];
-    function urlToFileName(url) {
-        //return url
-        return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
-      }
+
     try {
+
+        async function getMoreTweets () {
+            console.log('getting more tweets!', tweets.length)
+            // await page.$$eval('.l1ovpqvx.c1ytbx3a.dir.dir-ltr', (tweetNodes) => {
+            //     console.log(tweetNodes)
+            //     return tweetNodes[0].click()
+            // })
+            await page.waitForSelector(qs);
+            let newTweets = await page.$$eval(qs, (tweetNodes) => {
+                return tweetNodes.map(tweet => (tweet.href) );
+            })
+            tweets = tweets.concat(newTweets)
+            const result = await page.evaluate(function () {
+                let hasMore = document.querySelector('.l1ovpqvx.c1ytbx3a.dir.dir-ltr')
+                console.log(hasMore)
+                hasMore?.click()
+                hasMore = hasMore.disabled ? false : true
+                console.log('hasMore', hasMore)
+
+                return new Promise(function (resolve) {
+                    setTimeout(function () { resolve(hasMore) }, 1000)
+                })
+            })
+            console.log('can has result', result)
+            return result 
+        }
+        let hasMoreTweets = true
+        while(hasMoreTweets) {
+            hasMoreTweets = await getMoreTweets()
+            console.log('hasMoretweets', hasMoreTweets)
+        }
+        console.log('continuing on merry way')
+        //console.log(pagination)
+        //await page.click();
         await page.waitForSelector(qs);
         tweets = await page.$$eval(qs, (tweetNodes) => {
             return tweetNodes.map(tweet => (tweet.href) );
@@ -372,7 +398,6 @@ async function getApt(url, location, page, dx, dy) {
         console.error('Error:', error);
         return [];
     }
-
     console.log(`writing ${location}.json`)
     if (! fs2.existsSync(fp)) {
         fs2.openSync(fp, 'a')
@@ -382,7 +407,7 @@ async function getApt(url, location, page, dx, dy) {
     console.log('', (await fs.readFile(fp)).toString().length)
     let previous = (await fs.readFile(fp, 'utf-8'))
     let apt = JSON.parse(previous || '[]')
-    tweets = Array.from(new Set(tweets.map(urlToFileName).concat(apt)))
+    tweets = Array.from(new Set(tweets.map(urlToFileName).concat(apt).map(urlToFileName)))
     console.log(apt.length, tweets.length)
     await fs.writeFile(fp, JSON.stringify(tweets, null, 2));
     console.log(location, 'GET apt')
@@ -401,13 +426,14 @@ const makeURL = ({ne_lng, ne_lat, sw_lat, sw_lng, city_name, zoom_level}) =>
 //`https://www.airbnb.com/s/Tokyo--Japan/homes?place_id=ChIJ674hC6Y_WBQRujtC6Jay33k&refinement_paths%5B%5D=%2Fhomes&flexible_trip_dates%5B%5D=april&flexible_trip_dates%5B%5D=august&flexible_trip_dates%5B%5D=december&flexible_trip_dates%5B%5D=february&flexible_trip_dates%5B%5D=january&flexible_trip_dates%5B%5D=july&flexible_trip_dates%5B%5D=june&flexible_trip_dates%5B%5D=march&flexible_trip_dates%5B%5D=may&flexible_trip_dates%5B%5D=november&flexible_trip_dates%5B%5D=october&flexible_trip_dates%5B%5D=september&flexible_trip_lengths%5B%5D=one_week&date_picker_type=flexible_dates&search_type=user_map_move&tab_id=home_tab&query=cairo&monthly_start_date=2023-10-01&monthly_length=3&price_filter_input_type=0&price_filter_num_nights=5&channel=EXPLORE&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=16&zoom_level=16&search_by_map=true`
 const fetch100Pages = async (city_name) => {
     console.log(city_name)
-    let coord = geo_coords[city_name]
-    let BB = [[coord[0] - .1, coord[1] - .1], [coord[1] + .5, coord[1] + .5]]
-    console.log(coord)
-;
+    //let coord = geo_coords[city_name]
+    //let BB = [[coord[0] - .1, coord[1] - .1], [coord[1] + .5, coord[1] + .5]]
+    //console.log(coord);
+    console.log(process.argv)
     const browser = await puppeteer.launch({ 
         args: [`--window-size=1920,1080`],
-        headless: false });  // Change to false if you want to view the browser
+        headless: ! process.argv[3]
+    });  // Change to false if you want to view the browser
     const page = await browser.newPage();
     page.setViewport({
         width: 2000,
@@ -444,7 +470,7 @@ const fetch100Pages = async (city_name) => {
     //     await delay(1000)
     //     await getApt(url, city_name, page, i, j)
     // })
-    await browser.close();
+   //await browser.close();
 }
 
 function delay(ms) {
