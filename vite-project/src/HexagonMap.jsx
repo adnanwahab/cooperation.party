@@ -107,7 +107,7 @@ export default function App({
     // find centroid -> draw isochrone and ensure that all people are within 20 min train
     centroid,
 reports,
-    isochrone,
+    hexes,
     _houses,
   mapStyle = MAP_STYLE,
   radius = 1000,
@@ -120,7 +120,7 @@ reports,
   const layers = [
     new IconLayer({
         id: 'icon-layer',
-        data: _houses,
+        data: reports.map(_ => _.house),
         pickable: true,
         // iconAtlas and iconMapping are required
         // getIcon: return a string
@@ -136,7 +136,7 @@ reports,
     new H3HexagonLayer({
       id: 'h3',
       getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
-      data: Object.entries(reports),
+      data: Object.entries(hexes),
       elevationRange: [0, 0],
       elevationScale: 1,
       getHexagon: d => d[0],
@@ -188,8 +188,8 @@ reports,
   }
 
 const INITIAL_VIEW_STATE = {
-  longitude: centroid[0],
-  latitude: centroid[1],
+  longitude: centroid[1],
+  latitude: centroid[0],
   zoom: 11,
   maxZoom: 20,
   pitch: 0,
@@ -197,7 +197,7 @@ const INITIAL_VIEW_STATE = {
 }
 
   return (
-<div>
+<div className="relative h-96">
     <DeckGL
         width={500}
         height={500}

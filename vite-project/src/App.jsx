@@ -438,8 +438,8 @@ function Notebook2() {
 }
 
 function Isochronemap(props) {
-  let datum = props.datum
-  let _ = datum.reports.map((_, idx) => {
+  console.log(props)
+  let _ = props.reports.map((_, idx) => {
     const reasons = _['reasoning_explanation']
     return <div key={idx}>
             
@@ -457,11 +457,11 @@ function Isochronemap(props) {
   
   return <>
     {/* <OtherMap isochrone={datum.isochrone} houses={datum._houses}></OtherMap> */}
-            <OtherMap reports={datum.hexes}  isochrone={datum.isochrone} houses={datum.reports.map(_=>_.house)}></OtherMap>
+            <HexagonMap {...props}></HexagonMap>
             {[...Array(8).keys()].map(_ => <br key={_}/>)}
 
     {_}
-    <div>{datum.reasoning_adjustment}</div>
+    {/* <div>{datum.reasoning_adjustment}</div> */}
   </>
 }
 
@@ -487,7 +487,7 @@ function compile (dataList, apply_) {
     if (datum[0] && datum[0].isochrone) {
       //return <HexagonWorld />
       console.log(datum)
-      return datum.map((datum, idx) => <HexagonMap key={idx} {...datum}></HexagonMap>)
+      return datum.map((datum, idx) => <Isochronemap key={idx} {...datum}></Isochronemap>)
     }
     if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
     if (isIsochroney(datum)) {
