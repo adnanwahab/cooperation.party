@@ -428,13 +428,14 @@ const makeURL = ({ne_lng, ne_lat, sw_lat, sw_lng, city_name, zoom_level}) =>
 //`https://www.airbnb.com/s/Tokyo--Japan/homes?place_id=ChIJ674hC6Y_WBQRujtC6Jay33k&refinement_paths%5B%5D=%2Fhomes&flexible_trip_dates%5B%5D=april&flexible_trip_dates%5B%5D=august&flexible_trip_dates%5B%5D=december&flexible_trip_dates%5B%5D=february&flexible_trip_dates%5B%5D=january&flexible_trip_dates%5B%5D=july&flexible_trip_dates%5B%5D=june&flexible_trip_dates%5B%5D=march&flexible_trip_dates%5B%5D=may&flexible_trip_dates%5B%5D=november&flexible_trip_dates%5B%5D=october&flexible_trip_dates%5B%5D=september&flexible_trip_lengths%5B%5D=one_week&date_picker_type=flexible_dates&search_type=user_map_move&tab_id=home_tab&query=cairo&monthly_start_date=2023-10-01&monthly_length=3&price_filter_input_type=0&price_filter_num_nights=5&channel=EXPLORE&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=16&zoom_level=16&search_by_map=true`
 const fetch100Pages = async (city_name) => {
     console.log(city_name)
-    let coord = geo_coords[city_name]
-    let BB = [[coord[0] - .1, coord[1] - .1], [coord[1] + .5, coord[1] + .5]]
-    console.log(coord)
-;
+    //let coord = geo_coords[city_name]
+    //let BB = [[coord[0] - .1, coord[1] - .1], [coord[1] + .5, coord[1] + .5]]
+    //console.log(coord);
+    console.log(process.argv)
     const browser = await puppeteer.launch({ 
         args: [`--window-size=1920,1080`],
-        headless: true });  // Change to false if you want to view the browser
+        headless: ! process.argv[3]
+    });  // Change to false if you want to view the browser
     const page = await browser.newPage();
     page.setViewport({
         width: 2000,

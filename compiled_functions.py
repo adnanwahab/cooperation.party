@@ -476,7 +476,6 @@ def get_room_id(url):
     else:
         return None
 
-
 cities = {
     "New-York-City--USA": [
         40.7128,
@@ -804,8 +803,8 @@ cities = {
 # cache the OCR so you have a hashmap of strings to geo coordinates
 # dont just use the longest string, try all of them
 # make that all a background process 
-
 def get_lat_long(url, location): 
+    apt = get_room_id(url)
     apt = get_room_id(url)
     _ = cities[location.replace('.json', '')].copy()
 
@@ -814,6 +813,12 @@ def get_lat_long(url, location):
     #print('_lat_long', _)
     return _
     if (not os.path.exists(f'data/airbnb/geocoordinates/{apt}.json')):
+        args = [
+            "node",
+            "rpc/airbnb_get_img_url.js",
+            f'{location}'
+        ]
+        #completed_process = subprocess.run(args)
         #return [35, 139]
         if os.path.exists(f'data/airbnb/geocoordinates/{apt}.json'):
             url_list = json.load(open(f'data/airbnb/gm/{apt}.json'))
@@ -936,7 +941,6 @@ def attempt_at_building_communities(_, documentContext, sentence):
     all_houses = json.load(open('data/airbnb/apt/'+_))
     if len(all_houses) is 0: return []
     geo_coords = [get_lat_long(url, _) for url in all_houses]
-    print(geo_coords, 'attempt_at_building_communities')
     people_housing_list = {}
 
     user_preferences = unstructured_geoSpatial_house_template_query(sentence)
@@ -1221,7 +1225,7 @@ def forEachCity(_, __, ___):
     #     'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
     #     'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
     #cities = ['Tokyo--Japan']
-    return os.listdir('data/airbnb/apt')[:5]
+    return os.listdir('data/airbnb/apt')
     return [json.load(open(path + city)) for city in cities]
     return [f'data/osm_homes/Melbourne--Australia_houses.json']
     #_ = glob.glob(f'data/osm_homes/*_houses.json')

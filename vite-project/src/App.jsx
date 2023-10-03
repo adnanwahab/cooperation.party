@@ -7,17 +7,23 @@ import './App.css'
 import Favicon from "react-favicon";
 //npm install react-favicon --save
 import {Runtime, Inspector} from "@observablehq/runtime";
-import notebook from "@uwdata/mosaic-cross-filter-flights-10m";
 import notebook2 from "35ca09d7f1457ad3";
+import Header from './Header'
+
+import HexagonWorld from './hexagon_world';
+import Footer from './Footer'
 //import notebook from "3f6e237936d0a0c7";
 // import { MapContainer } from 'react-leaflet/MapContainer'
 // import { TileLayer } from 'react-leaflet/TileLayer'
 // import { useMap } from 'react-leaflet/hooks'
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
-//import _, {map} from 'underscore';
+import underscore from 'underscore';
 import MapComponent from './Map'
 import * as d3 from 'd3'
+import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-explained.js?v=3";
+import HexagonMap from './HexagonMap' //commute and so on
 
+import BarChart from './BarChart';
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
@@ -28,16 +34,35 @@ import * as d3 from 'd3'
 //map heatmap water_fountains
 //select regions on above 3 maps and then sort by most likely to appreciate in value
 //return list of houses 
-function makeDeckGLMap(){
+function Slider (props) {
+  let _ = {}
+  _[props.label] = .5
+  return <div className="block">
+  <label>{props.label}</label>
+  <input type="range" onChange={(e) => {
+      _[props.label] = e.target.value / 100;
+      setFormData('sliders', Object.assign(getFormData('sliders'), _))
+      props.apply_()
+      }
+  } />
+  </div>
 }
 
-let formData = {}
+
+let documentContext = {}
+Object.defineProperties({}, {
+  set: function () {
+    //send document context to server using _
+  }
+})
+
 function setFormData (key, val) {
-  formData[key] = val
+  documentContext[key] = val
 } 
 
-function getFormData () {
-  return formData
+function getFormData (key) {
+//  if (! formData['city'])  return Object.assign(formData, {'city': 'Tokyo, Japan'})
+  return key ? documentContext[key] : documentContext
 }
 
 let percent = 0
@@ -58,26 +83,35 @@ function ProgressBar () {
 
 
 function isNestedArray (arr) {  
-  console.log('arr',arr)
   return Array.isArray(arr['Asia']) 
 }
 
-
+let hasBeenFlagged = false
 function Radio(props) {
+
   let cities = props.cities
 
-  let [getCity, setCity] = useState('')
+  let default_value = ''
+
+  if (! hasBeenFlagged) {
+    if (cities.indexOf('Tokyo, Japan') == -1) return 
+    hasBeenFlagged = true
+    default_value = 'Tokyo, Japan'
+  }
+
+  let [getCity, setCity] = useState(default_value)
   let [_, set_] = useState(false)
 
   let apply_ = props.apply_
 
   useEffect(() => {
-    console.log(props)
     setFormData(props.formDataKey, getCity)
     apply_() //dont just send text -> send the data on the client 
     //get all satellite images for every country in america
     //tune contrast -> see if there are any patterns
   }, [getCity])
+
+  
 
   return (
     <div>
@@ -105,7 +139,7 @@ function Radio(props) {
   )
 }
 
-import notebook3 from "@groundbear/housing123";
+//import notebook3 from "@groundbear/housing123";
 
 // let houses = await d3.csv('/calif_housing.csv')
 // console.log(houses)
@@ -218,26 +252,25 @@ function vennDiagram() {
     </svg>)
 }
 
-import notebook4 from "6c8bcf8857e3482e";
+// import notebook4 from "6c8bcf8857e3482e";
 
-function Histogram(props) {
-  const chartRef = useRef();
+// function Histogram(props) {
+//   const chartRef = useRef();
 
-  useEffect(() => {
-    console.log('HISTOGRAM', props)
-    const runtime = new Runtime();
-    runtime.module(notebook4, name => {
-      if (name === "chart") return new Inspector(chartRef.current);
-    }).redefine('data', props.data)
-    return () => runtime.dispose();
-  }, []);
+//   useEffect(() => {
+//     const runtime = new Runtime();
+//     runtime.module(notebook4, name => {
+//       if (name === "chart") return new Inspector(chartRef.current);
+//     }).redefine('data', props.data)
+//     return () => runtime.dispose();
+//   }, []);
 
-  return (
-    <>
-      <div class="w-128" ref={chartRef} />
-    </>
-  );
-}
+//   return (
+//     <>
+//       <div className="w-128" ref={chartRef} />
+//     </>
+//   );
+// }
 //<iframe width="100%" height="1004" frameborder="0"
 //src="https://observablehq.com/embed/@ankitak/stars?cells=chart"></iframe>
 
@@ -266,7 +299,7 @@ import React, {useRef, useEffect} from "react";
 // }
 
 const diagrams = {
-  'histogram': Histogram,
+//  'histogram': Histogram,
   'timeSeries': Notebook
 }
 
@@ -277,25 +310,24 @@ function get (query) {
   return document.querySelector(query)
 }
 
-function MosaicCrossFilterFlightsM() {
-  const viewofFlightsRef = useRef();
+// function MosaicCrossFilterFlightsM() {
+//   const viewofFlightsRef = useRef();
 
-  useEffect(() => {
-    const runtime = new Runtime();
-    // const module0 = runtime.module(notebook, name => {
-    //   if (name === "viewof flights") return new Inspector(viewofFlightsRef.current);
-    // }).redefine('redefineColor', 'purple')
-    console.log('hi')
-    return () => runtime.dispose();
-  }, []);
+//   useEffect(() => {
+//     const runtime = new Runtime();
+//     // const module0 = runtime.module(notebook, name => {
+//     //   if (name === "viewof flights") return new Inspector(viewofFlightsRef.current);
+//     // }).redefine('redefineColor', 'purple')
+//     return () => runtime.dispose();
+//   }, []);
 
-  return (
-    <>
-      <div ref={viewofFlightsRef} />
-      <p>Credit: <a href="https://observablehq.com/@uwdata/mosaic-cross-filter-flights-10m">Mosaic Cross-Filter Flights 10M by UW Interactive Data Lab</a></p>
-    </>
-  );
-}
+//   return (
+//     <>
+//       <div ref={viewofFlightsRef} />
+//       <p>Credit: <a href="https://observablehq.com/@uwdata/mosaic-cross-filter-flights-10m">Mosaic Cross-Filter Flights 10M by UW Interactive Data Lab</a></p>
+//     </>
+//   );
+// }
 
 async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
@@ -306,7 +338,6 @@ async function _() {
 if (useGPU || window.location.hostname !== 'localhost') {
    url = `https://pypypy.ngrok.io/makeFn/`
 }
-  console.log(url)
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
   // console.log(fn_);
@@ -317,19 +348,19 @@ if (useGPU || window.location.hostname !== 'localhost') {
       referrerPolicy: "no-referrer", 
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-//      credentials: "same-origin", 
-      credentials: 'include',
       headers: { "Content-Type": "application/json",
       "ngrok-skip-browser-warning": true,
       "Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,
-                                      sentenceComponentData: getFormData()
+                                      documentContext: getFormData(),
+                                      hashUrl: window.location.hash.slice(1)
                 })
     })
-    fn = await fn.json()
-
-    return fn
+    fn = await fn.json() //
+    documentContext = fn.documentContext
+    if (fn.isFromDisk) document.querySelector('textarea').value =  fn.fn
+    return fn.fn //fn return vals + components to render them
 
 
   // let fn2 = await fetch(url, {
@@ -363,7 +394,7 @@ function CodeEditor({apply_}) {
 }
 
 const List = (list) => 
-  (<ul class="overflow-scroll h-64">
+  (<ul className="overflow-scroll h-64">
     <li key="item font-white">{list.length}</li>
     {list.map((item, idx) => <li key={idx}>{item}</li>)}
   </ul>)
@@ -406,13 +437,36 @@ function Notebook2() {
   );
 }
 
+function Isochronemap(props) {
+  if (! props.reports) return <>not found sorry 🐻</>
+  console.log(props)
+  let _ = props.reports.map((_, idx) => {
+    const reasons = _['reasoning_explanation']
+    return <div key={idx}>
+            <div>{_['name'] + '  ' + _.house.url}</div>
+            <>Other Houses Within Neighborhood{List(_.houses_within_suggested_neighborhood.map(_ => _.url))}</>
+            <div>{reasons.split('\n').map(_ => <div>{_}</div>)}</div> 
+            <div>
+               <BarChart data={Object.entries(_['commutes']).map(_ => {
+                  return { letter: _[0], frequency: parseFloat(_[1].replace('mi', '')) }
+                })}></BarChart>
+            </div>
+          </div>
+  })
+  return <>
+  <div class="text-xl">{props.city}</div>
+    <HexagonMap {...props}></HexagonMap>
+    {[...Array(8).keys()].map(_ => <br key={_}/>)}
+    {_}
+  </>
+}
+
 const isGeoCoordinate = (pair) => {
 
   return Array.isArray(pair) && parseFloat(pair[0][0]) && parseFloat(pair[0][1])
 }
 
 function isIsochroney(datum) {
-  console.log(datum)
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
 
@@ -421,51 +475,60 @@ function isIsochroney(datum) {
 function compile (dataList, apply_) {
   if (! dataList.fn) return dataList
   // console.log(getFormData(), 'shit')
-  return dataList.fn.map(function (datum) {
-    if (datum[0] == '#') return <h1 class="text-xl">{datum}</h1>
+  return dataList.map(function (datum) {
+    if (datum.component === '<Hexagonworld>') {
+      return <HexagonWorld data={datum.data}/>
+      //return datum.map(datum => <Isochronemap datum={datum}></Isochronemap>)
+    }
 
+
+    if (datum[0] && datum[0].isochrone) {
+      //return <HexagonWorld />
+      console.log(datum)
+      return datum.map((datum, idx) => <Isochronemap key={idx} {...datum}></Isochronemap>)
+    }
+    if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
     if (isIsochroney(datum)) {
       return <Map data={datum}></Map>
     }
-
+    if (datum.component === '<slider>') {
+      return <><Slider apply_={apply_}  label={datum.label}/></>
+    }
     if (datum.component === '<Radio>') {
-      return <Radio apply_={apply_} 
+      return <Radio 
+      key={Math.random()}
+      apply_={apply_} 
         formDataKey={datum.key}
        cities={Array.isArray(datum.data) ? datum.data : datum.data[getFormData()['continent'] || 'Asia']}></Radio>
     }
-
-
-    if (typeof datum === 'object' && ! Array.isArray(datum)) { 
-      return <Histogram data={Object.values(datum)}/>
-    }
-
+    // if (typeof datum === 'object' && ! Array.isArray(datum)) { 
+    //   return <Histogram data={Object.values(datum)}/>
+    // }
     // if (isGeoCoordinate(datum)) {
     //   return MapTrees(datum)
     // }
-
     if (Array.isArray(datum)) return List(datum)
     // //if (datum === 'lots of cool polling data') return Poll()
     // if (datum === 'timeseries') {
     // }
-
     // if (datum === 'housing_intersection') {
     //     return <HousingIntersectionFinder />
     // }
-
     return <TextPresenter text={datum} />
   })
 }
 
-
 function TextPresenter(props) {
-  return <div class=" border border-purple-500">
+  return <div className=" border border-purple-500">
     {props.text}
   </div>
 }
 
-
-
 let templates = {
+  hexagon_world: `map of the future - all airbnbs + pois in the world`,
+  optimalhousematchingforgroups: `
+  for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
+  find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
@@ -507,44 +570,38 @@ let templates = {
   visualize how many are of which species in a trees_histogram
   trees_map
   find a place to plant a new tree that is optimal
-  `
+  `,
 //  `dota`:  `
 //  make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
 //   should look like complements, counterThem, countersYou
 //  given a team pick - pick 5 best team that counters it`,
+
+  yt_humor_database: `
+  for all keenan and kel
+  get all transcript
+  then find the jokes
+  then categorize the jokes and the other context 
+  `
 }
-
-
-// let templateNames = [
-  
-//   // 'Tree visualization - find best place to plant tree ',
-// //  'dota counters -> pick best team', //if red team picks _ hero -> pick _ hero to get best odds
-// //`'given a satellite image + join other data -> best place to plant a tree or build a house'
-//   ,`keenan + kel - sort transcript by sentiment`,
-//   'Pokedex - type + counters + ', //pick one of 250 -> pick best team of 3 or 6
-//   'stream comments -> topic -> automate',
-// ] //request for contributions / cofounders / open source people to help build this
 
 let templateNames = Object.keys(templates);
 let templateContent = Object.values(templates);
-
-
-
 
 function App() {
   const [count, setCount] = useState(0)
   const [components, setComponents] = useState([])
 
-  const apply_ = function () {
+  const [getSelect, setSelected] = useState(0)
+
+  const apply_ = underscore.throttle(function () {
     async function apply_(){
       let data = await _()
-      console.log(data)
       data = compile(data, apply_);
   
       setComponents(data)
     }
     apply_()
-  }
+  }, 5 * 1000)
   
   useEffect(() => { 
     const fetchData = async () => {
@@ -556,34 +613,52 @@ function App() {
     fetchData()
     
   }, [count])
+
+  const leftPanel = (
+    <div>
+    <label>pick a template</label>
+      <select
+      onChange={(e) => {
+        console.log(e.target.value)
+        setSelected(e.target.value)
+      get('textarea').value = templateContent[e.target.selectedIndex]
+        setCount(count + 1)
+        documentContext = {city: 'Tokyo, Japan'}
+      }
+      }
+      className="w-64 m-5 border border-bluegray-800 border-dashed">
+      {templateNames.map((key, index) => <option selected={key === getSelect} key={key} value={index}>{key}</option>)}
+    </select>
+    <Favicon url={cat} />
+    <CodeEditor apply_={apply_}></CodeEditor>        
+  </div>
+  )
   
   return (
-    <div className="grid grid-cols-2">
-      <div>
-        <label>pick a template</label>
-          <select 
-          onChange={(e) => {
-          get('textarea').value = templateContent[e.target.selectedIndex]
-            setCount(count + 1)
-          }
-          }
-          className="w-64 m-5 border border-bluegray-800 border-dashed">
-          {templateNames.map((key, index) => <option value={index}>{key}</option>)}
-        </select>
-        <Favicon 
-        url={cat}
-         />
-
-        <CodeEditor apply_={apply_}></CodeEditor>        
-        {/* <Histogram2 /> */}
-        {/* <vennDiagram /> */}
-        {/* <VisualizingTheNightSkyWorkingWithDCelestial /> */}
-        {/* <Notebook /> */}
-
+  <>
+  {/* <Header /> */}
+    <div className="grid grid-cols-3">
+      {leftPanel}
+{/* h-96 overflow-scroll */}
+      <div className="col-span-2 ">{components} 
+      {/* <div class="h-96 w-full"><BarChart></BarChart></div> */}
       </div>
-      <ProgressBar></ProgressBar>
-      <div className="card">{components}</div>
+      {/* <div>
+      1. proximity to water
+      2. land usage
+      3. POI density by travel time
+      4. parking
+      5. pubs
+      6. touristy things
+      7. town hall
+      8. distinctive buildings
+      9. Atlas Obscura - cool things to visit
+      10. tweet/review - get hipster/family-friendly
+      11. light pollution - street lamp density
+      </div> */}
     </div>
+    {/* <Footer /> */}
+</>
   )
 }
 
@@ -709,3 +784,6 @@ function Poll() {
 //linked diagrams
 //javascript -> display + run queries on UI
 //python -> automatically create services on infinte data streams 
+
+
+
