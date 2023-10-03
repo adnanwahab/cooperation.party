@@ -347,7 +347,7 @@ async function getApt(url, location, page, dx, dy) {
 
     await page.mouse.move(startX, startY, {steps: 5});
     if (! shitHasZoomed) { 
-        for (let i = 0; i < 5; i++)
+        for (let i = 0; i < 10; i++)
             await page.mouse.wheel({deltaY: -100})
             shitHasZoomed = true
     }
