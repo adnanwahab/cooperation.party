@@ -30,7 +30,7 @@ async function getImgUrl(aptListing, idx) {
     await page.goto(origAptListing);
 
     await page.waitForSelector('section');
-    await page.waitForSelector('.hnwb2pb.dir.dir-ltr')
+    //await page.waitForSelector('.hnwb2pb.dir.dir-ltr')
 
       await page.waitForSelector('.l1ovpqvx.c1h5tsj6.dir.dir-ltr');
       await page.keyboard.press('Enter')
@@ -77,7 +77,7 @@ async function delay(ms) {
 
 (async () => {
     let city_name = process.argv[2]
-    const urls = JSON.parse(fs.readFileSync(`data/airbnb/apt/${city_name}.json`))
+    const urls = JSON.parse(fs.readFileSync(`data/airbnb/apt/${city_name}`))
     console.log(urls, process.argv[2])
     for (let idx = 0; idx < urls.length; idx++) {
         const url = urls[idx];

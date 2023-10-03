@@ -1,4 +1,10 @@
 //f(location) -> list of appartments in that city
+function urlToFileName(url) {
+    //return url
+    let id = url.match(/rooms\/(\d+)/)
+    if (! id) console.log(id)
+    return id ? ('https://www.airbnb.com/rooms/' + id[1]) : ''
+  }
 
 const geo_coords = {
     "New-York-City--USA": [
@@ -332,19 +338,9 @@ async function getApt(url, location, page, dx, dy) {
     const fp = path.resolve(`data/airbnb/apt/${location}.json`);
     
     const startX = page.viewport().width - 100
-    //console.log(startX)
-    //page.viewport().width
     const startY = page.viewport().height / 2;
-
-    // Define how far you want to drag the map in pixels
     const offsetX = dx * 100;
     const offsetY = dy * 100;
-
-    // const offsetX = dx * 100;
-    // const offsetY = dy * 100;
-
-    // Perform the drag operation
-
     await page.mouse.move(startX, startY, {steps: 5});
     if (! shitHasZoomed) { 
         for (let i = 0; i < 10; i++)
@@ -360,20 +356,40 @@ async function getApt(url, location, page, dx, dy) {
     console.log(url)
     const qs = '.cy5jw6o.dir.dir-ltr a';
     let tweets = [];
-    function urlToFileName(url) {
-        //return url
-        return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
-      }
-    try {
-        try { 
-            let paginationNum = (await page.$$('.l1ovpqvx.c1ackr0h.dir.dir-ltr')).length
 
-            for (let i = 0; i < paginationNum; i++) 
-                await page.$$eval(pagination, (tweetNodes) => {
-                    return tweetNodes[i].click()
+    try {
+
+        async function getMoreTweets () {
+            console.log('getting more tweets!', tweets.length)
+            // await page.$$eval('.l1ovpqvx.c1ytbx3a.dir.dir-ltr', (tweetNodes) => {
+            //     console.log(tweetNodes)
+            //     return tweetNodes[0].click()
+            // })
+            await page.waitForSelector(qs);
+            let newTweets = await page.$$eval(qs, (tweetNodes) => {
+                return tweetNodes.map(tweet => (tweet.href) );
+            })
+            tweets = tweets.concat(newTweets)
+            const result = await page.evaluate(function () {
+                let hasMore = document.querySelector('.l1ovpqvx.c1ytbx3a.dir.dir-ltr')
+                console.log(hasMore)
+                hasMore?.click()
+                hasMore = hasMore?.disabled ? false : true
+                console.log('hasMore', hasMore)
+
+                return new Promise(function (resolve) {
+                    setTimeout(function () { resolve(hasMore) }, 1000)
                 })
-                await delay(1000)
-        }  catch (e) {}
+            })
+            console.log('can has result', result)
+            return result 
+        }
+        let hasMoreTweets = true
+        while(hasMoreTweets) {
+            hasMoreTweets = await getMoreTweets()
+            console.log('hasMoretweets', hasMoreTweets)
+        }
+        console.log('continuing on merry way')
         //console.log(pagination)
         //await page.click();
         await page.waitForSelector(qs);
@@ -384,7 +400,6 @@ async function getApt(url, location, page, dx, dy) {
         console.error('Error:', error);
         return [];
     }
-
     console.log(`writing ${location}.json`)
     if (! fs2.existsSync(fp)) {
         fs2.openSync(fp, 'a')
@@ -394,7 +409,7 @@ async function getApt(url, location, page, dx, dy) {
     console.log('', (await fs.readFile(fp)).toString().length)
     let previous = (await fs.readFile(fp, 'utf-8'))
     let apt = JSON.parse(previous || '[]')
-    tweets = Array.from(new Set(tweets.map(urlToFileName).concat(apt)))
+    tweets = Array.from(new Set(tweets.map(urlToFileName).concat(apt).map(urlToFileName)))
     console.log(apt.length, tweets.length)
     await fs.writeFile(fp, JSON.stringify(tweets, null, 2));
     console.log(location, 'GET apt')
@@ -430,7 +445,7 @@ const fetch100Pages = async (city_name) => {
     console.log('____')
     const url = backup(city_name)
     await page.goto(url);
-    const spiral = generateSpiral(100)
+    const spiral = generateSpiral(2)
     for (let i = 0; i < spiral.length; i++ ) {
         //for (let j = 0; j < 20; j++ ) {
             // let bb = BB.slice()
@@ -456,7 +471,7 @@ const fetch100Pages = async (city_name) => {
     //     await delay(1000)
     //     await getApt(url, city_name, page, i, j)
     // })
-    await browser.close();
+   //await browser.close();
 }
 
 function delay(ms) {

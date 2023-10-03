@@ -340,9 +340,24 @@ def fn2(city):
 from compiled_functions import get_lat_long
 
 def fn3(city):
-    all_houses = json.load(open('data/airbnb/apt/'+city+'.json'))
+    all_houses = json.load(open('data/airbnb/apt/'+city))
     if len(all_houses) is 0: return []
     geo_coords = [get_lat_long(url, city) for url in all_houses]
+
+
+import sys
+import json
+print(sys.argv)
+if len(sys.argv) > 1:
+    cities = json.loads(sys.argv[1])
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        for results in executor.map(fn2, cities):
+                print(results)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        for results in executor.map(fn3, cities):
+                print(results)
+    exit()
+
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
     for results in executor.map(fn, cities):
@@ -358,3 +373,134 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
     for results in executor.map(fn3, cities):
         print(results)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def attempt_at_building_osm_communities(_, documentContext, sentence):
+    if _ == False: _ = f'Tokyo--Japan.json'
+    if type(_) == list: 
+        return [attempt_at_building_osm_communities(city, documentContext, sentence) for city in _]
+    #print(city)
+    #os.listdir('data/osm_homes/')
+    #houses = glob.glob(f'data/osm_homes/*_houses.json')
+    #all_houses = json.load(open(f'data/osm_houses/apt/Melbourne--Australia_houses.json'))
+    #print(all_houses)
+    #osm_url = f'https://www.openstreetmap.org/node/{_}'
+    #if len(all_houses) is 0: return []
+    #houses = json.load(open(f'osm_homes/Melbourne--Australia_houses.json'))
+    #data/osm_way_residential/'
+    all_houses = json.load(open('data/osm_way_residential/' + _))
+    print(all_houses)
+    geo_coords = [[float(_['lat']), float(_['lon'])] for _ in all_houses]
+    print(len(geo_coords))
+    #print(geo_coords)
+    #[get_lat_long(url, _) for url in all_houses]
+    people_housing_list = {}
+
+    user_preferences = unstructured_geoSpatial_house_template_query(sentence)
+    for idx, person in enumerate(user_preferences):
+        name = people_names[idx]
+        selected_poi_names = [k for k in user_preferences[person].keys() if k in poi_names]
+        people_preferences[name] = [user_preferences[person][key] for key in user_preferences[person]
+                                    if key in poi_names
+                                    ]
+    totals = defaultdict(int) 
+    h3_cells = retrieveAggregation(selected_poi_names) #{}
+    for location in geo_coords: 
+        hex_id = h3.geo_to_h3(location[0], location[1], 7)
+        if hex_id not in h3_cells: 
+            h3_cells[hex_id] = {}
+            for col in selected_poi_names: 
+                if col not in h3_cells[hex_id]:
+                    h3_cells[hex_id][col] = 0
+    aggregate_poi_in_h3_cell(h3_cells, make_fetch_shops_for_cell(selected_poi_names, h3_cells))
+    storeAggregation(h3_cells, selected_poi_names)
+    for hex_id in h3_cells:
+        for key in selected_poi_names:
+            totals[key] = max(totals[key], h3_cells[hex_id][key])
+    h3_cell_counts = copy.deepcopy(h3_cells)
+    for hex_id in h3_cells:
+        for key in coefficents:
+            h3_cells[hex_id][key] = h3_cells[hex_id][key] / totals[key]
+    _houses = [_housing(url, h3_cells,idx, geo_coords[idx]) for idx, url in enumerate(all_houses)]
+    json.dump(_houses, open('_houses.json', 'w+'))
+    json.dump(h3_cells, open('h3_cells.json', 'w+'))
+    def distanceToTokyo(house):
+        point = house['location']
+        __ = point[1] - 139.75
+        ____ = point[0] - 35.676
+        dist = math.sqrt(__ * __ + ____ * ____)
+        return dist
+    people_housing_list = {}
+    for idx, person in enumerate(people_names):
+        people_housing_list[person] = sorted(_houses, key=distanceToTokyo)[:3000] #sorted by choose a centroid 
+        people_housing_list[person] = sorted(people_housing_list[person], key=lambda apt: -key_function(apt, people_preferences[person], idx))
+    def getCentroid(houses):
+        lat_sum = 0
+        lng_sum = 0
+        for house in houses: 
+            lat_lng = house['location']
+            lat_sum += lat_lng[0]
+            lng_sum += lat_lng[1]
+        return house['location']
+    iterations = 10
+    indices = [i for i in range(len(people_housing_list))]
+    print('people_housing_list', len(people_housing_list))
+    candidate = [people_housing_list[person][int(random.random()*  len(people_housing_list))] for idx in indices]
+    isochrone = getIsoChrone([1,2])
+    top_10_candidates = []
+    while iterations > 0:
+        for idx, person in enumerate(people_housing_list):
+            candidate = [people_housing_list[person][indices[idx]] for idx in indices]
+            top_10_candidates.append(candidate)
+            point = getCentroid(candidate)
+            isochrone = getIsoChrone([1,2])
+            feature = isochrone['features'][0]
+            polygon = shape(feature['geometry'])
+            def house_test(house):
+                l = house['location']
+                pt = Point(l[0], l[1])
+                return polygon.contains(pt)
+            within_commute_distance = len([True for house in candidate if house_test(house)]) == len(candidate)
+            iterations -= 1
+            if within_commute_distance: break
+            else: 
+                indices[idx] += 1
+
+    reports = []
+    for idx, person in enumerate(people_names):
+        house = candidate[idx]
+        report = {
+            'location': _,
+            'name': person,
+            'house_suggestion':house['url'] ,
+            'house': house,
+            'reasoning_explanation': get_reasoning_explanation(people_preferences[person], house, totals, h3_cell_counts, selected_poi_names),
+        }
+        reports.append(report)
+
+    for report in reports: 
+        distances = {}
+        for other_person in reports: 
+            key = other_person['name']
+            coords_1 = other_person['house']['location']
+            coords_2 = report['house']['location']
+            distances[key] = str(round(h3.point_dist(coords_1, coords_2, unit='m') / 2200, 2)) + 'mi'
+        report['commutes'] = distances
+    return {'reports': reports, 'isochrone': isochrone, '_houses' : sorted(_houses, key=distanceToTokyo)[:1000],
+            'hexes': h3_cell_counts,
+            'reasoning_adjustment': 'these conditionare slighly mutually exclusive. you selected price as most important -> heres to get a good deal in japan. if you lower the preference for crime, then youll get a cheaper place. if you lower the slider for commercial, youll get more hipster places and you may have better conversations with "your people".',
+            'candidates': top_10_candidates,
+            }
