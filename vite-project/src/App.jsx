@@ -473,19 +473,12 @@ function isIsochroney(datum) {
 
 
 function compile (dataList, apply_) {
-  //if (! dataList.fn) return dataList
-  // console.log(getFormData(), 'shit')
-  return dataList.map(function (datum) {
+  const result = dataList.map(function (datum, index) {
     if (datum.component === '<Hexagonworld>') {
       return <HexagonWorld data={datum.data}/>
-      //return datum.map(datum => <Isochronemap datum={datum}></Isochronemap>)
     }
-
-
     if (datum[0] && datum[0].isochrone) {
-      //return <HexagonWorld />
-      console.log(datum)
-      return datum.map((datum, idx) => <Isochronemap key={idx} {...datum}></Isochronemap>)
+      return datum.map((datum, idx) => <div key={idx} ><Isochronemap  {...datum}></Isochronemap></div>)
     }
     if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
     if (isIsochroney(datum)) {
@@ -516,6 +509,8 @@ function compile (dataList, apply_) {
     // }
     return <TextPresenter text={datum} />
   })
+
+  return result.map((_, idx) => <div key={idx}>{_}</div>)
 }
 
 function TextPresenter(props) {
@@ -618,16 +613,16 @@ function App() {
     <div>
     <label>pick a template</label>
       <select
+      value={getSelect}
       onChange={(e) => {
-        console.log(e.target.value)
-        setSelected(e.target.value)
+          setSelected(e.target.value)
       get('textarea').value = templateContent[e.target.selectedIndex]
         setCount(count + 1)
         documentContext = {city: 'Tokyo, Japan'}
       }
       }
       className="w-64 m-5 border border-bluegray-800 border-dashed">
-      {templateNames.map((key, index) => <option selected={key === getSelect} key={key} value={index}>{key}</option>)}
+      {templateNames.map((key, index) => <option  key={key} value={index}>{key}</option>)}
     </select>
     <Favicon url={cat} />
     <CodeEditor apply_={apply_}></CodeEditor>        

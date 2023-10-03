@@ -22,7 +22,7 @@ import {load} from '@loaders.gl/core';
 import {CSVLoader} from '@loaders.gl/csv';
 
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
-import {latLngToCell} from "h3-js";
+import {latLngToCell, cellToLatLng} from "h3-js";
 //const h3 = require("h3-js");
 
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
@@ -98,7 +98,16 @@ const lightingEffect = new LightingEffect({ambientLight, sunLight});
 /* eslint-disable react/no-deprecated */
 export default function App(props) {
   let data = props.data
+  console.log(props)
+  let entries = Object.values(data)
+  let All = {} 
 
+  entries.forEach(_ => {
+    Object.entries(_).forEach(pair => {
+      let hex = pair[0]
+      All[hex] = (All[hex] || 0) + pair[1]
+    })
+  })
   if (data) {
     sunLight.timestamp = Date.now()
   }
@@ -126,8 +135,15 @@ export default function App(props) {
     []
   );
 
+  let allEntries = Object.entries(All)
+    console.log(allEntries)
+  let _data = [...Array(1e6).keys()].map((_, i) => [Math.random() * 180, Math.random() * 90, ])
+  _data = [...Array(allEntries.length).keys()].map((_, i) => {
+    let [lat, lng] = cellToLatLng(allEntries[i][0])
+    let val = allEntries[i][1]
+    return [lat, lng, val]
+  })
 
-  const _data = [...Array(1e6).keys()].map(_ => [Math.random() * 180, Math.random() * 90])
 //  .map(_ => latLngToCell(_[0], _[1], 4))
   
     console.log(_data)
@@ -142,7 +158,7 @@ export default function App(props) {
     getHexagon: d => d[0],
     pickable: true,
     radius: 100000,
-    getPosition: (_) => _,
+    getPosition: (_) => _.slice(0,2),
     onClick: (_) => console.log(_),
     //upperPercentile,
     //material,
@@ -154,7 +170,6 @@ export default function App(props) {
   });
 
   let hexagonList = Object.entries(data).map((pair) => {
-    console.log(pair)
     const hexagon2 = new H3HexagonLayer({
       id: pair[0],
       //getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
