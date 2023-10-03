@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useMemo, useCallback} from 'react';
+import {useState, useMemo, useCallback, useEffect} from 'react';
 import {Map} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import {createRoot} from 'react-dom/client';
@@ -71,6 +71,11 @@ const INITIAL_VIEW_STATE = {
   latitude: 35,
   zoom: 11,
 };
+// const INITIAL_VIEW_STATE = {
+//   longitude: 0,
+//   latitude: 20,
+//   zoom: 0
+// };
 //let benches = await d3.json('https://pypypy.ngrok.io/data/airbnb/h3_poi/bench.json')
 //console.log(benches)
 const benches = []
@@ -93,12 +98,6 @@ const lightingEffect = new LightingEffect({ambientLight, sunLight});
 /* eslint-disable react/no-deprecated */
 export default function App(props) {
   let data = props.data
-  console.log(props)
-  const [currentTime, setCurrentTime] = useState(0);
-
-  const timeRange = [currentTime, currentTime + TIME_WINDOW];
-
-  const formatLabel = useCallback(t => getDate(data, t).toUTCString(), [data]);
 
   if (data) {
     sunLight.timestamp = Date.now()
@@ -128,13 +127,13 @@ export default function App(props) {
   );
 
 
-  const _data = [...Array(1e6).keys()].map(_ => [Math.random() * 90, Math.random() * 180])
-  .map(_ => latLngToCell(_[0], _[1], 4))
+  const _data = [...Array(1e6).keys()].map(_ => [Math.random() * 180, Math.random() * 90])
+//  .map(_ => latLngToCell(_[0], _[1], 4))
   
     console.log(_data)
 
-  const hexagon = new H3ClusterLayer({
-    id: 'h3',
+  const hexagon = new HexagonLayer({
+    id: 'hexagon_layer',
     //getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
     getFillColor: [255, 0, 255, 0],
     data: _data,
@@ -142,11 +141,12 @@ export default function App(props) {
     elevationScale: 1,
     getHexagon: d => d[0],
     pickable: true,
-    radius: 10000,
+    radius: 100000,
+    getPosition: (_) => _,
     onClick: (_) => console.log(_),
     //upperPercentile,
     //material,
-    //opacity:.9,
+    opacity:1,
     extruded: false,
   //   transitions: {
   //     elevationScale: 3000
@@ -177,35 +177,6 @@ export default function App(props) {
     return hexagon2
   })
 
-  const layer2 = new ScatterplotLayer({
-    id: 'scatterplot-layer',
-    data: generateRandomData(1000),
-    getPosition: (d) => d.position,
-    getRadius: (d) => d.size,
-    getColor: (d) => d.color,
-    radiusScale: 10,
-    radiusMinPixels: 20,
-    radiusMaxPixels: 200,
-  });
-
-  // const dataLayers =
-  //   data &&
-  //   data.map(
-  //     ({date, flights}) =>
-  //       new AnimatedArcLayer({
-  //         id: `flights-${date}`,
-  //         data: flights,
-  //         getSourcePosition: d => [d.lon1, d.lat1, d.alt1],
-  //         getTargetPosition: d => [d.lon2, d.lat2, d.alt2],
-  //         getSourceTimestamp: d => d.time1,
-  //         getTargetTimestamp: d => d.time2,
-  //         getHeight: 0.5,
-  //         getWidth: 1,
-  //         timeRange,
-  //         getSourceColor: [255, 0, 128],
-  //         getTargetColor: [0, 128, 255]
-  //       })
-  //   );
 
   const attemptLayer = new HexagonLayer({
     id: 'hexagon-layer',
@@ -218,23 +189,42 @@ export default function App(props) {
     getPosition: d => d.COORDINATES
   });
 
+  const [viewState, setViewState] = useState({
+    longitude: -122.4,
+    latitude: 37.8,
+    zoom: 10,
+    pitch: 0,
+    bearing: 0, // This parameter controls the rotation
+  });
+
+  // Use useEffect to change the bearing value (rotation) over time
+  // useEffect(() => {
+  //   const rotationInterval = setInterval(() => {
+  //     setViewState((vs) => ({
+  //       ...vs,
+  //       bearing: (vs.bearing + 1) % 360, // Incremental rotation
+  //     }));
+  //   }, 100); 
+  // })
   return (
     <> 
     <div class="relative w-full h-full" style={{height: '750px'}}>
       <DeckGL
-        // views={new GlobeView()}
+        views={new GlobeView()}
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
+        // viewState={viewState}
+        // onViewStateChange={({ viewState }) => setViewState(viewState)}
+
         // effects={[lightingEffect]}
         layers={[
         backgroundLayers, 
         hexagon, 
-        layer2, 
-        attemptLayer, 
-        ...hexagonList
+                attemptLayer, 
+        // ...hexagonList
         ]}
       >
-           <Map reuseMaps mapLib={maplibregl} mapStyle={MAP_STYLE} preventStyleDiffing={true}></Map>
+           {/* <Map reuseMaps mapLib={maplibregl} mapStyle={MAP_STYLE} preventStyleDiffing={true}></Map> */}
       </DeckGL>
       </div>
     </>
