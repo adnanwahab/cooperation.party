@@ -128,7 +128,8 @@ def ocrImage(fp):
     if fp =='ted_search_id=eb732468-761a-45fe-95ee-ce0cd255b52': return print('wtf')
     print(fp)
     extract_info = reader.readtext(fp)
-    sorted(extract_info, key=key_function)
+    print(extract_info)
+    sorted(extract_info, key=lambda _: _[1])
     if (not extract_info): return False
     return extract_info[0][1]   
 
@@ -172,19 +173,20 @@ def imageToCoords(url_list, location='_', apt_url='_'):
     fp = f'data/airbnb/geocoordinates/{apt_url}.json'
     if os.path.exists(fp): return json.load(open(fp, 'r'))
     if len(url_list) < 1: return [0, 0]
-    print(url_list)
+    #print(url_list)
     cache = set()
     print(fp)
-    for _ in url_list[:5]:
+    for _ in url_list[:18]:
         response = requests.get(_)
         if response.status_code == 200:
-            with open(_[-50:-1], 'wb') as f:
+            with open('tmp/'+_[-50:-1], 'wb') as f:
                 f.write(response.content)
         ocr = ocrImage(_[-50:-1])
         if not ocr: continue
         coords = geoCode(ocr, location)
         if not coords: continue
         cache.add(str(coords[0]) + ':' + str(coords[1]))
+        if coords: break
     json.dump(list(cache), open(fp, 'w'))
     return list(cache)
 
@@ -474,8 +476,11 @@ def get_lat_long(url, location):
             f'{location}'
         ]
         #completed_process = subprocess.run(args)
-        return [139, 35]
-        return imageToCoords([url], location, get_room_id(url))
+        #return [35, 139]
+        if os.path.exists(f'data/airbnb/geocoordinates/{apt}.json'):
+            url_list = json.load(open(f'data/airbnb/gm/{apt}.json'))
+        else: url_list = []
+        return imageToCoords(url_list, location, get_room_id(url))
         
     data = json.load(open(f'data/airbnb/geocoordinates/{apt}.json'))
     if len(data) == 0: data = [0,0]
@@ -700,7 +705,7 @@ def attempt_at_building_communities(_, documentContext, sentence):
         return [attempt_at_building_communities(city, documentContext, sentence) for city in _]
     
     #all_houses = json.load(open(f'data/osm_houses/apt/{_}_houses.json'))
-    all_houses = json.load(open('data/airbnb/apt/'+_+'.json'))
+    all_houses = json.load(open('data/airbnb/apt/'+_))
     if len(all_houses) is 0: return []
     geo_coords = [get_lat_long(url, _) for url in all_houses]
     people_housing_list = {}
@@ -976,8 +981,8 @@ def forEachCity(_, __, ___):
     #     'Toronto--Canada', 'Lisbon--Portugal', 'Boston--USA',
     #     'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
     #     'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
-    cities = ['Tokyo--Japan']
-    return cities #os.listdir('airbnb/apt')
+    #cities = ['Tokyo--Japan']
+    return os.listdir('data/airbnb/apt')
     return [json.load(open(path + city)) for city in cities]
     return [f'data/osm_homes/Melbourne--Australia_houses.json']
     #_ = glob.glob(f'data/osm_homes/*_houses.json')

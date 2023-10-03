@@ -337,13 +337,24 @@ def fn(city):
 def fn2(city):
     return subprocess.run(['node', 'rpc/airbnb_get_img_url.js', f'{city}'])
 
+from compiled_functions import get_lat_long
 
-# with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-#     for results in executor.map(fn, cities):
-#         print(results)
+def fn3(city):
+    all_houses = json.load(open('data/airbnb/apt/'+city+'.json'))
+    if len(all_houses) is 0: return []
+    geo_coords = [get_lat_long(url, city) for url in all_houses]
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    for results in executor.map(fn, cities):
+            print(results)
 
 import json
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
-    for results in executor.map(fn2, ['Tokyo--Japan' for i in range(7)]):
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    for results in executor.map(fn2, cities):
+        print(results)
+
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    for results in executor.map(fn3, cities):
         print(results)

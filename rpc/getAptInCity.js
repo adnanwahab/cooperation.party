@@ -337,8 +337,8 @@ async function getApt(url, location, page, dx, dy) {
     const startY = page.viewport().height / 2;
 
     // Define how far you want to drag the map in pixels
-    const offsetX = (dy % 2 == 1 ?-1 : 1) * 100;
-    const offsetY = (dx % 2 == 1 ?-1 : 1) * 100;
+    const offsetX = dx * 100;
+    const offsetY = dy * 100;
 
     // const offsetX = dx * 100;
     // const offsetY = dy * 100;
@@ -412,7 +412,7 @@ const fetch100Pages = async (city_name) => {
     console.log('____')
     const url = backup(city_name)
     await page.goto(url);
-    const spiral = generateSpiral(10)
+    const spiral = generateSpiral(100)
     for (let i = 0; i < spiral.length; i++ ) {
         //for (let j = 0; j < 20; j++ ) {
             // let bb = BB.slice()
@@ -495,4 +495,4 @@ function generateSpiral(steps) {
     return results;
 }
 
-const spiral = generateSpiral(10);
+const spiral = generateSpiral(100);
