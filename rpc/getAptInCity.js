@@ -366,8 +366,6 @@ async function getApt(url, location, page, dx, dy) {
         console.error('Error:', error);
         return [];
     }
-    console.log('finish demo today')
-
 
     console.log(`writing ${location}.json`)
     if (! fs2.existsSync(fp)) {
@@ -375,7 +373,7 @@ async function getApt(url, location, page, dx, dy) {
         fs2.writeFileSync(fp, '[]')
         console.log('making a new file', fp)
     }
-    console.log('shit', (await fs.readFile(fp)).toString().length)
+    console.log('', (await fs.readFile(fp)).toString().length)
     let previous = (await fs.readFile(fp, 'utf-8'))
     let apt = JSON.parse(previous || '[]')
     tweets = Array.from(new Set(tweets.map(urlToFileName).concat(apt)))
@@ -390,10 +388,10 @@ const withPrices = `https://www.airbnb.com/s/Tokyo--Japan/homes?price_filter_inp
 
 
 
-const backup = (city) => `https://www.airbnb.com/s/${city}/homes`
+const backup = (city) => `https://www.airbnb.com/s/${city}/homes?zoom_level=17&zoom=17.407908990644037`
 
 const makeURL = ({ne_lng, ne_lat, sw_lat, sw_lng, city_name, zoom_level}) => 
-`https://www.airbnb.com/s/Tokyo--Japan/homes?channel=EXPLORE&zoom_level=16.4source=structured_search_input_header&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=14.407908990644037&search_by_map=true`
+`https://www.airbnb.com/s/Tokyo--Japan/homes?channel=EXPLORE&zoom_level=17.4source=structured_search_input_header&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=17.407908990644037&search_by_map=true`
 //`https://www.airbnb.com/s/Tokyo--Japan/homes?place_id=ChIJ674hC6Y_WBQRujtC6Jay33k&refinement_paths%5B%5D=%2Fhomes&flexible_trip_dates%5B%5D=april&flexible_trip_dates%5B%5D=august&flexible_trip_dates%5B%5D=december&flexible_trip_dates%5B%5D=february&flexible_trip_dates%5B%5D=january&flexible_trip_dates%5B%5D=july&flexible_trip_dates%5B%5D=june&flexible_trip_dates%5B%5D=march&flexible_trip_dates%5B%5D=may&flexible_trip_dates%5B%5D=november&flexible_trip_dates%5B%5D=october&flexible_trip_dates%5B%5D=september&flexible_trip_lengths%5B%5D=one_week&date_picker_type=flexible_dates&search_type=user_map_move&tab_id=home_tab&query=cairo&monthly_start_date=2023-10-01&monthly_length=3&price_filter_input_type=0&price_filter_num_nights=5&channel=EXPLORE&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=16&zoom_level=16&search_by_map=true`
 const fetch100Pages = async (city_name) => {
     console.log(city_name)
@@ -456,8 +454,8 @@ fetch100Pages(location)
 function generateSpiral(steps) {
     const results = [];
     let x = 0, y = 0; // Starting point
-    let stepLength = 1; // Initial step length
-    let increment = 1; // Amount by which to increase step length
+    let stepLength = .1; // Initial step length
+    let increment = .1; // Amount by which to increase step length
 
     for (let i = 0; i < steps; i++) {
         // Move right
@@ -498,4 +496,3 @@ function generateSpiral(steps) {
 }
 
 const spiral = generateSpiral(10);
-console.log(spiral);

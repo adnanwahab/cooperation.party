@@ -171,7 +171,10 @@ def isochroneLibrary(longitude, latitude, documentContext):
 def imageToCoords(url_list, location='_', apt_url='_'):
     fp = f'data/airbnb/geocoordinates/{apt_url}.json'
     if os.path.exists(fp): return json.load(open(fp, 'r'))
+    if len(url_list) < 1: return [0, 0]
+    print(url_list)
     cache = set()
+    print(fp)
     for _ in url_list[:5]:
         response = requests.get(_)
         if response.status_code == 200:
@@ -296,13 +299,15 @@ def filter_by_distance_to_shopping_store(airbnbs, documentContext, i):
             cache[url]  = True
             return True
         return False
-    
+
+    def gm_get(fp):
+        if os.path.exists(fp): return json.load(open(fp))
+        else: return []
+
     airbnbs = [apt for apt in airbnbs if doesExist(apt)]
-    gm_urls = [json.load(open(fp)) for fp in [f"data/airbnb/gm/{get_room_id(apt_url)}.json" for apt_url in airbnbs
-                                              ]
-                                              if os.path.exists(fp)
-                                              ]
-    geoCoordinates = [imageToCoords(_, documentContext['city'], get_room_id(airbnbs[idx]) ) for idx, _ in enumerate(gm_urls[:18])]
+    gm_urls = [gm_get(fp) for fp in [f"data/airbnb/gm/{get_room_id(apt_url)}.json" for apt_url in airbnbs]]
+    print('gm_urls', gm_urls)
+    geoCoordinates = [imageToCoords(_, documentContext['city'], get_room_id(airbnbs[idx]) ) for idx, _ in enumerate(gm_urls[:6])]
 
     geoCoordinates = [coord[0].split(':') for coord in geoCoordinates if len(coord) > 1]
     _ = [isochroneLibrary(pt[0], pt[1], documentContext) for idx, pt in enumerate(geoCoordinates)]
@@ -466,10 +471,12 @@ def get_lat_long(url, location):
         args = [
             "node",
             "rpc/airbnb_get_img_url.js",
-            f'data/airbnb/apt/{location}'
+            f'{location}'
         ]
-        completed_process = subprocess.run(args)
+        #completed_process = subprocess.run(args)
+        return [139, 35]
         return imageToCoords([url], location, get_room_id(url))
+        
     data = json.load(open(f'data/airbnb/geocoordinates/{apt}.json'))
     if len(data) == 0: data = [0,0]
     else: 
@@ -965,10 +972,11 @@ def forEachCity(_, __, ___):
         'Zanzibar-City--Tanzania.json',
     ]
     path = 'data/osm_way_residential/'
-    cities = [
-        'Toronto--Canada', 'Lisbon--Portugal', 'Boston--USA',
-        'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
-        'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
+    # cities = [
+    #     'Toronto--Canada', 'Lisbon--Portugal', 'Boston--USA',
+    #     'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
+    #     'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
+    cities = ['Tokyo--Japan']
     return cities #os.listdir('airbnb/apt')
     return [json.load(open(path + city)) for city in cities]
     return [f'data/osm_homes/Melbourne--Australia_houses.json']

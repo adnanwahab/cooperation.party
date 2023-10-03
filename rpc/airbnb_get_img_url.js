@@ -14,7 +14,7 @@ async function getImgUrl(aptListing, idx) {
       }
       aptListing = urlToFileName(aptListing);
       if (!aptListing ) return console.log('error shit not work ' + aptListing)
-    let url = path.resolve(__dirname, `../data/airbnb/gm/${aptListing}`);
+    let url = path.resolve(__dirname, `../data/airbnb/gm/${aptListing}.json`);
     console.log(url, aptListing)
     //console.log(aptListing, idx);
     //if (aptListing in cache) {return}
@@ -76,7 +76,8 @@ async function delay(ms) {
 }
 
 (async () => {
-    const urls = JSON.parse(fs.readFileSync(process.argv[2]))
+    let city_name = process.argv[2]
+    const urls = JSON.parse(fs.readFileSync(`data/airbnb/apt/${city_name}.json`))
     console.log(urls, process.argv[2])
     for (let idx = 0; idx < urls.length; idx++) {
         const url = urls[idx];
