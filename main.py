@@ -462,26 +462,6 @@ app.mount("/demo", StaticFiles(directory="vite-project/dist/assets"), name="demo
 
 app.mount("/data/airbnb/h3_poi/", StaticFiles(directory="data/airbnb/h3_poi/"), name="demo")
 
-@app.post("/makeFn")
-async def makeFn(FnText:FnText):
-    print('FnText', FnText)
-    functions = [substitute(fn) for fn in FnText.fn]
-    FnText.sentenceComponentData['sentences'] = FnText.fn
-    
-    val = False
-    args = []
-    for i, fn in enumerate(functions): 
-        if type(fn) == type(lambda _:_):
-            print(fn.__name__)
-            if inspect.iscoroutinefunction(fn):
-                val = await fn(val, FnText.sentenceComponentData)
-            else:
-                val = fn(val, FnText.sentenceComponentData)
-        else:
-            val = fn 
-        args.append(val)
-    return {'fn': args}
-
 def assignPeopleToAirbnbBasedOnPreferences():
      makePref = lambda _: [random.random(), random.random(), random.random()]
      [makePref() for i in range(50)]
