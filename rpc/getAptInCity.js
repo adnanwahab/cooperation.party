@@ -323,7 +323,7 @@ const fs = require('fs').promises
 const path = require('path')
 const fs2 = require('fs')
 
-
+let shitHasZoomed = false
 async function getApt(url, location, page, dx, dy) {
     //location = location.replace(/\w|\,/g, '-')
     console.log('URL', url)
@@ -344,9 +344,16 @@ async function getApt(url, location, page, dx, dy) {
     // const offsetY = dy * 100;
 
     // Perform the drag operation
-    await page.mouse.move(startX, startY, {steps: 100});
+
+    await page.mouse.move(startX, startY, {steps: 5});
+    if (! shitHasZoomed) { 
+        for (let i = 0; i < 10; i++)
+            await page.mouse.wheel({deltaY: -200})
+            shitHasZoomed = true
+    }
+    //await delay(10000)
     await page.mouse.down();
-    await page.mouse.move(startX - offsetX, startY - offsetY, {steps: 100});
+    await page.mouse.move(startX - offsetX, startY - offsetY, {steps: 5});
     await page.mouse.up();
     //await page.mouse.drag({x:startX, y:startY}, {x: startX - offsetX, y: offsetY})
 
@@ -358,6 +365,17 @@ async function getApt(url, location, page, dx, dy) {
         return 'https://www.airbnb.com/rooms/' + url.match(/rooms\/(\d+)/)[1]
       }
     try {
+        try { 
+            let paginationNum = (await page.$$('.l1ovpqvx.c1ackr0h.dir.dir-ltr')).length
+
+            for (let i = 0; i < paginationNum; i++) 
+                await page.$$eval(pagination, (tweetNodes) => {
+                    return tweetNodes[i].click()
+                })
+                await delay(1000)
+        }  catch (e) {}
+        //console.log(pagination)
+        //await page.click();
         await page.waitForSelector(qs);
         tweets = await page.$$eval(qs, (tweetNodes) => {
             return tweetNodes.map(tweet => (tweet.href) );
