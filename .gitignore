@@ -6,3 +6,4 @@ myenv/
 node_modules/
 data/
 # vite-project/
+.env

@@ -40,8 +40,32 @@ export default function Header() {
           </button>
         </div>
         <div className="hidden lg:flex">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
+          <a 
+          onClick={async (e) => {
+            let url = `https://pypypy.ngrok.io/share/`
+console.log('123')
+            let fn = await fetch( url , {
+      method: 'POST',
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", 
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+//      credentials: "same-origin", 
+      credentials: 'include',
+      headers: { "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": true,
+      "Access-Control-Allow-Origin": "*"
+    },
+                body: JSON.stringify({fn: document.querySelector('textarea').value.split('\n'),
+                                      documentContext: {},
+                })
+    })
+    let json = await fn.json()
+    console.log(json)
+    window.location.hash = json
+          }}
+          href="#" className="rounded p-8 text-sm font-semibold leading-6 text-white bg-blue-500">
+            Share <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
       </nav>

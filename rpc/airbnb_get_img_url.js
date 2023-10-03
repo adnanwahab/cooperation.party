@@ -34,6 +34,7 @@ async function getImgUrl(aptListing, idx) {
       await page.keyboard.press('Enter')
       await page.keyboard.press('Escape')
       await delay(3000)
+      await page.screenshot({ path: 'example.png' });
 
     await page.evaluate(() => {
         window.scrollBy(0, 3107);
