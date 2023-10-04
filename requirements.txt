@@ -1,0 +1,8 @@
+shapely
+torch
+requests
+easyocr
+fastapi
+youtube_dl
+openai
+pydantic
