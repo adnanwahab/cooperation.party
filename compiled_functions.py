@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import time
+>>>>>>> 57cc6d1 (1 hour finish line)
 import random
 from collections import defaultdict
 import concurrent.futures
@@ -10,7 +14,6 @@ from collections import defaultdict
 from shapely.geometry import shape, Point
 import random 
 import requests
-import easyocr
 from fastapi import Request, FastAPI
 import random
 import json 
@@ -26,18 +29,10 @@ from collections import defaultdict
 from pydantic import BaseModel
 import json
 import os.path
-import nltk
-from nltk.corpus import words
-from nltk.tag import pos_tag
-from nltk.tokenize import word_tokenize
-# nltk.download('punkt')
-# nltk.download('universal_tagset')
-# nltk.download('words')
 from time import time
 import os
 import openai
 env_var = open('.env').read().split('=')[1]
-
 document_query_cache = json.load(open('data/document_query_cache.json'))
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
 #and make it save to filesystem if a parameter is added 
@@ -867,14 +862,15 @@ def make_fetch_shops_for_cell(poi_names, h3_cells):
     return fetch_shops_for_cell
 
 def aggregate_poi_in_h3_cell(h3_cells, fn):
+    #then = time.time()
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         for hex_id, results in executor.map(fn, h3_cells.keys()):
-            #print(hex_id)
+            print(hex_id)
             pass
+    print(time)
     return h3_cells
 poi_names = [s.strip() for s in json.load(open('./poi_names.json'))]
-#print(poi_names)
-import random
+
 preferences = {}
 
 coefficents = preferences
@@ -923,6 +919,12 @@ def getIsoChrone(point):
     else:
         print(f"Error: {response.status_code}: {response.text}")
 community_cache = {}
+
+def get_lat_long_more_better(fp):
+    _ = list(json.load(open(fp)).values())
+    _ = [[float(_[0]), float(_[1])] for _ in _]
+    return _
+
 def attempt_at_building_communities(_, documentContext, sentence):
     if _ == False: _ = f'Tokyo--Japan.json'
     if type(_) == list: 
@@ -938,10 +940,10 @@ def attempt_at_building_communities(_, documentContext, sentence):
     if cache_key in community_cache: return community_cache[cache_key]
 
     #all_houses = json.load(open(f'data/osm_houses/apt/{_}_houses.json'))
-    all_houses = json.load(open('data/airbnb/apt/'+_))
+    all_houses = list(json.load(open('data/airbnb/apt/'+_)).keys())
     if len(all_houses) is 0: return []
-    geo_coords = [get_lat_long(url, _) for url in all_houses]
-    print(geo_coords, 'attempt_at_building_communities')
+    geo_coords = get_lat_long_more_better('data/airbnb/apt/'+_)
+    #print(geo_coords, 'attempt_at_building_communities')
     people_housing_list = {}
 
     user_preferences = unstructured_geoSpatial_house_template_query(sentence)

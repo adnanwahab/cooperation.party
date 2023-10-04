@@ -7,6 +7,7 @@
     "dev": "vite",
     "start-local": "vite --config ../../../vite.config.local.mjs",
     "build": "vite build",
+    "deploy": "vite build && surge dist",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

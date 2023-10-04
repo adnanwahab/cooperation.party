@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 import json
 from compiled_functions import jupyter_functions
+=======
+
+import json
+from compiled_functions import jupyter_functions
+print('wtf')
+import time
+>>>>>>> 57cc6d1 (1 hour finish line)
 import glob
 import asyncio
 import inspect
@@ -7,7 +15,10 @@ from shapely.geometry import shape, Point
 import random 
 import torch
 import requests
+<<<<<<< HEAD
 import easyocr
+=======
+>>>>>>> 57cc6d1 (1 hour finish line)
 from fastapi import Request, FastAPI
 import random
 import json 
@@ -26,6 +37,14 @@ from typing import List, Optional
 import json
 import os.path
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+>>>>>>> 57cc6d1 (1 hour finish line)
 def removeWhiteSpace(_):
     return _.strip()
 
@@ -373,9 +392,12 @@ def my_decorator_func(func):
             ]
 
 def landDistribution(_, sentence):
+<<<<<<< HEAD
     #within 10 mile commute time
     #
 
+=======
+>>>>>>> 57cc6d1 (1 hour finish line)
     return 123
     #return landDistribution()
 
