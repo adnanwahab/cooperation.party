@@ -1,14 +1,10 @@
-
-
 import json
 from compiled_functions import jupyter_functions
-
 import glob
 import asyncio
 import inspect
 from shapely.geometry import shape, Point
 import random 
-#from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 import requests
 import easyocr
@@ -17,7 +13,6 @@ import random
 import json 
 import subprocess
 import json
-#from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 import youtube_dl
 import openai
@@ -30,13 +25,6 @@ from pydantic import BaseModel
 from typing import List, Optional
 import json
 import os.path
-import nltk
-from nltk.corpus import words
-from nltk.tag import pos_tag
-from nltk.tokenize import word_tokenize
-nltk.download('punkt')
-nltk.download('universal_tagset')
-nltk.download('words')
 
 def removeWhiteSpace(_):
     return _.strip()
@@ -621,7 +609,7 @@ async def admin():
 
 @app.get("/")
 async def metrics():
-    return FileResponse('/vite-project/dist/index.html')
+    return FileResponse('index.html')
 
 @app.get("client.js")
 async def js():

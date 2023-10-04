@@ -9,3 +9,4 @@ data/
 # vite-project/
 .env
 __pycache__/data_
+data_/
