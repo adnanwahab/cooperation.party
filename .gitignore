@@ -1,0 +1,12 @@
+# Local Netlify folder
+.netlify
+.venv/*
+.myenv/*
+myenv/
+node_modules/
+data/
+.env
+# vite-project/
+.env
+__pycache__/data_
+data_/

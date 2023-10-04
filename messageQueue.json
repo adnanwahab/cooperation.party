@@ -1,0 +1,15 @@
+[
+
+    "node rpc/getAptInCity.js Tokyo--Japan",
+    "node rpc/getAptInCity.js New-York-City--USA",
+    "node rpc/getAptInCity.js Dhaka--Bangladesh",
+    "node rpc/getAptInCity.js Cairo--Egypt",
+    "node rpc/getAptInCity.js London--England",
+
+
+    "node rpc/airbnb_get_img_url.js Tokyo--Japan",
+    "node rpc/airbnb_get_img_url.js New-York-City--USA",
+    "node rpc/airbnb_get_img_url.js Dhaka--Bangladesh",
+    "node rpc/airbnb_get_img_url.js Cairo--Egypt",
+    "node rpc/airbnb_get_img_url.js London--England"
+]
