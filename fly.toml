@@ -5,7 +5,7 @@ primary_region = "dfw"
   builder = "paketobuildpacks/builder:base"
 
 [env]
-  PORT = "8080"
+    PORT = "8080"
 
 [http_service]
   internal_port = 8080

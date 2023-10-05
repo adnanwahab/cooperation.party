@@ -336,11 +336,20 @@ async function _() {
   let port = 8000
 =======
   let port = 8005
+<<<<<<< HEAD
 >>>>>>> e2ac0ee (end the demo)
   let url = `http://localhost:${port}/makeFn/`
+=======
+  let url = 'http://127.0.0.1:8000/makeFn'
+>>>>>>> 3a9d651 (doc query cache)
   let useGPU = true
+  console.log('gesundheit')
 if (useGPU || window.location.hostname !== 'localhost') {
+<<<<<<< HEAD
    url = `https://pypypy.ngrok.io/makeFn/`
+=======
+   //url = `https://hidden-river-3971.fly.dev/makeFn/`
+>>>>>>> 3a9d651 (doc query cache)
 }
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();

@@ -34,11 +34,21 @@ import os
 import openai
 import geopy.distance
 
+print('data exists : ', os.path.exists('data'))
+print('data exists : ', os.listdir('.'))
 
-env_var = open('.env').read().split('=')[1]
-document_query_cache = json.load(open('data/document_query_cache.json'))
+if os.path.exists('.env'):
+    env_var = open('.env').read().split('=')[1]
+else:
+    env_var = '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'
+#document_query_cache = json.load(open('data/document_query_cache.json'))
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
 #and make it save to filesystem if a parameter is added 
+document_query_cache = {}
+if os.path.exists('data/document_query_cache.json'):
+    document_query_cache = json.load(open('data/document_query_cache.json'))
+
+print('document_query_cache', document_query_cache)
 def unstructured_geoSpatial_house_template_query(_):
     if _ in document_query_cache: return document_query_cache[_]
     openai.api_key = env_var
@@ -1187,6 +1197,7 @@ def make_fetch_shops_for_cell(poi_names, h3_cells):
 
 def aggregate_poi_in_h3_cell(h3_cells, fn):
     #then = time.time()
+    print('h3_cells', fn)
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         for hex_id, results in executor.map(fn, h3_cells.keys()):
             print(hex_id)
@@ -1260,15 +1271,20 @@ def attempt_at_building_communities(_, documentContext, sentence):
         # completed_process = subprocess.run(args)
         # print('run all fn has complete')
         return [attempt_at_building_communities(city, documentContext, sentence) for city in _]
+    print('what am doing')
     cache_key = hash(json.dumps(_))
     if cache_key in community_cache: return community_cache[cache_key]
 
     #all_houses = json.load(open(f'data/osm_houses/apt/{_}_houses.json'))
     all_houses = list(json.load(open('data/airbnb/apt/'+_)).keys())
+    print('all house', len(all_houses))
+
     if len(all_houses) is 0: return []
+    print('not empty good')
     geo_coords = get_lat_long_more_better('data/airbnb/apt/'+_)
     #print(geo_coords, 'attempt_at_building_communities')
     people_housing_list = {}
+    print('gpt take long time', '_')
 
     user_preferences = unstructured_geoSpatial_house_template_query(sentence)
     for idx, person in enumerate(user_preferences):
@@ -1305,6 +1321,7 @@ def attempt_at_building_communities(_, documentContext, sentence):
     _houses = [_housing(url, h3_cells,idx,geo_coords[idx]) for idx, url in enumerate(all_houses)]
     json.dump(_houses, open('_houses.json', 'w+'))
     json.dump(h3_cells, open('h3_cells.json', 'w+'))
+    print('what am doing?')
 
     def distanceToTokyo(house):
         point = cities['Tokyo--Japan']
@@ -1551,7 +1568,7 @@ def forEachCity(_, __, ___):
     #     'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
     #     'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
     #cities = ['Tokyo--Japan']
-    return os.listdir('data/airbnb/apt')[:5]
+    return os.listdir('data/airbnb/apt')[:1]
     return [json.load(open(path + city)) for city in cities]
     return [f'data/osm_homes/Melbourne--Australia_houses.json']
     #_ = glob.glob(f'data/osm_homes/*_houses.json')
@@ -1881,39 +1898,40 @@ def trees_map(_, sentence):
 
 async def delay(time):
     await asyncio.sleep(time)
-import pyppeteer
-async def get_html(channel_name):
-    browser = await pyppeteer.launch(headless=True)
-    page = await browser.newPage()
 
-    await page.setViewport({"width": 1920, "height": 1080})
-    await page.goto(f"https://www.twitch.tv/{channel_name}", {"waitUntil": "networkidle2"})
+# async def get_html(channel_name):
+#     browser = await pyppeteer.launch(headless=True)
+#     page = await browser.newPage()
 
-    await delay(1)
+#     await page.setViewport({"width": 1920, "height": 1080})
+#     await page.goto(f"https://www.twitch.tv/{channel_name}", {"waitUntil": "networkidle2"})
 
-    await page.waitForFunction("""
-    () => {
-        const el = document.querySelector('div[data-a-target="chat-welcome-message"].chat-line__status');
-        return !!el;
-    }
-    """, polling="raf")
+#     await delay(1)
 
-    selector = '.chat-line__message, .chat-line__status, div[data-a-target="chat-line-message"]'
-    await page.waitForSelector(selector)
+#     await page.waitForFunction("""
+#     () => {
+#         const el = document.querySelector('div[data-a-target="chat-welcome-message"].chat-line__status');
+#         return !!el;
+#     }
+#     """, polling="raf")
 
-    text_elements = await page.querySelectorAll(selector)
-    texts = []
+#     selector = '.chat-line__message, .chat-line__status, div[data-a-target="chat-line-message"]'
+#     await page.waitForSelector(selector)
 
-    for element in text_elements:
-        content = await page.evaluate('(element) => element.textContent', element)
-        texts.append(content.strip())
+#     text_elements = await page.querySelectorAll(selector)
+#     texts = []
 
-    await browser.close()
+#     for element in text_elements:
+#         content = await page.evaluate('(element) => element.textContent', element)
+#         texts.append(content.strip())
 
-    with open(f"twitch-{channel_name}.json", "w") as f:
-        json.dump(texts, f)
+#     await browser.close()
 
-    return texts
+#     with open(f"twitch-{channel_name}.json", "w") as f:
+#         json.dump(texts, f)
+
+#     return texts
+def get_html(): pass
 async def twitch_comments(streamers, sentenceComponentFormData):
     sentence = sentenceComponentFormData['setences'][0]
     pattern = r"\[([^\]]+)\]"
