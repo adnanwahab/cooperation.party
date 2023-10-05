@@ -24,6 +24,9 @@ import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-ex
 import HexagonMap from './HexagonMap' //commute and so on
 
 import BarChart from './BarChart';
+
+import Tabs from './Tabs';
+
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
@@ -483,7 +486,8 @@ function compile (dataList, apply_) {
       return <HexagonWorld data={datum.data}/>
     }
     if (datum[0] && datum[0].isochrone) {
-      return datum.map((datum, idx) => <div key={idx} ><Isochronemap  {...datum}></Isochronemap></div>)
+      
+      return datum.map((datum, idx) =><> <Tabs></Tabs><div key={idx} ><Isochronemap  {...datum}></Isochronemap></div> </>)
     }
     if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
     if (isIsochroney(datum)) {
