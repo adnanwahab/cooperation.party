@@ -343,6 +343,8 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
    url = 'https://pypypy.ngrok.io/makeFn'
    console.log(url)
 }
+url = 'https://pypypy.ngrok.io/makeFn'
+
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
   // console.log(fn_);
@@ -468,15 +470,12 @@ function Isochronemap(props) {
 }
 
 const isGeoCoordinate = (pair) => {
-
   return Array.isArray(pair) && parseFloat(pair[0][0]) && parseFloat(pair[0][1])
 }
 
 function isIsochroney(datum) {
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
-
-
 
 function compile (dataList, apply_) {
   const result = dataList.map(function (datum, index) {
@@ -526,11 +525,13 @@ function TextPresenter(props) {
 }
 
 let templates = {
-  hexagon_world: `map of the future - all airbnbs + pois in the world`,
 
   optimalhousematchingforgroups: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
+
+  hexagon_world: `map of the future - all airbnbs + pois in the world`,
+
 
   airbnb: `for each continent
   choose a city in each
@@ -639,7 +640,7 @@ function App() {
   
   return (
   <>
-  {/* <Header /> */}
+  <Header />
     <div className="grid grid-cols-3">
       {leftPanel}
 {/* h-96 overflow-scroll */}
@@ -660,7 +661,7 @@ function App() {
       11. light pollution - street lamp density
       </div> */}
     </div>
-    {/* <Footer /> */}
+    <Footer />
 </>
   )
 }
