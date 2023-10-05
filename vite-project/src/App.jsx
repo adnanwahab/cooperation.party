@@ -333,11 +333,11 @@ async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
   //text = ['asdfasd', 'asdfasdf', 'asdf']
   let port = 8005
-  let url = `http://localhost:${port}/makeFn/`
+  let url = 'http://127.0.0.1:8000/makeFn'
   let useGPU = true
+  console.log('gesundheit')
 if (useGPU || window.location.hostname !== 'localhost') {
-   //url = `https://pypypy.ngrok.io/makeFn/`
-
+   //url = `https://hidden-river-3971.fly.dev/makeFn/`
 }
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
