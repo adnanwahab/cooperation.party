@@ -337,9 +337,10 @@ async function _() {
   let url = 'http://127.0.0.1:8000/makeFn'
   let useGPU = false
 if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
-  console.log('gesundheit')
+  console.log('gesundheit', window.location.hostname)
    //url = `https://hidden-river-3971.fly.dev/makeFn/`
-   url = 'https://f8f9-73-77-43-211.ngrok-free.app'
+   url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
+   url = 'https://pypypy.ngrok.io/makeFn'
    console.log(url)
 }
   // let fn_ = await fetch('mockData.json');
@@ -348,14 +349,14 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
   // return {fn: fn_}
     let fn = await fetch( url , {
       method: 'POST',
-      //redirect: "follow", // manual, *follow, error
-      //referrerPolicy: "no-referrer", 
-      //mode: "cors", // no-cors, *cors, same-origin
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", 
+      mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
       headers: { 
         "Content-Type": "application/json",
       //"ngrok-skip-browser-warning": true,
-      //"Access-Control-Allow-Origin": "*"
+      "Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,
                                       documentContext: getFormData(),
