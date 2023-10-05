@@ -1578,7 +1578,9 @@ def world_map(_, __, ___):
     print('world map' + 'fix bugs?')
     cols = [s.replace('.json', '') for s in os.listdir('data/airbnb/h3_poi/')]
 
-    return {'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
+    return {
+        'airbnbsInEachCity': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/apt/*.json')},
+        'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
             'hexAgonations': retrieveAggregation(cols),
             'component': '<Hexagonworld>'
     }

@@ -328,16 +328,19 @@ function get (query) {
 //     </>
 //   );
 // }
+console.log('is this deployed')
 
 async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
   //text = ['asdfasd', 'asdfasdf', 'asdf']
   let port = 8005
   let url = 'http://127.0.0.1:8000/makeFn'
-  let useGPU = true
+  let useGPU = false
+if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
   console.log('gesundheit')
-if (useGPU || window.location.hostname !== 'localhost') {
    //url = `https://hidden-river-3971.fly.dev/makeFn/`
+   url = 'https://f8f9-73-77-43-211.ngrok-free.app'
+   console.log(url)
 }
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
@@ -345,13 +348,14 @@ if (useGPU || window.location.hostname !== 'localhost') {
   // return {fn: fn_}
     let fn = await fetch( url , {
       method: 'POST',
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", 
-      mode: "cors", // no-cors, *cors, same-origin
+      //redirect: "follow", // manual, *follow, error
+      //referrerPolicy: "no-referrer", 
+      //mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      headers: { "Content-Type": "application/json",
-      "ngrok-skip-browser-warning": true,
-      "Access-Control-Allow-Origin": "*"
+      headers: { 
+        "Content-Type": "application/json",
+      //"ngrok-skip-browser-warning": true,
+      //"Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,
                                       documentContext: getFormData(),
@@ -521,10 +525,11 @@ function TextPresenter(props) {
 }
 
 let templates = {
+  hexagon_world: `map of the future - all airbnbs + pois in the world`,
+
   optimalhousematchingforgroups: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
-  hexagon_world: `map of the future - all airbnbs + pois in the world`,
 
   airbnb: `for each continent
   choose a city in each
