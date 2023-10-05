@@ -332,7 +332,7 @@ function get (query) {
 async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
   //text = ['asdfasd', 'asdfasdf', 'asdf']
-  let port = 8001
+  let port = 8005
   let url = `http://localhost:${port}/makeFn/`
   let useGPU = true
 if (useGPU || window.location.hostname !== 'localhost') {

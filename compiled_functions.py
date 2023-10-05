@@ -29,6 +29,9 @@ import os.path
 from time import time
 import os
 import openai
+import geopy.distance
+
+
 env_var = open('.env').read().split('=')[1]
 document_query_cache = json.load(open('data/document_query_cache.json'))
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
@@ -385,8 +388,329 @@ def trees_map(_, sentence, i):
     from ipynb.fs.defs.geospatial import trees_map
     return trees_map()[:100000]
 
+
+
+
+
+
+import random
+import math
+
+def getCounter(typ):
+    type_counters = {
+    "Normal": ["Fighting"],
+    "Fire": ["Water", "Rock", "Ground"],
+    "Water": ["Electric", "Grass"],
+    "Electric": ["Ground"],
+    "Grass": ["Fire", "Flying", "Bug", "Poison"],
+    "Ice": ["Fire", "Fighting", "Steel", "Rock"],
+    "Fighting": ["Flying", "Psychic", "Fairy"],
+    "Poison": ["Ground", "Psychic"],
+    "Ground": ["Water", "Ice", "Grass"],
+    "Flying": ["Electric", "Ice", "Rock"],
+    "Psychic": ["Bug", "Ghost", "Dark"],
+    "Bug": ["Fire", "Flying", "Rock"],
+    "Rock": ["Water", "Grass", "Fighting", "Steel", "Ground"],
+    "Ghost": ["Ghost", "Dark"],
+    "Dragon": ["Ice", "Dragon", "Fairy"],
+    "Dark": ["Fighting", "Bug", "Fairy"],
+    "Steel": ["Fire", "Fighting", "Ground"],
+    "Fairy": ["Poison", "Steel"]
+    }
+    pokemon_types = [
+    ("Bulbasaur", "Grass", "Poison"),
+    ("Ivysaur", "Grass", "Poison"),
+    ("Venusaur", "Grass", "Poison"),
+    ("Charmander", "Fire", None),
+    ("Charmeleon", "Fire", None),
+    ("Charizard", "Fire", "Flying"),
+    ("Squirtle", "Water", None),
+    ("Wartortle", "Water", None),
+    ("Blastoise", "Water", None),
+    ("Caterpie", "Bug", None),
+    ("Metapod", "Bug", None),
+    ("Butterfree", "Bug", "Flying"),
+    ("Weedle", "Bug", "Poison"),
+    ("Kakuna", "Bug", "Poison"),
+    ("Beedrill", "Bug", "Poison"),
+    ("Pidgey", "Normal", "Flying"),
+    ("Pidgeotto", "Normal", "Flying"),
+    ("Pidgeot", "Normal", "Flying"),
+    ("Rattata", "Normal", None),
+    ("Raticate", "Normal", None),
+    ("Spearow", "Normal", "Flying"),
+    ("Fearow", "Normal", "Flying"),
+    ("Ekans", "Poison", None),
+    ("Arbok", "Poison", None),
+    ("Pikachu", "Electric", None),
+    ("Raichu", "Electric", None),
+    ("Sandshrew", "Ground", None),
+    ("Sandslash", "Ground", None),
+    ("Nidoran♀", "Poison", None),
+    ("Nidorina", "Poison", None),
+    ("Nidoqueen", "Poison", "Ground"),
+    ("Nidoran♂", "Poison", None),
+    ("Nidorino", "Poison", None),
+    ("Nidoking", "Poison", "Ground"),
+    ("Clefairy", "Fairy", None),
+    ("Clefable", "Fairy", None),
+    ("Vulpix", "Fire", None),
+    ("Ninetales", "Fire", None),
+    ("Jigglypuff", "Normal", "Fairy"),
+    ("Wigglytuff", "Normal", "Fairy"),
+    ("Zubat", "Poison", "Flying"),
+    ("Golbat", "Poison", "Flying"),
+    ("Oddish", "Grass", "Poison"),
+    ("Gloom", "Grass", "Poison"),
+    ("Vileplume", "Grass", "Poison"),
+    ("Paras", "Bug", "Grass"),
+    ("Parasect", "Bug", "Grass"),
+    ("Venonat", "Bug", "Poison"),
+    ("Venomoth", "Bug", "Poison"),
+    ("Diglett", "Ground", None),
+    ("Dugtrio", "Ground", None),
+    ("Meowth", "Normal", None),
+    ("Persian", "Normal", None),
+    ("Psyduck", "Water", None),
+    ("Golduck", "Water", None),
+    ("Mankey", "Fighting", None),
+    ("Primeape", "Fighting", None),
+    ("Growlithe", "Fire", None),
+    ("Arcanine", "Fire", None),
+    ("Poliwag", "Water", None),
+    ("Poliwhirl", "Water", None),
+    ("Poliwrath", "Water", "Fighting"),
+    ("Abra", "Psychic", None),
+    ("Kadabra", "Psychic", None),
+    ("Alakazam", "Psychic", None),
+    ("Machop", "Fighting", None),
+    ("Machoke", "Fighting", None),
+    ("Machamp", "Fighting", None),
+    ("Bellsprout", "Grass", "Poison"),
+    ("Weepinbell", "Grass", "Poison"),
+    ("Victreebel", "Grass", "Poison"),
+    ("Tentacool", "Water", "Poison"),
+    ("Tentacruel", "Water", "Poison"),
+    ("Geodude", "Rock", "Ground"),
+    ("Graveler", "Rock", "Ground"),
+    ("Golem", "Rock", "Ground"),
+    ("Ponyta", "Fire", None),
+    ("Rapidash", "Fire", None),
+    ("Slowpoke", "Water", "Psychic"),
+    ("Slowbro", "Water", "Psychic"),
+    ("Magnemite", "Electric", "Steel"),
+    ("Magneton", "Electric", "Steel"),
+    ("Farfetch'd", "Normal", "Flying"),
+    ("Doduo", "Normal", "Flying"),
+    ("Dodrio", "Normal", "Flying"),
+    ("Seel", "Water", None),
+    ("Dewgong", "Water", "Ice"),
+    ("Grimer", "Poison", None),
+    ("Muk", "Poison", None),
+    ("Shellder", "Water", None),
+    ("Cloyster", "Water", "Ice"),
+    ("Gastly", "Ghost", "Poison"),
+    ("Haunter", "Ghost", "Poison"),
+    ("Gengar", "Ghost", "Poison"),
+    ("Onix", "Rock", "Ground"),
+    ("Drowzee", "Psychic", None),
+    ("Hypno", "Psychic", None),
+    ("Krabby", "Water", None),
+    ("Kingler", "Water", None),
+    ("Voltorb", "Electric", None),
+    ("Electrode", "Electric", None),
+    ("Exeggcute", "Grass", "Psychic"),
+    ("Exeggutor", "Grass", "Psychic"),
+    ("Cubone", "Ground", None),
+    ("Marowak", "Ground", None),
+    ("Hitmonlee", "Fighting", None),
+    ("Hitmonchan", "Fighting", None),
+    ("Lickitung", "Normal", None),
+    ("Koffing", "Poison", None),
+    ("Weezing", "Poison", None),
+    ("Rhyhorn", "Ground", "Rock"),
+    ("Rhydon", "Ground", "Rock"),
+    ("Chansey", "Normal", None),
+    ("Tangela", "Grass", None),
+    ("Kangaskhan", "Normal", None),
+    ("Horsea", "Water", None),
+    ("Seadra", "Water", None),
+    ("Goldeen", "Water", None),
+    ("Seaking", "Water", None),
+    ("Staryu", "Water", None),
+    ("Starmie", "Water", "Psychic"),
+    ("Mr. Mime", "Psychic", "Fairy"),
+    ("Scyther", "Bug", "Flying"),
+    ("Jynx", "Ice", "Psychic"),
+    ("Electabuzz", "Electric", None),
+    ("Magmar", "Fire", None),
+    ("Pinsir", "Bug", None),
+    ("Tauros", "Normal", None),
+    ("Magikarp", "Water", None),
+    ("Gyarados", "Water", "Flying"),
+    ("Lapras", "Water", "Ice"),
+    ("Ditto", "Normal", None),
+    ("Eevee", "Normal", None),
+    ("Vaporeon", "Water", None),
+    ("Jolteon", "Electric", None),
+    ("Flareon", "Fire", None),
+    ("Porygon", "Normal", None),
+    ("Omanyte", "Rock", "Water"),
+    ("Omastar", "Rock", "Water"),
+    ("Kabuto", "Rock", "Water"),
+    ("Kabutops", "Rock", "Water"),
+    ("Aerodactyl", "Rock", "Flying"),
+    ("Snorlax", "Normal", None),
+    ("Articuno", "Ice", "Flying"),
+    ("Zapdos", "Electric", "Flying"),
+    ("Moltres", "Fire", "Flying"),
+    ("Dratini", "Dragon", None),
+    ("Dragonair", "Dragon", None),
+    ("Dragonite", "Dragon", "Flying"),
+    ("Mewtwo", "Psychic", None),
+    ("Mew", "Psychic", None),
+    # Generation 2
+    ("Chikorita", "Grass", None),
+    ("Bayleef", "Grass", None),
+    ("Meganium", "Grass", None),
+    ("Cyndaquil", "Fire", None),
+    ("Quilava", "Fire", None),
+    ("Typhlosion", "Fire", None),
+    ("Totodile", "Water", None),
+    ("Croconaw", "Water", None),
+    ("Feraligatr", "Water", None),
+    ("Sentret", "Normal", None),
+    ("Furret", "Normal", None),
+    ("Hoothoot", "Normal", "Flying"),
+    ("Noctowl", "Normal", "Flying"),
+    ("Ledyba", "Bug", "Flying"),
+    ("Ledian", "Bug", "Flying"),
+    ("Spinarak", "Bug", "Poison"),
+    ("Ariados", "Bug", "Poison"),
+    ("Crobat", "Poison", "Flying"),
+    ("Chinchou", "Water", "Electric"),
+    ("Lanturn", "Water", "Electric"),
+    ("Pichu", "Electric", None),
+    ("Cleffa", "Fairy", None),
+    ("Igglybuff", "Normal", "Fairy"),
+    ("Togepi", "Fairy", None),
+    ("Togetic", "Fairy", "Flying"),
+    ("Natu", "Psychic", "Flying"),
+    ("Xatu", "Psychic", "Flying"),
+    ("Mareep", "Electric", None),
+    ("Flaaffy", "Electric", None),
+    ("Ampharos", "Electric", None),
+    ("Bellossom", "Grass", None),
+    ("Marill", "Water", "Fairy"),
+    ("Azumarill", "Water", "Fairy"),
+    ("Sudowoodo", "Rock", None),
+    ("Politoed", "Water", None),
+    ("Hoppip", "Grass", "Flying"),
+    ("Skiploom", "Grass", "Flying"),
+    ("Jumpluff", "Grass", "Flying"),
+    ("Aipom", "Normal", None),
+    ("Sunkern", "Grass", None),
+    ("Sunflora", "Grass", None),
+    ("Yanma", "Bug", "Flying"),
+    ("Wooper", "Water", "Ground"),
+    ("Quagsire", "Water", "Ground"),
+    ("Espeon", "Psychic", None),
+    ("Umbreon", "Dark", None),
+    ("Murkrow", "Dark", "Flying"),
+    ("Slowking", "Water", "Psychic"),
+    ("Misdreavus", "Ghost", None),
+    ("Unown", "Psychic", None),
+    ("Wobbuffet", "Psychic", None),
+    ("Girafarig", "Normal", "Psychic"),
+    ("Pineco", "Bug", None),
+    ("Forretress", "Bug", "Steel"),
+    ("Dunsparce", "Normal", None),
+    ("Gligar", "Ground", "Flying"),
+    ("Steelix", "Steel", "Ground"),
+    ("Snubbull", "Fairy", None),
+    ("Granbull", "Fairy", None),
+    ("Qwilfish", "Water", "Poison"),
+    ("Scizor", "Bug", "Steel"),
+    ("Shuckle", "Bug", "Rock"),
+    ("Heracross", "Bug", "Fighting"),
+    ("Sneasel", "Dark", "Ice"),
+    ("Teddiursa", "Normal", None),
+    ("Ursaring", "Normal", None),
+    ("Slugma", "Fire", None),
+    ("Magcargo", "Fire", "Rock"),
+    ("Swinub", "Ice", "Ground"),
+    ("Piloswine", "Ice", "Ground"),
+    ("Corsola", "Water", "Rock"),
+    ("Remoraid", "Water", None),
+    ("Octillery", "Water", None),
+    ("Delibird", "Ice", "Flying"),
+    ("Mantine", "Water", "Flying"),
+    ("Skarmory", "Steel", "Flying"),
+    ("Houndour", "Dark", "Fire"),
+    ("Houndoom", "Dark", "Fire"),
+    ("Kingdra", "Water", "Dragon"),
+    ("Phanpy", "Ground", None),
+    ("Donphan", "Ground", None),
+    ("Porygon2", "Normal", None),
+    ("Stantler", "Normal", None),
+    ("Smeargle", "Normal", None),
+    ("Tyrogue", "Fighting", None),
+    ("Hitmontop", "Fighting", None),
+    ("Smoochum", "Ice", "Psychic"),
+    ("Elekid", "Electric", None),
+    ("Magby", "Fire", None),
+    ("Miltank", "Normal", None),
+    ("Blissey", "Normal", None),
+    ("Raikou", "Electric", None),
+    ("Entei", "Fire", None),
+    ("Suicune", "Water", None),
+    ("Larvitar", "Rock", "Ground"),
+    ("Pupitar", "Rock", "Ground"),
+    ("Tyranitar", "Rock", "Dark"),
+    ("Lugia", "Psychic", "Flying"),
+    ("Ho-oh", "Fire", "Flying"),
+    ("Celebi", "Psychic", "Grass")
+    ]
+    counters = type_counters[typ]
+    #once a type has been countered
+    poss = [pokemon[0] for pokemon in pokemon_types 
+            if pokemon[1] in counters 
+            or pokemon[2] in counters
+           ]
+    return poss[math.floor(random.random() * len(poss))]
+
+
+
+def generate_team(player_choice='mew'):
+    type_counters = {
+    "Normal": ["Fighting"],
+    "Fire": ["Water", "Rock", "Ground"],
+    "Water": ["Electric", "Grass"],
+    "Electric": ["Ground"],
+    "Grass": ["Fire", "Flying", "Bug", "Poison"],
+    "Ice": ["Fire", "Fighting", "Steel", "Rock"],
+    "Fighting": ["Flying", "Psychic", "Fairy"],
+    "Poison": ["Ground", "Psychic"],
+    "Ground": ["Water", "Ice", "Grass"],
+    "Flying": ["Electric", "Ice", "Rock"],
+    "Psychic": ["Bug", "Ghost", "Dark"],
+    "Bug": ["Fire", "Flying", "Rock"],
+    "Rock": ["Water", "Grass", "Fighting", "Steel", "Ground"],
+    "Ghost": ["Ghost", "Dark"],
+    "Dragon": ["Ice", "Dragon", "Fairy"],
+    "Dark": ["Fighting", "Bug", "Fairy"],
+    "Steel": ["Fire", "Fighting", "Ground"],
+    "Fairy": ["Poison", "Steel"]
+    }
+    types = list(type_counters.keys())
+    elite_four = types[6:12]
+    team = [player_choice]
+    for typ in elite_four:
+        team.append(getCounter(typ))
+    return team
+
+
 def pokemon(_, __, i):
-    from ipynb.fs.defs.Pokemon_Dota_Arxiv import generate_team
     return generate_team()
 
 def satellite_housing(_, sentence):
@@ -980,11 +1304,12 @@ def attempt_at_building_communities(_, documentContext, sentence):
     json.dump(h3_cells, open('h3_cells.json', 'w+'))
 
     def distanceToTokyo(house):
-        point = house['location']
-        city_location = cities[_.replace('.json', '')]
+        point = cities['Tokyo--Japan']
+        #geo_coords[house['url']]
+        #return geo_coords[house['url']]
+        city_location = cities['Tokyo--Japan']
         __ = point[1] - city_location[1]
         ____ = point[0] - city_location[0]
-        
         dist = math.sqrt(__ * __ + ____ * ____)
         return dist
 
@@ -1269,4 +1594,337 @@ jupyter_functions = { #use regexes + spelling corrector + llm to match sentences
     'make a world': world_map,
     'map of the future - all airbnbs + pois in the world': world_map
 }
+
+
+
+#@app.post("/callFn")
+async def admin(request: Request):
+    #print('val', await request.json())
+    json_data = await request.json()
+    city_name = 'Tokyo--Japan'
+    def rankApt(personCoefficentPreferences, apt):
+        diff = 0
+        for key in personCoefficentPreferences:
+            if key not in apt: continue
+            diff += abs(apt[key] - personCoefficentPreferences[key])
+        #print(diff)
+        return diff 
+    cityAptChoice = {
+        'url':'https://www.airbnb.com/rooms/33676580?adults=1&children=0&enable_m3_private_room=true&infants=0&pets=0&check_in=2023-10-25&check_out=2023-10-30&source_impression_id=p3_1695411915_xw1FKQQa0V7znLzQ&previous_page_section_name=1000&federated_search_id=fec99c3c-b5f1-4547-9dda-2bc7758aec94'
+    }
+    personCoefficentPreferences = json_data['getCoefficents']
+
+    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))[:50]
+
+    def get_json_if_possible(apt):
+        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
+            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'))
+            if (len(data) > 0): 
+                data = data[0]
+                data = data.split(':')
+                data[0] = float(data[0])
+                data[1] = float(data[1])
+                return data
+            else: return [0,0]
+        else:
+            return [0, 0]
+
+    geocoordinates = [get_json_if_possible(apt) for apt in apt_list]
+
+    coefficents = {'coffee': 1, 'library': 0, 'bar': .5}
+    keys = coefficents.keys()
+
+    apts  = []
+
+    import random
+    for idx, _ in enumerate(geocoordinates): 
+        #print(idx)
+        apt = {
+            'url': apt_list[idx],
+            'loc': geocoordinates[idx]
+        } 
+        for key in keys:
+            coords = _
+            apt[key] = random.random()
+            #len(fetch_coffee_shops(coords[0], coords[1], [key]))
+        apts.append(apt)
+
+    from collections import defaultdict
+    totals = defaultdict(int)
+    for apt in apts: 
+        for key in keys: 
+            totals[key] += apt[key]
+
+    for apt in apts: 
+        for key in keys: 
+            if totals[key] == 0: totals[key] += .01
+            apt[key] = apt[key] / totals[key]
+    return sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))[0]
+
+
+
+def makePercents(l):
+    max_ = max(l)
+    return [_ / max_ for _ in l]
+
+
+def makeFunctionFromText(text):
+    if text == '': return ''
+    if '___' not in  __: initAlgae()
+    prompt = "sum all numbers from 1 to 10,000"
+    prompt_template=f'''[INST] Write a code in javascript to sum fibonacci from 1 to 100```:
+    {prompt}
+    [/INST]
+    '''
+    input_ids = __['____'](prompt_template, return_tensors='pt').input_ids.cuda()
+    output = __['___'].generate(inputs=input_ids, temperature=0.7, max_new_tokens=512)
+    return re.match(r'[SOL](.*)[/SOL]', __['____'].decode(output[0]))
+
+def makeFnFromEnglish(english):
+    fnText = makeFunctionFromText(english)
+    return fnText
+
+
+def is_real_word(word):
+    word_list = words.words()
+    return word.lower() in word_list
+
+fn_cache = {}
+
+def cacheThisFunction(func):
+    def _(*args):
+        key = func.__name__ + args.join(',')
+        if key in fn_cache: return fn_cache[key]
+        val = func(*args)
+        fn_cache[key] = val
+    return _
+
+
+
+def getClassification(string):
+    p = int(random.random() * 5)
+    nouns = findNouns(string)
+    verb_most_acted_on = nouns #findNouns(string)[0] if len(nouns) > 0 else ''
+    return f'{classifications[p]}:  {" ".join(verb_most_acted_on)}'
+
+def processTag(tagged_sentence):
+    return [(orig,tag_map[actual_tag]) for (orig,actual_tag) in tagged_sentence if actual_tag in tag_map]
+
+def findNouns(string):
+    return [noun for noun,tag in processTag(pos_tag(word_tokenize(string))) ]   
+
+
+def generateWinningTeam():
+    from ipynb.fs.defs.geospatial import getCounter
+    return getCounter('celebi')
+
+def findAirbnb(previous, sentence):
+    from ipynb.fs.defs.geospatial import getAllAirbnbInCityThatAreNotNoisy
+    GTorLT = 'not noisy' in sentence
+    data = getAllAirbnbInCityThatAreNotNoisy(GTorLT) #todo make reactive live query
+    return data
+print('wtf2')
+
+
+def getProgram(_, sentence):
+    encodings = getEncodings(sentence)
+    program_generator_cache = json.load(open('encodings.json', 'w'))
+    if encodings in program_generator_cache: return program_generator_cache[encodings]
+
+    json.dump(program_generator_cache, open('encodings.json', 'w'))
+    return {'fn': program_generator_cache[encodings]}
+
+def url_to_file_name(url):
+    return re.sub(r'[^a-zA-Z0-9]', '_', url)
+
+def get_room_id(url):
+    match = re.search(r'rooms/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+def geoDistance(one, two):
+    return geopy.distance.geodesic(one, two).km
+
+
+
+cache = {}
+
+def addToCache(fn, **kwargs):
+    #fn(**kwargs)
+    #cache[f'{fn.__name__}:city:aptUrl'] = result
+    return fn(**kwargs)
+
+
+def my_decorator_func(func):
+    def wrapper_func(*args, **kwargs):
+        # Do something before the function.
+        result = func(*args, **kwargs)
+        result = addToCache(func, **kwargs)
+        #saveCacheToDiskOrRedisOrSqlLiteOr?
+        #   
+        # Do something after the function.
+    return wrapper_func
+def getPlacesOfInterest(aptGeoLocation):
+    aptGeoLocation = aptGeoLocation.split(':')
+    aptGeoLocation =  [float(aptGeoLocation[0]), float(aptGeoLocation[1])]
+    all_json = []
+    return 0
+    if not aptGeoLocation: return print('no aptGeoLocation')
+    latitude = aptGeoLocation[1]
+    longitude = aptGeoLocation[0]
+    url = f"""https://api.mapbox.com/search/searchbox/v1/category/shopping?access_token=pk.eyJ1Ijoic2VhcmNoLW1hY2hpbmUtdXNlci0xIiwiYSI6ImNrNnJ6bDdzdzA5cnAza3F4aTVwcWxqdWEifQ.RFF7CVFKrUsZVrJsFzhRvQ&language=en&limit=20&proximity={longitude}%2C%20{latitude}"""
+    _ = requests.get(url).json()
+    if 'features' not in _: 
+        print(_)
+        return 0
+    for place in _['features']:
+        #print(place)
+        all_json.append(place)
+    poi = []
+    for place in all_json:
+        coords = place['geometry']['coordinates']
+        categories = place['properties']['poi_category']
+        poi.append([coords, categories])
+        #print(place)
+    sorted(poi, key=lambda _: geoDistance(_[0], aptGeoLocation))
+    print(poi)
+    return geoDistance(poi[0][0], aptGeoLocation)
+
+
+
+def getProgram(_, sentence):
+    encodings = getEncodings(sentence)
+    program_generator_cache = json.load(open('encodings.json', 'w'))
+    if encodings in program_generator_cache: return program_generator_cache[encodings]
+
+    json.dump(program_generator_cache, open('encodings.json', 'w'))
+    return {'fn': program_generator_cache[encodings]}
+
+def url_to_file_name(url):
+    return re.sub(r'[^a-zA-Z0-9]', '_', url)
+
+def get_room_id(url):
+    match = re.search(r'rooms/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+def geoDistance(one, two):
+    return geopy.distance.geodesic(one, two).km
+
+
+
+cache = {}
+
+def addToCache(fn, **kwargs):
+    #fn(**kwargs)
+    #cache[f'{fn.__name__}:city:aptUrl'] = result
+    return fn(**kwargs)
+
+
+def my_decorator_func(func):
+    def wrapper_func(*args, **kwargs):
+        # Do something before the function.
+        result = func(*args, **kwargs)
+        result = addToCache(func, **kwargs)
+        #saveCacheToDiskOrRedisOrSqlLiteOr?
+        #   
+        # Do something after the function.
+    return wrapper_func
+def getPlacesOfInterest(aptGeoLocation):
+    aptGeoLocation = aptGeoLocation.split(':')
+    aptGeoLocation =  [float(aptGeoLocation[0]), float(aptGeoLocation[1])]
+    all_json = []
+    return 0
+    if not aptGeoLocation: return print('no aptGeoLocation')
+    latitude = aptGeoLocation[1]
+    longitude = aptGeoLocation[0]
+    url = f"""https://api.mapbox.com/search/searchbox/v1/category/shopping?access_token=pk.eyJ1Ijoic2VhcmNoLW1hY2hpbmUtdXNlci0xIiwiYSI6ImNrNnJ6bDdzdzA5cnAza3F4aTVwcWxqdWEifQ.RFF7CVFKrUsZVrJsFzhRvQ&language=en&limit=20&proximity={longitude}%2C%20{latitude}"""
+    _ = requests.get(url).json()
+    if 'features' not in _: 
+        print(_)
+        return 0
+    for place in _['features']:
+        #print(place)
+        all_json.append(place)
+    poi = []
+    for place in all_json:
+        coords = place['geometry']['coordinates']
+        categories = place['properties']['poi_category']
+        poi.append([coords, categories])
+        #print(place)
+    sorted(poi, key=lambda _: geoDistance(_[0], aptGeoLocation))
+    print(poi)
+    return geoDistance(poi[0][0], aptGeoLocation)
+
+    return [apt for idx, apt in enumerate(airbnbs)
+            #if distance_to_shopping_store[idx] < .1
+            ]
+
+
+def landDistribution(_, sentence):
+    return 123
+    #return landDistribution()
+
+def trees_map(_, sentence):
+    return {
+        'data': [[34, 34], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
+        'component': '<map>'
+    }
+
+
+async def delay(time):
+    await asyncio.sleep(time)
+import pyppeteer
+async def get_html(channel_name):
+    browser = await pyppeteer.launch(headless=True)
+    page = await browser.newPage()
+
+    await page.setViewport({"width": 1920, "height": 1080})
+    await page.goto(f"https://www.twitch.tv/{channel_name}", {"waitUntil": "networkidle2"})
+
+    await delay(1)
+
+    await page.waitForFunction("""
+    () => {
+        const el = document.querySelector('div[data-a-target="chat-welcome-message"].chat-line__status');
+        return !!el;
+    }
+    """, polling="raf")
+
+    selector = '.chat-line__message, .chat-line__status, div[data-a-target="chat-line-message"]'
+    await page.waitForSelector(selector)
+
+    text_elements = await page.querySelectorAll(selector)
+    texts = []
+
+    for element in text_elements:
+        content = await page.evaluate('(element) => element.textContent', element)
+        texts.append(content.strip())
+
+    await browser.close()
+
+    with open(f"twitch-{channel_name}.json", "w") as f:
+        json.dump(texts, f)
+
+    return texts
+async def twitch_comments(streamers, sentenceComponentFormData):
+    sentence = sentenceComponentFormData['setences'][0]
+    pattern = r"\[([^\]]+)\]"
+    match = re.search(pattern, sentence)
+    streamers =  match[0][1:-1].replace('\'', '').split(',')
+    streamers = [s.strip() for s in streamers] 
+    # for streamer in streamers:
+    #     subprocess.run(['node', 'RPC/fetch-twitch.js', streamer])
+    # return [json.load(open(f'twitch-{streamer}.json', 'r')) for streamer in streamers]     
+    # loop = asyncio.get_event_loop()
+    # loop.create_task(main())
+    #create 3 threads and every 3 seconds poll chat for new messages
+    #diff the messages and timestamp new ones 
+    tasks = [get_html(streamer) for streamer in streamers]
+    results = await asyncio.gather(*tasks)
+    return results
 
