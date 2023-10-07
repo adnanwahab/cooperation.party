@@ -29,7 +29,6 @@ from collections import defaultdict
 from pydantic import BaseModel
 import json
 import os.path
-from time import time
 import os
 import openai
 import geopy.distance
@@ -805,324 +804,6 @@ def get_room_id(url):
     else:
         return None
 
-cities = {
-    "New-York-City--USA": [
-        40.7128,
-        -74.006
-    ],
-    "San-Francisco--USA": [
-        37.7749,
-        -122.4194
-    ],
-    "Vancouver--Canada": [
-        49.2827,
-        -123.1207
-    ],
-    "New-Orleans--USA": [
-        29.9511,
-        -90.0715
-    ],
-    "Los-Angeles--USA": [
-        34.0522,
-        -118.2437
-    ],
-    "Chicago--USA": [
-        41.8781,
-        -87.6298
-    ],
-    "Toronto--Canada": [
-        43.6532,
-        -79.3832
-    ],
-    "Mexico-City--Mexico": [
-        19.4326,
-        -99.1332
-    ],
-    "Montreal--Canada": [
-        45.5017,
-        -73.5673
-    ],
-    "Boston--USA": [
-        42.3601,
-        -71.0589
-    ],
-    "Miami--USA": [
-        25.7617,
-        -80.1918
-    ],
-    "Austin--USA": [
-        30.2672,
-        -97.7431
-    ],
-    "Quebec-City--Canada": [
-        46.8139,
-        -71.2082
-    ],
-    "Seattle--USA": [
-        47.6062,
-        -122.3321
-    ],
-    "Nashville--USA": [
-        36.1627,
-        -86.7816
-    ],
-    "Tokyo--Japan": [
-        35.6895,
-        139.6917
-    ],
-    "Kyoto--Japan": [
-        35.0116,
-        135.7681
-    ],
-    "Bangkok--Thailand": [
-        13.7563,
-        100.5018
-    ],
-    "Hong-Kong--China": [
-        22.3193,
-        114.1694
-    ],
-    "Singapore": [
-        1.3521,
-        103.8198
-    ],
-    "Seoul--South-Korea": [
-        37.5665,
-        126.978
-    ],
-    "Beijing--China": [
-        39.9042,
-        116.4074
-    ],
-    "Dubai--UAE": [
-        25.276987,
-        55.296249
-    ],
-    "Taipei--Taiwan": [
-        25.033,
-        121.5654
-    ],
-    "Istanbul--Turkey": [
-        41.0082,
-        28.9784
-    ],
-    "Hanoi--Vietnam": [
-        21.0285,
-        105.8544
-    ],
-    "Mumbai--India": [
-        19.076,
-        72.8777
-    ],
-    "Kuala-Lumpur--Malaysia": [
-        3.139,
-        101.6869
-    ],
-    "Jaipur--India": [
-        26.9124,
-        75.7873
-    ],
-    "Rio-de-Janeiro--Brazil": [
-        -22.9068,
-        -43.1729
-    ],
-    "Buenos-Aires--Argentina": [
-        -34.6037,
-        -58.3816
-    ],
-    "Cartagena--Colombia": [
-        10.391,
-        -75.4794
-    ],
-    "Lima--Peru": [
-        -12.0464,
-        -77.0428
-    ],
-    "Santiago--Chile": [
-        -33.4489,
-        -70.6693
-    ],
-    "Cusco--Peru": [
-        -13.5319,
-        -71.9675
-    ],
-    "Medellín--Colombia": [
-        6.2476,
-        -75.5709
-    ],
-    "Quito--Ecuador": [
-        -0.1807,
-        -78.4678
-    ],
-    "Montevideo--Uruguay": [
-        -34.9011,
-        -56.1911
-    ],
-    "Bogota--Colombia": [
-        4.71,
-        -74.0721
-    ],
-    "Cape-Town--South-Africa": [
-        -33.9249,
-        18.4241
-    ],
-    "Marrakech--Morocco": [
-        31.6295,
-        -7.9811
-    ],
-    "Cairo--Egypt": [
-        30.8025,
-        31.2357
-    ],
-    "Dakar--Senegal": [
-        14.6928,
-        -17.4467
-    ],
-    "Zanzibar-City--Tanzania": [
-        -6.1659,
-        39.2026
-    ],
-    "Accra--Ghana": [
-        5.6037,
-        -0.1869
-    ],
-    "Addis-Ababa--Ethiopia": [
-        9.03,
-        38.74
-    ],
-    "Victoria-Falls--Zimbabwe/Zambia": [
-        -17.9243,
-        25.8572
-    ],
-    "Nairobi--Kenya": [
-        -1.286389,
-        36.817223
-    ],
-    "Tunis--Tunisia": [
-        36.8065,
-        10.1815
-    ],
-    "Sydney--Australia": [
-        -33.8688,
-        151.2093
-    ],
-    "Melbourne--Australia": [
-        -37.8136,
-        144.9631
-    ],
-    "Auckland--New-Zealand": [
-        -36.8485,
-        174.7633
-    ],
-    "Wellington--New-Zealand": [
-        -41.2865,
-        174.7762
-    ],
-    "Brisbane--Australia": [
-        -27.4698,
-        153.0251
-    ],
-    "Honolulu--Hawaii--USA": [
-        21.3069,
-        -157.8583
-    ],
-    "Bali--Indonesia": [
-        -8.3405,
-        115.092
-    ],
-    "Santorini--Greece": [
-        36.3932,
-        25.4615
-    ],
-    "Maldives-(Male)": [
-        4.1755,
-        73.5093
-    ],
-    "Phuket--Thailand": [
-        7.8804,
-        98.3923
-    ],
-    "Ibiza--Spain": [
-        38.9067,
-        1.4206
-    ],
-    "Seychelles-(Victoria)": [
-        -4.6191,
-        55.4513
-    ],
-    "Havana--Cuba": [
-        23.1136,
-        -82.3666
-    ],
-    "Punta-Cana--Dominican-Republic": [
-        18.582,
-        -68.4055
-    ],
-    "Dubrovnik--Croatia": [
-        42.6507,
-        18.0944
-    ],
-    "Ljubljana--Slovenia": [
-        46.0569,
-        14.5058
-    ],
-    "Tallinn--Estonia": [
-        59.437,
-        24.7536
-    ],
-    "Riga--Latvia": [
-        56.9496,
-        24.1052
-    ],
-    "Sarajevo--Bosnia-and-Herzegovina": [
-        43.8563,
-        18.4131
-    ],
-    "Vilnius--Lithuania": [
-        54.6872,
-        25.2797
-    ],
-    "Tbilisi--Georgia": [
-        41.7151,
-        44.8271
-    ],
-    "Yerevan--Armenia": [
-        40.1792,
-        44.4991
-    ],
-    "Baku--Azerbaijan": [
-        40.4093,
-        49.8671
-    ],
-    "Belgrade--Serbia": [
-        44.7866,
-        20.4489
-    ],
-    "Skopje--North-Macedonia": [
-        41.9973,
-        21.428
-    ],
-    "Banff--Canada": [
-        51.1784,
-        -115.5708
-    ],
-    "Queenstown--New-Zealand": [
-        -45.0312,
-        168.6626
-    ],
-    "Reykjavik-(as-a-gateway-to-Icelandic-nature)": [
-        64.1466,
-        -21.9426
-    ],
-    "Ushuaia--Argentina-(Gateway-to-Antarctica)": [
-        -54.8019,
-        -68.303
-    ],
-    "Kathmandu--Nepal-(Gateway-to-the-Himalayas)": [
-        27.7172,
-        85.324
-    ]
-}
 
 #map apturl to city
 #map city to lat long
@@ -1196,13 +877,13 @@ def make_fetch_shops_for_cell(poi_names, h3_cells):
     return fetch_shops_for_cell
 
 def aggregate_poi_in_h3_cell(h3_cells, fn):
-    #then = time.time()
+    then = time.time()
     print('h3_cells', fn)
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         for hex_id, results in executor.map(fn, h3_cells.keys()):
             print(hex_id)
             pass
-    print(time)
+    print(time.time() - then)
     return h3_cells
 poi_names = [s.strip() for s in json.load(open('./poi_names.json'))]
 
@@ -1260,20 +941,81 @@ def get_lat_long_more_better(fp):
     _ = [[float(_[0]), float(_[1])] for _ in _]
     return _
 
+
+def isochroneAssertion(geojson_data, point_to_check):
+    longitude = point_to_check[0]
+    latitude = point_to_check[1]
+    point_to_check = Point(longitude, latitude)
+    for feature in geojson_data['features']:
+        polygon = shape(feature['geometry'])
+        if polygon.contains(point_to_check): return True
+    else : return False
+
+
+
+fn_cache = {}
+
+def cacheThisFunction(func):
+    def _(*args):
+        key = hash(func.__name__ + args.join(','))
+        if key in fn_cache: return fn_cache[key]
+        val = func(*args)
+        fn_cache[key] = val
+        json.dump(fn_cache, open('data/cache/fn_cache.json'))
+        return val
+    return _
+
+getApt_by_travel_time_cache = {}
+
+def getApt_by_travel_time(location, coords):
+    if location in getApt_by_travel_time_cache: return getApt_by_travel_time_cache[location]
+    apt = json.load(open(f'./data/airbnb/apt/{location}.json'))
+    contours_minutes = 15
+    lng = coords['longitude']
+    lat = coords['latitude']
+    isochrone_url = f'https://api.mapbox.com/isochrone/v1/mapbox/walking/{lng}%2C{lat}?contours_minutes={contours_minutes}&polygons=true&denoise=0&generalize=0&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
+    geojson_data = requests.get(isochrone_url).json()
+    apt2 = {_:apt[_] for _ in apt if isochroneAssertion(geojson_data, apt[_])}
+    print(location, len(apt), len(apt2))
+    result =  {'centroid': coords, '_houses': apt2, 'isochrone': geojson_data}
+    getApt_by_travel_time_cache[location] = result
+    return result
+
 def attempt_at_building_communities(_, documentContext, sentence):
+    locations = json.load(open('data/airbnb/city_locations.json'))
+    #documentContext['city'] = 'Ghent--Flemish-Region--Belgium'
+    return {
+        'component': '<traveltimemap>',
+        'data' : { location: getApt_by_travel_time(location , locations[location]) for location in locations}
+    }
+        
+
+
+def archive_attempt_at_building_communities(_, documentContext, sentence):
     if _ == False: _ = f'Tokyo--Japan.json'
-    if type(_) == list: 
+    if False and type(_) == list: 
+        # args = [
+        #     "python",
+        #     "run_all_fn.py",
+        #     json.dumps(_)
+        # ]
+        # completed_process = subprocess.run(args)
+        # print('run all fn has complete')
         return [attempt_at_building_communities(city, documentContext, sentence) for city in _]
     cache_key = hash(json.dumps(_))
     if cache_key in community_cache: return community_cache[cache_key]
+    #if type(_) == dict: _ = list(_.keys())[0]
+    if 'data' in _: _ = list(_['data'].keys())[0]
+    _ = f'Tokyo--Japan.json'
+    _ = documentContext['city']
 
     #all_houses = json.load(open(f'data/osm_houses/apt/{_}_houses.json'))
-    all_houses = list(json.load(open('data/airbnb/apt/'+_)).keys())
+    all_houses = list(json.load(open('data/airbnb/apt/'+_+'.json')).keys())
     print('all house', len(all_houses))
 
     if len(all_houses) is 0: return []
     print('not empty good')
-    geo_coords = get_lat_long_more_better('data/airbnb/apt/'+_)
+    geo_coords = get_lat_long_more_better('data/airbnb/apt/'+_+'.json')
     #print(geo_coords, 'attempt_at_building_communities')
     people_housing_list = {}
     print('gpt take long time', '_')
@@ -1386,15 +1128,18 @@ def attempt_at_building_communities(_, documentContext, sentence):
             coords_2 = report['house']['location']
             distances[key] = str(round(h3.point_dist(coords_1, coords_2, unit='m') / 2200, 2)) + 'mi'
         report['commutes'] = distances
-    result = {'reports': reports, 'isochrone': isochrone, '_houses' : sorted(_houses, key=distanceToTokyo)[:1000],
+    result = {'reports': reports, 
+              'isochrone': isochrone, 
+              '_houses' : sorted(_houses, key=distanceToTokyo)[:1000],
             'hexes': h3_cell_counts,
             'reasoning_adjustment': 'these conditionare slighly mutually exclusive. you selected price as most important -> heres to get a good deal in japan. if you lower the preference for crime, then youll get a cheaper place. if you lower the slider for commercial, youll get more hipster places and you may have better conversations with "your people".',
             'candidates': top_10_candidates,
             'centroid': point,
-            'city': _.replace('.json', '')
+            'city': _.replace('.json', ''),
+
             }
     community_cache[cache_key] = result
-    return result
+    return { 'data': result, 'component': '<isochronemap>'}
 
 
 def get_reasoning_explanation(prefs, house, totals, h3_cell_counts, selected_poi_names  ):
@@ -1536,32 +1281,36 @@ def getCityList():
   ]
 }
 
-def forEachCity(_, __, ___):
-    cities = ['Accra--Ghana.json',
-        'Addis-Ababa--Ethiopia.json',
-        'Cairo--Egypt.json',
-        'Cartagena--Colombia.json',
-        'Cusco--Peru.json',
-        'Dakar--Senegal.json',
-        'Hanoi--Vietnam.json',
-        'Jaipur--India.json',
-        'Kuala-Lumpur--Malaysia.json',
-        'Marrakech--Morocco.json',
-        'Montevideo--Uruguay.json',
-        'Mumbai--India.json',
-        'Nairobi--Kenya.json',
-        'Santiago--Chile.json',
-        'Tunis--Tunisia.json',
-        'Zanzibar-City--Tanzania.json',
-    ]
-    path = 'data/osm_way_residential/'
+def forEachCity(_, documentContext, ___):
+    # cities = ['Accra--Ghana.json',
+    #     'Addis-Ababa--Ethiopia.json',
+    #     'Cairo--Egypt.json',
+    #     'Cartagena--Colombia.json',
+    #     'Cusco--Peru.json',
+    #     'Dakar--Senegal.json',
+    #     'Hanoi--Vietnam.json',
+    #     'Jaipur--India.json',
+    #     'Kuala-Lumpur--Malaysia.json',
+    #     'Marrakech--Morocco.json',
+    #     'Montevideo--Uruguay.json',
+    #     'Mumbai--India.json',
+    #     'Nairobi--Kenya.json',
+    #     'Santiago--Chile.json',
+    #     'Tunis--Tunisia.json',
+    #     'Zanzibar-City--Tanzania.json',
+    # ]
+    path = 'data/airbnb/apt/'
     # cities = [
     #     'Toronto--Canada', 'Lisbon--Portugal', 'Boston--USA',
     #     'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
     #     'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
     #cities = ['Tokyo--Japan']
-    return os.listdir('data/airbnb/apt')[:1]
-    return [json.load(open(path + city)) for city in cities]
+    #return []
+    cities = os.listdir('data/airbnb/apt')
+    if 'city' not in documentContext: documentContext['city'] = cities[0].replace('.json', '')
+    return { 'data': {city: len(json.load(open(path + city))) for city in cities}, 
+            'component': '<BarChart>'
+    }
     return [f'data/osm_homes/Melbourne--Australia_houses.json']
     #_ = glob.glob(f'data/osm_homes/*_houses.json')
     return _
@@ -1702,17 +1451,6 @@ def makeFnFromEnglish(english):
 def is_real_word(word):
     word_list = words.words()
     return word.lower() in word_list
-
-fn_cache = {}
-
-def cacheThisFunction(func):
-    def _(*args):
-        key = func.__name__ + args.join(',')
-        if key in fn_cache: return fn_cache[key]
-        val = func(*args)
-        fn_cache[key] = val
-    return _
-
 
 
 def getClassification(string):
