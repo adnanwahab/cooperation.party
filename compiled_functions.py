@@ -726,6 +726,27 @@ def satellite_housing(_, sentence):
     requests.get('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/-122.4241,x.78,14.25,0,60/600x600?access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg')
     return 'for each satellite images in area find anything that matches criteria'
 
+
+def fetch_coworking(longitude, latitude):
+    # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
+    # return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
+    places = []
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node[office="coworking"]({latitude - 1},{longitude - 1},{latitude + 1},{longitude + 1});
+    );
+    out body;
+    """ 
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    response = requests.get(overpass_url, params={'data': query})
+    #print(response.status_code, longitude, latitude, amenities)
+    if response.status_code == 200:
+        data = response.json()
+        coffee_shops = data['elements']
+        places += coffee_shops
+    return places
+
 geoCoordCache = {}
 def fetch_coffee_shops(longitude, latitude, amenities = []):
     if round(longitude, 1) in geoCoordCache: 
@@ -967,7 +988,7 @@ getApt_by_travel_time_cache = {}
 def getApt_by_travel_time(location, coords):
     if location in getApt_by_travel_time_cache: return getApt_by_travel_time_cache[location]
     apt = json.load(open(f'./data/airbnb/apt/{location}.json'))
-    contours_minutes = 15
+    contours_minutes = 60
     lng = coords['longitude']
     lat = coords['latitude']
     isochrone_url = f'https://api.mapbox.com/isochrone/v1/mapbox/walking/{lng}%2C{lat}?contours_minutes={contours_minutes}&polygons=true&denoise=0&generalize=0&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
@@ -978,7 +999,7 @@ def getApt_by_travel_time(location, coords):
     getApt_by_travel_time_cache[location] = result
     return result
 
-def attempt_at_building_communities(_, documentContext, sentence):
+def _attempt_at_building_communities(_, documentContext, sentence):
     locations = json.load(open('data/airbnb/city_locations.json'))
     #documentContext['city'] = 'Ghent--Flemish-Region--Belgium'
     return {
@@ -987,8 +1008,26 @@ def attempt_at_building_communities(_, documentContext, sentence):
     }
         
 
+def get_apt_commute_distance_to_coworking(_, documentContext, sentence):
+    locations = json.load(open('data/airbnb/city_locations.json'))
+    if 'city' in documentContext['city']: city = documentContext['city']
+    else: city = 'Ghent--Flemish-Region--Belgium'
+    loc = locations[city]
+    coworking = fetch_coworking(float(loc['longitude']), float(loc['latitude']))
+    print('hellow world', coworking)
+    data = []
+    for place in coworking:
+        location = city
+        data.append(getApt_by_travel_time(location , {'latitude': place['lat'],
+                                                       'longitude': place['lon']
+                                                       }))
+    return {
+        'component': '<traveltimemap>',
+        'data' : data
+        #{ location: getApt_by_travel_time(location , locations[location]) for location in locations}
+    }
 
-def archive_attempt_at_building_communities(_, documentContext, sentence):
+def attempt_at_building_communities(_, documentContext, sentence):
     if _ == False: _ = f'Tokyo--Japan.json'
     if False and type(_) == list: 
         # args = [
@@ -1328,6 +1367,7 @@ def world_map(_, __, ___):
 
 jupyter_functions = { #use regexes + spelling corrector + llm to match sentences w/ functions
     "for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']" : forEachCity,
+    'find all apt within commute distance': get_apt_commute_distance_to_coworking,
     'find 10 houses': attempt_at_building_communities, 
     'group them into topics': groupBySimilarity,
     'for each continent': continentRadio,
