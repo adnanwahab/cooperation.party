@@ -548,8 +548,8 @@ async def makeFn(FnText:FnText):
     #     jupyter_functions['given a favorite pokemon']('', '', '')
     # ]
     #return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
-    if len(FnText.hashUrl):
-        sentences = json.load(open('documents/' + FnText.hashUrl))
+    # if len(FnText.hashUrl):
+    #     sentences = json.load(open('documents/' + FnText.hashUrl))
     functions = [substitute(fn) for fn in sentences]
     
     val = False

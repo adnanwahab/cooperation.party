@@ -1263,15 +1263,7 @@ def get_lat_long_more_better(fp):
 def attempt_at_building_communities(_, documentContext, sentence):
     if _ == False: _ = f'Tokyo--Japan.json'
     if type(_) == list: 
-        # args = [
-        #     "python",
-        #     "run_all_fn.py",
-        #     json.dumps(_)
-        # ]
-        # completed_process = subprocess.run(args)
-        # print('run all fn has complete')
         return [attempt_at_building_communities(city, documentContext, sentence) for city in _]
-    print('what am doing')
     cache_key = hash(json.dumps(_))
     if cache_key in community_cache: return community_cache[cache_key]
 
@@ -1297,7 +1289,7 @@ def attempt_at_building_communities(_, documentContext, sentence):
     totals = defaultdict(int) 
     h3_cells = retrieveAggregation(selected_poi_names) #{}
     for location in geo_coords: 
-        hex_id = h3.geo_to_h3(location[0], location[1], 7)
+        hex_id = h3.geo_to_h3(location[1], location[0], 7)
         if hex_id not in h3_cells: 
             h3_cells[hex_id] = {}
             for col in selected_poi_names: 

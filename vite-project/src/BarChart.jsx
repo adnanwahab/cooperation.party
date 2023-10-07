@@ -3,13 +3,54 @@ import React from 'react';
 import {Runtime, Inspector} from "@observablehq/runtime";
 import define2 from "https://api.observablehq.com/d/84ce55045edfd14f.js?v=3";
 
+import * as d3 from 'd3'
+// import define from "https://api.observablehq.com/@jashkenas/breakout.js?v=3";
+// let module = new Runtime().module(define, name => {
+//   if (name === "score") return new Inspector(document.querySelector("#observablehq-score-0d14fa84"));
+
+//   return ["highscore","gameloop","draw"].includes(name);
+// })
+//window.module = module
+
 export default function BarChart(props) {
+  console.log('props', props.data)
+  const cb = props.cb || function () {}
+  let data = props.data
+  if (! Array.isArray(props.data)) {
+    data = Object.entries(props.data).map(_ => {
+      return {
+        letter: _[0].replace('.json', ''),
+        frequency: _[1]
+      }
+    })
+  }
   const chartRef = useRef();
   useEffect(() => {
     const runtime = new Runtime();
-    runtime.module(define2, name => {
+   let module = runtime.module(define2, name => {
       if (name === "chart") return new Inspector(chartRef.current);
-    }).redefine('alphabet', props.data)
+      
+    })
+    
+    module.redefine('alphabet', data)
+    //Observer.
+    module.value('selected').then((_) => {
+      console.log('selected', _)
+    })
+    
+  //   module.redefine('callback', function (_) {
+  //     console.log(_)
+  //     if (props.callback) props.callback(_)
+  //   })
+  setInterval(function () {
+    window.d3 = d3
+    d3.selectAll('.bar').on('mouseover.foo', function (e) {
+      console.log('selected', e.target.__data__)
+      cb(e.target.__data__.letter)
+      props.setFormData('city', e.target.__data__.letter)
+      props.apply_()
+    }, 20000)
+  })
     return () => runtime.dispose();
   }, []);
 

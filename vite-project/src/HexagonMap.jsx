@@ -128,7 +128,7 @@ reports,
         getIcon: d => 'marker',
         onClick: (_)=> _.object.url,
         sizeScale: 15,
-        getPosition: d => d.location.reverse().concat(100),
+        getPosition: d => d.location.concat(100),
         getSize: d => 5,
         getColor: d => [Math.random() * 255, 140, 0]
       }),

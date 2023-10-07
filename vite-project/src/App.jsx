@@ -27,6 +27,8 @@ import BarChart from './BarChart';
 
 import Tabs from './Tabs';
 
+import TravelTimeMap from './TravelTimeMap'
+
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
@@ -499,11 +501,48 @@ function isIsochroney(datum) {
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
 
+//list airbnbs in each city -> bar chart
+//find all that are commute distance to best coworking space in each one. 
+
+
+//
+//
+
+//match sentence with presenter on client
+//fetch model with fetch from server
+function SentencePresenter() {
+  let originalSentence = ''
+  return (<>
+    {originalSentence}
+  
+  </>)
+}
+
+
 function compile (dataList, apply_) {
+//  let [getSelected, setSelected] = useState('')
   const result = dataList.map(function (datum, index) {
+    console.log(datum)
+    if (datum.component === '<BarChart>') {
+      return <div class="overflow-scroll h-96"><BarChart 
+      setFormData={setFormData}
+      apply_={apply_}
+      callback={(_) => console.log(_)}
+      data={datum.data}></BarChart></div>
+    }
+
+    if (datum.component === '<traveltimemap>') {
+      console.log('completedemo', documentContext.city)
+      return <TravelTimeMap {...datum.data[documentContext.city || 'Ghent--Flemish-Region--Belgium']}></TravelTimeMap>
+    }
     if (datum.component === '<Hexagonworld>') {
       return <HexagonWorld data={datum.data}/>
     }
+    if (datum && datum.isochrone) {
+      
+      return <><div><Isochronemap  {...datum}></Isochronemap></div> </>
+    }
+
     if (datum[0] && datum[0].isochrone) {
       
       return datum.map((datum, idx) =><> <Tabs></Tabs><div key={idx} ><Isochronemap  {...datum}></Isochronemap></div> </>)
