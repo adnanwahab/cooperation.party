@@ -533,7 +533,7 @@ function compile (dataList, apply_) {
 
     if (datum.component === '<traveltimemap>') {
       console.log('completedemo', documentContext.city)
-      return <TravelTimeMap {...datum.data[documentContext.city || 'Ghent--Flemish-Region--Belgium']}></TravelTimeMap>
+      return <TravelTimeMap data={datum.data}></TravelTimeMap>
     }
     if (datum.component === '<Hexagonworld>') {
       return <HexagonWorld data={datum.data}/>
@@ -587,6 +587,9 @@ function TextPresenter(props) {
 }
 
 let templates = {
+  remote_year_planning: `
+  for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
+  find all apt within commute distance to coworking`,
 
   optimalhousematchingforgroups: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
