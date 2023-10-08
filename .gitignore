@@ -9,3 +9,5 @@ node_modules/
 .env
 __pycache__/data_
 data_/
+.DS_Store
+__pycache__
