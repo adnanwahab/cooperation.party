@@ -12,11 +12,9 @@ function run_cmd {
 }
 export -f run_cmd
 
-
-
-
 #printf "%s\n" "${commands[@]}" | xargs -I {} bash -c 'run_cmd "$@"' _ {}
-printf "%s\n" "${commands[@]}" | xargs -I CMD -P 10 bash -c "CMD"
+#printf "%s\n" "${commands[@]}" | xargs -I CMD -P 10 bash -c "CMD"
 
-    
 #printf "%s\n" "${commands[@]}" | parallel -j 10 --line-buffer
+
+jupyter nbconvert --to script jupyter/*.ipynb --output-dir=src
