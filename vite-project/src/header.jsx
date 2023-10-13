@@ -43,14 +43,13 @@ import { Popover } from '@headlessui/react'
 //   )
 // }
 
-
 function MyPopover() {
   return (
-    <Popover className="relative">
+    <Popover className="relative font-serif">
       <Popover.Button>About</Popover.Button>
 
-      <Popover.Panel className="absolute z-10 bg-white w-96 h-128 border border-purple-500">
-<div class="h-96 w-128">
+      <Popover.Panel className="absolute z-10 bg-white w-96 h-fit border border-purple-500 right-0">
+<div class="h-fit w-fit">
 <div>* Data Analyis in Natural Language</div>
 <div>* Write code that is approved by 100% of people, not just 1% of programmers.</div>
 <div>* Import/Export to SpreadSheet</div>
@@ -74,9 +73,7 @@ export default function Header() {
     <header className="bg-white">
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex items-center gap-x-12">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="">Cooperation.Party</span>
-          </a>
+            <span className="text-xl font-serif">Cooperation.Party</span>
           {/* <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">

@@ -28,6 +28,7 @@ import BarChart from './BarChart';
 import Tabs from './Tabs';
 
 import TravelTimeMap from './TravelTimeMap'
+import TableView from './TableView'
 
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
@@ -338,34 +339,20 @@ console.log('is this deployed')
 async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
   //text = ['asdfasd', 'asdfasdf', 'asdf']
-<<<<<<< HEAD
-  let port = 8000
-=======
+//  let port = 8000
   let port = 8005
-<<<<<<< HEAD
->>>>>>> e2ac0ee (end the demo)
-  let url = `http://localhost:${port}/makeFn/`
-=======
+//  let url = `http://localhost:${port}/makeFn/`
   let url = 'http://127.0.0.1:8000/makeFn'
-<<<<<<< HEAD
->>>>>>> 3a9d651 (doc query cache)
   let useGPU = true
   console.log('gesundheit')
-if (useGPU || window.location.hostname !== 'localhost') {
-<<<<<<< HEAD
    url = `https://pypypy.ngrok.io/makeFn/`
-=======
    //url = `https://hidden-river-3971.fly.dev/makeFn/`
->>>>>>> 3a9d651 (doc query cache)
-=======
-  let useGPU = false
 if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
   console.log('gesundheit', window.location.hostname)
    //url = `https://hidden-river-3971.fly.dev/makeFn/`
    url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
    url = 'https://pypypy.ngrok.io/makeFn'
    console.log(url)
->>>>>>> fd4216d (asdf)
 }
 url = 'https://pypypy.ngrok.io/makeFn'
 
@@ -535,6 +522,17 @@ function compile (dataList, apply_) {
       console.log('completedemo', documentContext.city)
       return <TravelTimeMap data={datum.data}></TravelTimeMap>
     }
+
+    if (datum.component === '<tableview>') {
+
+      return (
+        <>
+      <>{"This apt is best because of these reasons."}</>
+      <TableView data={datum.data}/>
+      </>
+      )
+    }
+
     if (datum.component === '<Hexagonworld>') {
       return <HexagonWorld data={datum.data}/>
     }
@@ -587,6 +585,7 @@ function TextPresenter(props) {
 }
 
 let templates = {
+  find_best_deals_on_airbnb: `find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench)`,
   remote_year_planning: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find all apt within commute distance to coworking`,
@@ -707,11 +706,10 @@ function App() {
   <>
   <Header />
     <div className="grid grid-cols-3">
-      {leftPanel}
-{/* h-96 overflow-scroll */}
-      <div className="col-span-2 ">{components} 
-      {/* <div class="h-96 w-full"><BarChart></BarChart></div> */}
-      </div>
+    {leftPanel}
+
+
+      <div className="col-span-2 ">{components} </div>
       {/* <div>
       1. proximity to water
       2. land usage
@@ -853,6 +851,3 @@ function Poll() {
 //linked diagrams
 //javascript -> display + run queries on UI
 //python -> automatically create services on infinte data streams 
-
-
-
