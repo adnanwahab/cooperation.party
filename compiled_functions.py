@@ -39,6 +39,8 @@ if os.path.exists('.env'):
     env_var = open('.env').read().split('=')[1]
 else:
     env_var = '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'
+openai.api_key = env_var
+openai.organization = "org-Yz814AiRJVl9JGvXXiL9ZXPl"
 #document_query_cache = json.load(open('data/document_query_cache.json'))
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
 #and make it save to filesystem if a parameter is added 
@@ -49,8 +51,6 @@ if os.path.exists('data/document_query_cache.json'):
 print('document_query_cache', document_query_cache)
 def unstructured_geoSpatial_house_template_query(_):
     if _ in document_query_cache: return document_query_cache[_]
-    openai.api_key = env_var
-    openai.organization = "org-Yz814AiRJVl9JGvXXiL9ZXPl"
     #find 10 houses and each house is close to the residents favorite preferences (two people like library, two people like atm,  two people like vending_machine,  all of them like bench and they all dislike parking_space but half like bank and the other half prefer clinic and some prefer place_of_worship while others prefer research_institute and some like disco and the others prefer country)
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -1572,6 +1572,34 @@ def rankAptByUserPreferences():
 #map
 #data table
 
+def getRoute(start, end):
+    start_lng = start[0]
+    start_lon = start[1]
+    end_lon = end[0]
+    end_lon = end[1]
+
+    url = f"https://api.mapbox.com/directions/v5/mapbox/walking/{start_lng}{start_lon};{end_lng}{end_lon}"
+
+    # Define the query parameters as a dictionary
+    params = {
+        "alternatives": "true",
+        "geometries": "geojson",
+        "language": "en",
+        "overview": "full",
+        "steps": "true",
+        "access_token": "your_access_token_here"  # Replace with your Mapbox access token
+    }
+
+    # Make the GET request
+    response = requests.get(url, params=params)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print("Request failed with status code:", response.status_code)
+
 
 def find_best_deals_on_airbnb(prevData, documentContext, sentence):
     #print one list view per city
@@ -1599,7 +1627,34 @@ def find_best_deals_on_airbnb(prevData, documentContext, sentence):
             #estimated total commute time -> visit library + coworking space 3x a week each, list of friends
             }
 
+def schedule_json_converter(_, documentContext, sentence):
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+        "role": "system",
+        "content": "convert unstructured data to json"
+        },
+        {
+        "role": "user",
+        "content": ""
+        },
+        {
+        "role": "assistant",
+        "content": ""
+        }
+    ],
+    temperature=1,
+    max_tokens=256,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+    result = response['choices'][0]['message']['content']
+
+
 jupyter_functions = { #use regexes + spelling corrector + llm to match sentences w/ functions
+    "my schedule is": schedule_json_converter,
     "find best deals on airbnb" : find_best_deals_on_airbnb,
     "for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']" : forEachCity,
     'find all apt within commute distance': get_apt_commute_distance_to_coworking,
@@ -1902,3 +1957,145 @@ async def twitch_comments(streamers, sentenceComponentFormData):
     results = await asyncio.gather(*tasks)
     return results
 
+
+
+
+def geoCode(address = "1600 Amphitheatre Parkway, Mountain View, CA"):
+    accessToken = "pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg"  # Replace with your actual access token
+
+    geocodeUrl = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{address}%2C%20singapore.json?access_token={accessToken}"
+
+    response = requests.get(geocodeUrl)
+    data = response.json()
+
+    if 'features' in data and len(data['features']) > 0:
+        location = data['features'][0]['geometry']['coordinates']
+        #print(f"Longitude: {location[0]}, Latitude: {location[1]}")
+        return location
+
+
+def getRoute(start, end):
+    start_lng = start[0]
+    start_lon = start[1]
+    end_lon = end[0]
+    end_lng = end[1]
+    
+    f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lon}%3B{end_lng}%2C{end_lng}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
+
+    url = f"https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lon}%3B{end_lng}%2C{end_lon}"
+    url = 'https://api.mapbox.com/directions/v5/mapbox/driving/-73.982037%2C40.733542%3B-73.99916%2C40.737452?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
+    accessToken = "pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg"  # Replace with your actual access token
+    print(url)
+    # Define the query parameters as a dictionary
+#     params = {
+#         "alternatives": "true",
+#         "geometries": "geojson",
+#         "language": "en",
+#         "overview": "full",
+#         "steps": "true",
+#         "access_token":accessToken  # Replace with your Mapbox access token
+#     }
+
+    # Make the GET request
+    
+    response = requests.get(url)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print("Request failed with status code:", response.status_code)
+        
+        
+_ = geoCode('20418 autumn shore drive')
+__ = geoCode('Katy Mills Mall katy texasa')
+
+getRoute(_, __)
+schedule = {
+  "office": {
+    "days_per_week": 3,
+    "location": "Brookfield Place"
+  },
+  "yoga": {
+    "days_per_week": 4
+  },
+  "rock_climbing": {
+    "days_per_week": 2
+  }    
+}
+
+apt = ("7801", [
+        "-73.9561767578125",
+        "40.718807220458984"
+])
+
+
+
+apt_location = apt[1]
+
+
+import geopy.distance
+
+#geopy.distance.geodesic(nearest, (float(apt['latitude']), float(apt['longitude']))).km
+
+
+def distanceTo(one, two):
+    return one['lat'] - float(two[0]) + float(two[1]) - one['lon']
+
+
+
+    
+def fetch_things_in_schedule(todo, apt_location):
+    # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
+    # return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
+    latitude = float(apt_location[1])
+    longitude = float(apt_location[0])
+    places = []
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node[office="coworking"]({latitude - 1},{longitude - 1},{latitude + 1},{longitude + 1});
+    );
+    out body;
+    """ 
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    response = requests.get(overpass_url, params={'data': query})
+    #print(response.status_code, longitude, latitude, amenities)
+    if response.status_code == 200:
+        data = response.json()
+        #print(data)
+        coffee_shops = data['elements']
+        places += coffee_shops
+    return places    
+
+
+def find_nearest(todo, apt_location):
+    all_things = fetch_things_in_schedule(todo, apt_location)
+    sorted(all_things, key=lambda place: distanceTo(place, apt_location))
+    return all_things[0]
+
+
+def get_travel_time(apt_location, location):
+    #print(apt_location, location)
+    route = getRoute(apt_location, (location['lon'], location['lat']))
+    #print(route)
+    return route['routes'][0]['duration']
+
+#may want to cache or use hex-neighborhood 
+def compute_commute_time(schedule, apt_location):
+    schedule = schedule.copy()
+    total_commute_time = 0
+    for todo in schedule:
+        if 'location' not in schedule: 
+            schedule[todo]['location'] = find_nearest(todo, apt_location)
+        travel_time = get_travel_time(apt_location, schedule[todo]['location'])
+        total_commute_time = travel_time * schedule[todo]['days_per_week'] 
+    #print('schedule', schedule)
+    return total_commute_time
+
+
+def normalize_commute_in_city(schedule, city_name):
+    city =  json.load(open('city_name')) 
+    for i in city:
+        compute_commute_time(schedule, city[i])

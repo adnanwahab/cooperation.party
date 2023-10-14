@@ -8,6 +8,30 @@ from collections import defaultdict
 from pydantic import BaseModel
 from typing import List, Optional
 import json
+
+from pyngrok import ngrok
+
+# Set configuration options
+config = {
+    'name': 'example',
+    'proto': 'http',
+    'addr': 8000,
+    'host_header': 'rewrite',
+    'subdomain': 'pypypy'
+}
+
+# Open a HTTP tunnel on the specified port
+public_url = ngrok.connect(**config)
+print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
+# Keep the tunnel running until terminated
+#input("Press Enter to exit...")
+# Terminate the ngrok tunnel when the script is interrupted
+#ngrok.kill()
+
+
+
+
+
 def substitute(name):
     for k in jupyter_functions:
         if (len(name)) < 1: return name
@@ -44,8 +68,10 @@ class FnText(BaseModel):
     documentContext: dict
     hashUrl: Optional[str] = ''
 
+@app.post("/callFn/<fn_name>")
+async def callFn(FnText:FnText):
+    pass
 
-print('sentences')
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
     sentences = FnText.fn
