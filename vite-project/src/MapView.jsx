@@ -183,8 +183,12 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 }
 
+
+
   return (
 <div className="relative h-96">
+    <h3>Colorize Hexes by suitability for given schedule.</h3>
+    <Legend></Legend>
     <DeckGL
         width={500}
         height={500}
@@ -201,4 +205,9 @@ const INITIAL_VIEW_STATE = {
     </DeckGL>
     </div>
   );
+}
+
+//hex colors
+function Legend() {
+    return <></>
 }

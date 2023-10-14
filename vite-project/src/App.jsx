@@ -585,7 +585,10 @@ function TextPresenter(props) {
 }
 
 let templates = {
-  find_best_deals_on_airbnb: `find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench)`,
+  find_best_deals_on_airbnb: `find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench).
+  my schedule is i go to the office 3 x a week my office is at brookfield place i go to yoga 4x a week and i go to rock-climbing 2x a week and i visit the closest park everyday.
+
+  `,
   remote_year_planning: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find all apt within commute distance to coworking`,

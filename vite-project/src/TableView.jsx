@@ -14,7 +14,6 @@ const tabs = [
   }
   
  function Tabs({tabs}) {
-    console.log(tabs)
     return (
       <div>
         <div className="sm:hidden">
