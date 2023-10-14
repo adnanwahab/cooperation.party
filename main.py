@@ -68,9 +68,14 @@ class FnText(BaseModel):
     documentContext: dict
     hashUrl: Optional[str] = ''
 
-@app.post("/callFn/<fn_name>")
-async def callFn(FnText:FnText):
-    pass
+
+class neighborhoodDetails(BaseModel):
+    apt_url: str
+
+@app.post("/neighborhoodDetails")
+async def callFn(neighborhoodDetails: neighborhoodDetails):
+    print(neighborhoodDetails)
+    return {'key': 123}
 
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
