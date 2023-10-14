@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import time
+>>>>>>> 57cc6d1 (1 hour finish line)
 import random
 from collections import defaultdict
 import concurrent.futures
@@ -10,7 +14,6 @@ from collections import defaultdict
 from shapely.geometry import shape, Point
 import random 
 import requests
-import easyocr
 from fastapi import Request, FastAPI
 import random
 import json 
@@ -26,21 +29,25 @@ from collections import defaultdict
 from pydantic import BaseModel
 import json
 import os.path
-import nltk
-from nltk.corpus import words
-from nltk.tag import pos_tag
-from nltk.tokenize import word_tokenize
-# nltk.download('punkt')
-# nltk.download('universal_tagset')
-# nltk.download('words')
-from time import time
 import os
 import openai
-env_var = open('.env').read().split('=')[1]
+import geopy.distance
 
-document_query_cache = json.load(open('data/document_query_cache.json'))
+print('data exists : ', os.path.exists('data'))
+print('data exists : ', os.listdir('.'))
+
+if os.path.exists('.env'):
+    env_var = open('.env').read().split('=')[1]
+else:
+    env_var = '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'
+#document_query_cache = json.load(open('data/document_query_cache.json'))
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
 #and make it save to filesystem if a parameter is added 
+document_query_cache = {}
+if os.path.exists('data/document_query_cache.json'):
+    document_query_cache = json.load(open('data/document_query_cache.json'))
+
+print('document_query_cache', document_query_cache)
 def unstructured_geoSpatial_house_template_query(_):
     if _ in document_query_cache: return document_query_cache[_]
     openai.api_key = env_var
@@ -393,8 +400,329 @@ def trees_map(_, sentence, i):
     from ipynb.fs.defs.geospatial import trees_map
     return trees_map()[:100000]
 
+
+
+
+
+
+import random
+import math
+
+def getCounter(typ):
+    type_counters = {
+    "Normal": ["Fighting"],
+    "Fire": ["Water", "Rock", "Ground"],
+    "Water": ["Electric", "Grass"],
+    "Electric": ["Ground"],
+    "Grass": ["Fire", "Flying", "Bug", "Poison"],
+    "Ice": ["Fire", "Fighting", "Steel", "Rock"],
+    "Fighting": ["Flying", "Psychic", "Fairy"],
+    "Poison": ["Ground", "Psychic"],
+    "Ground": ["Water", "Ice", "Grass"],
+    "Flying": ["Electric", "Ice", "Rock"],
+    "Psychic": ["Bug", "Ghost", "Dark"],
+    "Bug": ["Fire", "Flying", "Rock"],
+    "Rock": ["Water", "Grass", "Fighting", "Steel", "Ground"],
+    "Ghost": ["Ghost", "Dark"],
+    "Dragon": ["Ice", "Dragon", "Fairy"],
+    "Dark": ["Fighting", "Bug", "Fairy"],
+    "Steel": ["Fire", "Fighting", "Ground"],
+    "Fairy": ["Poison", "Steel"]
+    }
+    pokemon_types = [
+    ("Bulbasaur", "Grass", "Poison"),
+    ("Ivysaur", "Grass", "Poison"),
+    ("Venusaur", "Grass", "Poison"),
+    ("Charmander", "Fire", None),
+    ("Charmeleon", "Fire", None),
+    ("Charizard", "Fire", "Flying"),
+    ("Squirtle", "Water", None),
+    ("Wartortle", "Water", None),
+    ("Blastoise", "Water", None),
+    ("Caterpie", "Bug", None),
+    ("Metapod", "Bug", None),
+    ("Butterfree", "Bug", "Flying"),
+    ("Weedle", "Bug", "Poison"),
+    ("Kakuna", "Bug", "Poison"),
+    ("Beedrill", "Bug", "Poison"),
+    ("Pidgey", "Normal", "Flying"),
+    ("Pidgeotto", "Normal", "Flying"),
+    ("Pidgeot", "Normal", "Flying"),
+    ("Rattata", "Normal", None),
+    ("Raticate", "Normal", None),
+    ("Spearow", "Normal", "Flying"),
+    ("Fearow", "Normal", "Flying"),
+    ("Ekans", "Poison", None),
+    ("Arbok", "Poison", None),
+    ("Pikachu", "Electric", None),
+    ("Raichu", "Electric", None),
+    ("Sandshrew", "Ground", None),
+    ("Sandslash", "Ground", None),
+    ("Nidoran♀", "Poison", None),
+    ("Nidorina", "Poison", None),
+    ("Nidoqueen", "Poison", "Ground"),
+    ("Nidoran♂", "Poison", None),
+    ("Nidorino", "Poison", None),
+    ("Nidoking", "Poison", "Ground"),
+    ("Clefairy", "Fairy", None),
+    ("Clefable", "Fairy", None),
+    ("Vulpix", "Fire", None),
+    ("Ninetales", "Fire", None),
+    ("Jigglypuff", "Normal", "Fairy"),
+    ("Wigglytuff", "Normal", "Fairy"),
+    ("Zubat", "Poison", "Flying"),
+    ("Golbat", "Poison", "Flying"),
+    ("Oddish", "Grass", "Poison"),
+    ("Gloom", "Grass", "Poison"),
+    ("Vileplume", "Grass", "Poison"),
+    ("Paras", "Bug", "Grass"),
+    ("Parasect", "Bug", "Grass"),
+    ("Venonat", "Bug", "Poison"),
+    ("Venomoth", "Bug", "Poison"),
+    ("Diglett", "Ground", None),
+    ("Dugtrio", "Ground", None),
+    ("Meowth", "Normal", None),
+    ("Persian", "Normal", None),
+    ("Psyduck", "Water", None),
+    ("Golduck", "Water", None),
+    ("Mankey", "Fighting", None),
+    ("Primeape", "Fighting", None),
+    ("Growlithe", "Fire", None),
+    ("Arcanine", "Fire", None),
+    ("Poliwag", "Water", None),
+    ("Poliwhirl", "Water", None),
+    ("Poliwrath", "Water", "Fighting"),
+    ("Abra", "Psychic", None),
+    ("Kadabra", "Psychic", None),
+    ("Alakazam", "Psychic", None),
+    ("Machop", "Fighting", None),
+    ("Machoke", "Fighting", None),
+    ("Machamp", "Fighting", None),
+    ("Bellsprout", "Grass", "Poison"),
+    ("Weepinbell", "Grass", "Poison"),
+    ("Victreebel", "Grass", "Poison"),
+    ("Tentacool", "Water", "Poison"),
+    ("Tentacruel", "Water", "Poison"),
+    ("Geodude", "Rock", "Ground"),
+    ("Graveler", "Rock", "Ground"),
+    ("Golem", "Rock", "Ground"),
+    ("Ponyta", "Fire", None),
+    ("Rapidash", "Fire", None),
+    ("Slowpoke", "Water", "Psychic"),
+    ("Slowbro", "Water", "Psychic"),
+    ("Magnemite", "Electric", "Steel"),
+    ("Magneton", "Electric", "Steel"),
+    ("Farfetch'd", "Normal", "Flying"),
+    ("Doduo", "Normal", "Flying"),
+    ("Dodrio", "Normal", "Flying"),
+    ("Seel", "Water", None),
+    ("Dewgong", "Water", "Ice"),
+    ("Grimer", "Poison", None),
+    ("Muk", "Poison", None),
+    ("Shellder", "Water", None),
+    ("Cloyster", "Water", "Ice"),
+    ("Gastly", "Ghost", "Poison"),
+    ("Haunter", "Ghost", "Poison"),
+    ("Gengar", "Ghost", "Poison"),
+    ("Onix", "Rock", "Ground"),
+    ("Drowzee", "Psychic", None),
+    ("Hypno", "Psychic", None),
+    ("Krabby", "Water", None),
+    ("Kingler", "Water", None),
+    ("Voltorb", "Electric", None),
+    ("Electrode", "Electric", None),
+    ("Exeggcute", "Grass", "Psychic"),
+    ("Exeggutor", "Grass", "Psychic"),
+    ("Cubone", "Ground", None),
+    ("Marowak", "Ground", None),
+    ("Hitmonlee", "Fighting", None),
+    ("Hitmonchan", "Fighting", None),
+    ("Lickitung", "Normal", None),
+    ("Koffing", "Poison", None),
+    ("Weezing", "Poison", None),
+    ("Rhyhorn", "Ground", "Rock"),
+    ("Rhydon", "Ground", "Rock"),
+    ("Chansey", "Normal", None),
+    ("Tangela", "Grass", None),
+    ("Kangaskhan", "Normal", None),
+    ("Horsea", "Water", None),
+    ("Seadra", "Water", None),
+    ("Goldeen", "Water", None),
+    ("Seaking", "Water", None),
+    ("Staryu", "Water", None),
+    ("Starmie", "Water", "Psychic"),
+    ("Mr. Mime", "Psychic", "Fairy"),
+    ("Scyther", "Bug", "Flying"),
+    ("Jynx", "Ice", "Psychic"),
+    ("Electabuzz", "Electric", None),
+    ("Magmar", "Fire", None),
+    ("Pinsir", "Bug", None),
+    ("Tauros", "Normal", None),
+    ("Magikarp", "Water", None),
+    ("Gyarados", "Water", "Flying"),
+    ("Lapras", "Water", "Ice"),
+    ("Ditto", "Normal", None),
+    ("Eevee", "Normal", None),
+    ("Vaporeon", "Water", None),
+    ("Jolteon", "Electric", None),
+    ("Flareon", "Fire", None),
+    ("Porygon", "Normal", None),
+    ("Omanyte", "Rock", "Water"),
+    ("Omastar", "Rock", "Water"),
+    ("Kabuto", "Rock", "Water"),
+    ("Kabutops", "Rock", "Water"),
+    ("Aerodactyl", "Rock", "Flying"),
+    ("Snorlax", "Normal", None),
+    ("Articuno", "Ice", "Flying"),
+    ("Zapdos", "Electric", "Flying"),
+    ("Moltres", "Fire", "Flying"),
+    ("Dratini", "Dragon", None),
+    ("Dragonair", "Dragon", None),
+    ("Dragonite", "Dragon", "Flying"),
+    ("Mewtwo", "Psychic", None),
+    ("Mew", "Psychic", None),
+    # Generation 2
+    ("Chikorita", "Grass", None),
+    ("Bayleef", "Grass", None),
+    ("Meganium", "Grass", None),
+    ("Cyndaquil", "Fire", None),
+    ("Quilava", "Fire", None),
+    ("Typhlosion", "Fire", None),
+    ("Totodile", "Water", None),
+    ("Croconaw", "Water", None),
+    ("Feraligatr", "Water", None),
+    ("Sentret", "Normal", None),
+    ("Furret", "Normal", None),
+    ("Hoothoot", "Normal", "Flying"),
+    ("Noctowl", "Normal", "Flying"),
+    ("Ledyba", "Bug", "Flying"),
+    ("Ledian", "Bug", "Flying"),
+    ("Spinarak", "Bug", "Poison"),
+    ("Ariados", "Bug", "Poison"),
+    ("Crobat", "Poison", "Flying"),
+    ("Chinchou", "Water", "Electric"),
+    ("Lanturn", "Water", "Electric"),
+    ("Pichu", "Electric", None),
+    ("Cleffa", "Fairy", None),
+    ("Igglybuff", "Normal", "Fairy"),
+    ("Togepi", "Fairy", None),
+    ("Togetic", "Fairy", "Flying"),
+    ("Natu", "Psychic", "Flying"),
+    ("Xatu", "Psychic", "Flying"),
+    ("Mareep", "Electric", None),
+    ("Flaaffy", "Electric", None),
+    ("Ampharos", "Electric", None),
+    ("Bellossom", "Grass", None),
+    ("Marill", "Water", "Fairy"),
+    ("Azumarill", "Water", "Fairy"),
+    ("Sudowoodo", "Rock", None),
+    ("Politoed", "Water", None),
+    ("Hoppip", "Grass", "Flying"),
+    ("Skiploom", "Grass", "Flying"),
+    ("Jumpluff", "Grass", "Flying"),
+    ("Aipom", "Normal", None),
+    ("Sunkern", "Grass", None),
+    ("Sunflora", "Grass", None),
+    ("Yanma", "Bug", "Flying"),
+    ("Wooper", "Water", "Ground"),
+    ("Quagsire", "Water", "Ground"),
+    ("Espeon", "Psychic", None),
+    ("Umbreon", "Dark", None),
+    ("Murkrow", "Dark", "Flying"),
+    ("Slowking", "Water", "Psychic"),
+    ("Misdreavus", "Ghost", None),
+    ("Unown", "Psychic", None),
+    ("Wobbuffet", "Psychic", None),
+    ("Girafarig", "Normal", "Psychic"),
+    ("Pineco", "Bug", None),
+    ("Forretress", "Bug", "Steel"),
+    ("Dunsparce", "Normal", None),
+    ("Gligar", "Ground", "Flying"),
+    ("Steelix", "Steel", "Ground"),
+    ("Snubbull", "Fairy", None),
+    ("Granbull", "Fairy", None),
+    ("Qwilfish", "Water", "Poison"),
+    ("Scizor", "Bug", "Steel"),
+    ("Shuckle", "Bug", "Rock"),
+    ("Heracross", "Bug", "Fighting"),
+    ("Sneasel", "Dark", "Ice"),
+    ("Teddiursa", "Normal", None),
+    ("Ursaring", "Normal", None),
+    ("Slugma", "Fire", None),
+    ("Magcargo", "Fire", "Rock"),
+    ("Swinub", "Ice", "Ground"),
+    ("Piloswine", "Ice", "Ground"),
+    ("Corsola", "Water", "Rock"),
+    ("Remoraid", "Water", None),
+    ("Octillery", "Water", None),
+    ("Delibird", "Ice", "Flying"),
+    ("Mantine", "Water", "Flying"),
+    ("Skarmory", "Steel", "Flying"),
+    ("Houndour", "Dark", "Fire"),
+    ("Houndoom", "Dark", "Fire"),
+    ("Kingdra", "Water", "Dragon"),
+    ("Phanpy", "Ground", None),
+    ("Donphan", "Ground", None),
+    ("Porygon2", "Normal", None),
+    ("Stantler", "Normal", None),
+    ("Smeargle", "Normal", None),
+    ("Tyrogue", "Fighting", None),
+    ("Hitmontop", "Fighting", None),
+    ("Smoochum", "Ice", "Psychic"),
+    ("Elekid", "Electric", None),
+    ("Magby", "Fire", None),
+    ("Miltank", "Normal", None),
+    ("Blissey", "Normal", None),
+    ("Raikou", "Electric", None),
+    ("Entei", "Fire", None),
+    ("Suicune", "Water", None),
+    ("Larvitar", "Rock", "Ground"),
+    ("Pupitar", "Rock", "Ground"),
+    ("Tyranitar", "Rock", "Dark"),
+    ("Lugia", "Psychic", "Flying"),
+    ("Ho-oh", "Fire", "Flying"),
+    ("Celebi", "Psychic", "Grass")
+    ]
+    counters = type_counters[typ]
+    #once a type has been countered
+    poss = [pokemon[0] for pokemon in pokemon_types 
+            if pokemon[1] in counters 
+            or pokemon[2] in counters
+           ]
+    return poss[math.floor(random.random() * len(poss))]
+
+
+
+def generate_team(player_choice='mew'):
+    type_counters = {
+    "Normal": ["Fighting"],
+    "Fire": ["Water", "Rock", "Ground"],
+    "Water": ["Electric", "Grass"],
+    "Electric": ["Ground"],
+    "Grass": ["Fire", "Flying", "Bug", "Poison"],
+    "Ice": ["Fire", "Fighting", "Steel", "Rock"],
+    "Fighting": ["Flying", "Psychic", "Fairy"],
+    "Poison": ["Ground", "Psychic"],
+    "Ground": ["Water", "Ice", "Grass"],
+    "Flying": ["Electric", "Ice", "Rock"],
+    "Psychic": ["Bug", "Ghost", "Dark"],
+    "Bug": ["Fire", "Flying", "Rock"],
+    "Rock": ["Water", "Grass", "Fighting", "Steel", "Ground"],
+    "Ghost": ["Ghost", "Dark"],
+    "Dragon": ["Ice", "Dragon", "Fairy"],
+    "Dark": ["Fighting", "Bug", "Fairy"],
+    "Steel": ["Fire", "Fighting", "Ground"],
+    "Fairy": ["Poison", "Steel"]
+    }
+    types = list(type_counters.keys())
+    elite_four = types[6:12]
+    team = [player_choice]
+    for typ in elite_four:
+        team.append(getCounter(typ))
+    return team
+
+
 def pokemon(_, __, i):
-    from ipynb.fs.defs.Pokemon_Dota_Arxiv import generate_team
     return generate_team()
 
 def satellite_housing(_, sentence):
@@ -476,324 +804,6 @@ def get_room_id(url):
     else:
         return None
 
-cities = {
-    "New-York-City--USA": [
-        40.7128,
-        -74.006
-    ],
-    "San-Francisco--USA": [
-        37.7749,
-        -122.4194
-    ],
-    "Vancouver--Canada": [
-        49.2827,
-        -123.1207
-    ],
-    "New-Orleans--USA": [
-        29.9511,
-        -90.0715
-    ],
-    "Los-Angeles--USA": [
-        34.0522,
-        -118.2437
-    ],
-    "Chicago--USA": [
-        41.8781,
-        -87.6298
-    ],
-    "Toronto--Canada": [
-        43.6532,
-        -79.3832
-    ],
-    "Mexico-City--Mexico": [
-        19.4326,
-        -99.1332
-    ],
-    "Montreal--Canada": [
-        45.5017,
-        -73.5673
-    ],
-    "Boston--USA": [
-        42.3601,
-        -71.0589
-    ],
-    "Miami--USA": [
-        25.7617,
-        -80.1918
-    ],
-    "Austin--USA": [
-        30.2672,
-        -97.7431
-    ],
-    "Quebec-City--Canada": [
-        46.8139,
-        -71.2082
-    ],
-    "Seattle--USA": [
-        47.6062,
-        -122.3321
-    ],
-    "Nashville--USA": [
-        36.1627,
-        -86.7816
-    ],
-    "Tokyo--Japan": [
-        35.6895,
-        139.6917
-    ],
-    "Kyoto--Japan": [
-        35.0116,
-        135.7681
-    ],
-    "Bangkok--Thailand": [
-        13.7563,
-        100.5018
-    ],
-    "Hong-Kong--China": [
-        22.3193,
-        114.1694
-    ],
-    "Singapore": [
-        1.3521,
-        103.8198
-    ],
-    "Seoul--South-Korea": [
-        37.5665,
-        126.978
-    ],
-    "Beijing--China": [
-        39.9042,
-        116.4074
-    ],
-    "Dubai--UAE": [
-        25.276987,
-        55.296249
-    ],
-    "Taipei--Taiwan": [
-        25.033,
-        121.5654
-    ],
-    "Istanbul--Turkey": [
-        41.0082,
-        28.9784
-    ],
-    "Hanoi--Vietnam": [
-        21.0285,
-        105.8544
-    ],
-    "Mumbai--India": [
-        19.076,
-        72.8777
-    ],
-    "Kuala-Lumpur--Malaysia": [
-        3.139,
-        101.6869
-    ],
-    "Jaipur--India": [
-        26.9124,
-        75.7873
-    ],
-    "Rio-de-Janeiro--Brazil": [
-        -22.9068,
-        -43.1729
-    ],
-    "Buenos-Aires--Argentina": [
-        -34.6037,
-        -58.3816
-    ],
-    "Cartagena--Colombia": [
-        10.391,
-        -75.4794
-    ],
-    "Lima--Peru": [
-        -12.0464,
-        -77.0428
-    ],
-    "Santiago--Chile": [
-        -33.4489,
-        -70.6693
-    ],
-    "Cusco--Peru": [
-        -13.5319,
-        -71.9675
-    ],
-    "Medellín--Colombia": [
-        6.2476,
-        -75.5709
-    ],
-    "Quito--Ecuador": [
-        -0.1807,
-        -78.4678
-    ],
-    "Montevideo--Uruguay": [
-        -34.9011,
-        -56.1911
-    ],
-    "Bogota--Colombia": [
-        4.71,
-        -74.0721
-    ],
-    "Cape-Town--South-Africa": [
-        -33.9249,
-        18.4241
-    ],
-    "Marrakech--Morocco": [
-        31.6295,
-        -7.9811
-    ],
-    "Cairo--Egypt": [
-        30.8025,
-        31.2357
-    ],
-    "Dakar--Senegal": [
-        14.6928,
-        -17.4467
-    ],
-    "Zanzibar-City--Tanzania": [
-        -6.1659,
-        39.2026
-    ],
-    "Accra--Ghana": [
-        5.6037,
-        -0.1869
-    ],
-    "Addis-Ababa--Ethiopia": [
-        9.03,
-        38.74
-    ],
-    "Victoria-Falls--Zimbabwe/Zambia": [
-        -17.9243,
-        25.8572
-    ],
-    "Nairobi--Kenya": [
-        -1.286389,
-        36.817223
-    ],
-    "Tunis--Tunisia": [
-        36.8065,
-        10.1815
-    ],
-    "Sydney--Australia": [
-        -33.8688,
-        151.2093
-    ],
-    "Melbourne--Australia": [
-        -37.8136,
-        144.9631
-    ],
-    "Auckland--New-Zealand": [
-        -36.8485,
-        174.7633
-    ],
-    "Wellington--New-Zealand": [
-        -41.2865,
-        174.7762
-    ],
-    "Brisbane--Australia": [
-        -27.4698,
-        153.0251
-    ],
-    "Honolulu--Hawaii--USA": [
-        21.3069,
-        -157.8583
-    ],
-    "Bali--Indonesia": [
-        -8.3405,
-        115.092
-    ],
-    "Santorini--Greece": [
-        36.3932,
-        25.4615
-    ],
-    "Maldives-(Male)": [
-        4.1755,
-        73.5093
-    ],
-    "Phuket--Thailand": [
-        7.8804,
-        98.3923
-    ],
-    "Ibiza--Spain": [
-        38.9067,
-        1.4206
-    ],
-    "Seychelles-(Victoria)": [
-        -4.6191,
-        55.4513
-    ],
-    "Havana--Cuba": [
-        23.1136,
-        -82.3666
-    ],
-    "Punta-Cana--Dominican-Republic": [
-        18.582,
-        -68.4055
-    ],
-    "Dubrovnik--Croatia": [
-        42.6507,
-        18.0944
-    ],
-    "Ljubljana--Slovenia": [
-        46.0569,
-        14.5058
-    ],
-    "Tallinn--Estonia": [
-        59.437,
-        24.7536
-    ],
-    "Riga--Latvia": [
-        56.9496,
-        24.1052
-    ],
-    "Sarajevo--Bosnia-and-Herzegovina": [
-        43.8563,
-        18.4131
-    ],
-    "Vilnius--Lithuania": [
-        54.6872,
-        25.2797
-    ],
-    "Tbilisi--Georgia": [
-        41.7151,
-        44.8271
-    ],
-    "Yerevan--Armenia": [
-        40.1792,
-        44.4991
-    ],
-    "Baku--Azerbaijan": [
-        40.4093,
-        49.8671
-    ],
-    "Belgrade--Serbia": [
-        44.7866,
-        20.4489
-    ],
-    "Skopje--North-Macedonia": [
-        41.9973,
-        21.428
-    ],
-    "Banff--Canada": [
-        51.1784,
-        -115.5708
-    ],
-    "Queenstown--New-Zealand": [
-        -45.0312,
-        168.6626
-    ],
-    "Reykjavik-(as-a-gateway-to-Icelandic-nature)": [
-        64.1466,
-        -21.9426
-    ],
-    "Ushuaia--Argentina-(Gateway-to-Antarctica)": [
-        -54.8019,
-        -68.303
-    ],
-    "Kathmandu--Nepal-(Gateway-to-the-Himalayas)": [
-        27.7172,
-        85.324
-    ]
-}
 
 #map apturl to city
 #map city to lat long
@@ -867,14 +877,16 @@ def make_fetch_shops_for_cell(poi_names, h3_cells):
     return fetch_shops_for_cell
 
 def aggregate_poi_in_h3_cell(h3_cells, fn):
+    then = time.time()
+    print('h3_cells', fn)
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         for hex_id, results in executor.map(fn, h3_cells.keys()):
-            #print(hex_id)
+            print(hex_id)
             pass
+    print(time.time() - then)
     return h3_cells
 poi_names = [s.strip() for s in json.load(open('./poi_names.json'))]
-#print(poi_names)
-import random
+
 preferences = {}
 
 coefficents = preferences
@@ -923,9 +935,65 @@ def getIsoChrone(point):
     else:
         print(f"Error: {response.status_code}: {response.text}")
 community_cache = {}
+
+def get_lat_long_more_better(fp):
+    _ = list(json.load(open(fp)).values())
+    _ = [[float(_[0]), float(_[1])] for _ in _]
+    return _
+
+
+def isochroneAssertion(geojson_data, point_to_check):
+    longitude = point_to_check[0]
+    latitude = point_to_check[1]
+    point_to_check = Point(longitude, latitude)
+    for feature in geojson_data['features']:
+        polygon = shape(feature['geometry'])
+        if polygon.contains(point_to_check): return True
+    else : return False
+
+
+
+fn_cache = {}
+
+def cacheThisFunction(func):
+    def _(*args):
+        key = hash(func.__name__ + args.join(','))
+        if key in fn_cache: return fn_cache[key]
+        val = func(*args)
+        fn_cache[key] = val
+        json.dump(fn_cache, open('data/cache/fn_cache.json'))
+        return val
+    return _
+
+getApt_by_travel_time_cache = {}
+
+def getApt_by_travel_time(location, coords):
+    if location in getApt_by_travel_time_cache: return getApt_by_travel_time_cache[location]
+    apt = json.load(open(f'./data/airbnb/apt/{location}.json'))
+    contours_minutes = 15
+    lng = coords['longitude']
+    lat = coords['latitude']
+    isochrone_url = f'https://api.mapbox.com/isochrone/v1/mapbox/walking/{lng}%2C{lat}?contours_minutes={contours_minutes}&polygons=true&denoise=0&generalize=0&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
+    geojson_data = requests.get(isochrone_url).json()
+    apt2 = {_:apt[_] for _ in apt if isochroneAssertion(geojson_data, apt[_])}
+    print(location, len(apt), len(apt2))
+    result =  {'centroid': coords, '_houses': apt2, 'isochrone': geojson_data}
+    getApt_by_travel_time_cache[location] = result
+    return result
+
 def attempt_at_building_communities(_, documentContext, sentence):
+    locations = json.load(open('data/airbnb/city_locations.json'))
+    #documentContext['city'] = 'Ghent--Flemish-Region--Belgium'
+    return {
+        'component': '<traveltimemap>',
+        'data' : { location: getApt_by_travel_time(location , locations[location]) for location in locations}
+    }
+        
+
+
+def archive_attempt_at_building_communities(_, documentContext, sentence):
     if _ == False: _ = f'Tokyo--Japan.json'
-    if type(_) == list: 
+    if False and type(_) == list: 
         # args = [
         #     "python",
         #     "run_all_fn.py",
@@ -936,13 +1004,21 @@ def attempt_at_building_communities(_, documentContext, sentence):
         return [attempt_at_building_communities(city, documentContext, sentence) for city in _]
     cache_key = hash(json.dumps(_))
     if cache_key in community_cache: return community_cache[cache_key]
+    #if type(_) == dict: _ = list(_.keys())[0]
+    if 'data' in _: _ = list(_['data'].keys())[0]
+    _ = f'Tokyo--Japan.json'
+    _ = documentContext['city']
 
     #all_houses = json.load(open(f'data/osm_houses/apt/{_}_houses.json'))
-    all_houses = json.load(open('data/airbnb/apt/'+_))
+    all_houses = list(json.load(open('data/airbnb/apt/'+_+'.json')).keys())
+    print('all house', len(all_houses))
+
     if len(all_houses) is 0: return []
-    geo_coords = [get_lat_long(url, _) for url in all_houses]
-    print(geo_coords, 'attempt_at_building_communities')
+    print('not empty good')
+    geo_coords = get_lat_long_more_better('data/airbnb/apt/'+_+'.json')
+    #print(geo_coords, 'attempt_at_building_communities')
     people_housing_list = {}
+    print('gpt take long time', '_')
 
     user_preferences = unstructured_geoSpatial_house_template_query(sentence)
     for idx, person in enumerate(user_preferences):
@@ -955,7 +1031,7 @@ def attempt_at_building_communities(_, documentContext, sentence):
     totals = defaultdict(int) 
     h3_cells = retrieveAggregation(selected_poi_names) #{}
     for location in geo_coords: 
-        hex_id = h3.geo_to_h3(location[0], location[1], 7)
+        hex_id = h3.geo_to_h3(location[1], location[0], 7)
         if hex_id not in h3_cells: 
             h3_cells[hex_id] = {}
             for col in selected_poi_names: 
@@ -979,13 +1055,15 @@ def attempt_at_building_communities(_, documentContext, sentence):
     _houses = [_housing(url, h3_cells,idx,geo_coords[idx]) for idx, url in enumerate(all_houses)]
     json.dump(_houses, open('_houses.json', 'w+'))
     json.dump(h3_cells, open('h3_cells.json', 'w+'))
+    print('what am doing?')
 
     def distanceToTokyo(house):
-        point = house['location']
-        city_location = cities[_.replace('.json', '')]
+        point = cities['Tokyo--Japan']
+        #geo_coords[house['url']]
+        #return geo_coords[house['url']]
+        city_location = cities['Tokyo--Japan']
         __ = point[1] - city_location[1]
         ____ = point[0] - city_location[0]
-        
         dist = math.sqrt(__ * __ + ____ * ____)
         return dist
 
@@ -1050,15 +1128,18 @@ def attempt_at_building_communities(_, documentContext, sentence):
             coords_2 = report['house']['location']
             distances[key] = str(round(h3.point_dist(coords_1, coords_2, unit='m') / 2200, 2)) + 'mi'
         report['commutes'] = distances
-    result = {'reports': reports, 'isochrone': isochrone, '_houses' : sorted(_houses, key=distanceToTokyo)[:1000],
+    result = {'reports': reports, 
+              'isochrone': isochrone, 
+              '_houses' : sorted(_houses, key=distanceToTokyo)[:1000],
             'hexes': h3_cell_counts,
             'reasoning_adjustment': 'these conditionare slighly mutually exclusive. you selected price as most important -> heres to get a good deal in japan. if you lower the preference for crime, then youll get a cheaper place. if you lower the slider for commercial, youll get more hipster places and you may have better conversations with "your people".',
             'candidates': top_10_candidates,
             'centroid': point,
-            'city': _.replace('.json', '')
+            'city': _.replace('.json', ''),
+
             }
     community_cache[cache_key] = result
-    return result
+    return { 'data': result, 'component': '<isochronemap>'}
 
 
 def get_reasoning_explanation(prefs, house, totals, h3_cell_counts, selected_poi_names  ):
@@ -1200,32 +1281,36 @@ def getCityList():
   ]
 }
 
-def forEachCity(_, __, ___):
-    cities = ['Accra--Ghana.json',
-        'Addis-Ababa--Ethiopia.json',
-        'Cairo--Egypt.json',
-        'Cartagena--Colombia.json',
-        'Cusco--Peru.json',
-        'Dakar--Senegal.json',
-        'Hanoi--Vietnam.json',
-        'Jaipur--India.json',
-        'Kuala-Lumpur--Malaysia.json',
-        'Marrakech--Morocco.json',
-        'Montevideo--Uruguay.json',
-        'Mumbai--India.json',
-        'Nairobi--Kenya.json',
-        'Santiago--Chile.json',
-        'Tunis--Tunisia.json',
-        'Zanzibar-City--Tanzania.json',
-    ]
-    path = 'data/osm_way_residential/'
+def forEachCity(_, documentContext, ___):
+    # cities = ['Accra--Ghana.json',
+    #     'Addis-Ababa--Ethiopia.json',
+    #     'Cairo--Egypt.json',
+    #     'Cartagena--Colombia.json',
+    #     'Cusco--Peru.json',
+    #     'Dakar--Senegal.json',
+    #     'Hanoi--Vietnam.json',
+    #     'Jaipur--India.json',
+    #     'Kuala-Lumpur--Malaysia.json',
+    #     'Marrakech--Morocco.json',
+    #     'Montevideo--Uruguay.json',
+    #     'Mumbai--India.json',
+    #     'Nairobi--Kenya.json',
+    #     'Santiago--Chile.json',
+    #     'Tunis--Tunisia.json',
+    #     'Zanzibar-City--Tanzania.json',
+    # ]
+    path = 'data/airbnb/apt/'
     # cities = [
     #     'Toronto--Canada', 'Lisbon--Portugal', 'Boston--USA',
     #     'Amsterdam--Netherlands', 'Prague--Czech-Republic', 'Singapore--Singapore'
     #     'Tokyo--Japan', 'Barcelona--Spain', 'Madrid--Spain']
     #cities = ['Tokyo--Japan']
-    return os.listdir('data/airbnb/apt')[:5]
-    return [json.load(open(path + city)) for city in cities]
+    #return []
+    cities = os.listdir('data/airbnb/apt')
+    if 'city' not in documentContext: documentContext['city'] = cities[0].replace('.json', '')
+    return { 'data': {city: len(json.load(open(path + city))) for city in cities}, 
+            'component': '<BarChart>'
+    }
     return [f'data/osm_homes/Melbourne--Australia_houses.json']
     #_ = glob.glob(f'data/osm_homes/*_houses.json')
     return _
@@ -1237,7 +1322,9 @@ def world_map(_, __, ___):
     print('world map' + 'fix bugs?')
     cols = [s.replace('.json', '') for s in os.listdir('data/airbnb/h3_poi/')]
 
-    return {'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
+    return {
+        'airbnbsInEachCity': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/apt/*.json')},
+        'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
             'hexAgonations': retrieveAggregation(cols),
             'component': '<Hexagonworld>'
     }
@@ -1270,4 +1357,327 @@ jupyter_functions = { #use regexes + spelling corrector + llm to match sentences
     'make a world': world_map,
     'map of the future - all airbnbs + pois in the world': world_map
 }
+
+
+
+#@app.post("/callFn")
+async def admin(request: Request):
+    #print('val', await request.json())
+    json_data = await request.json()
+    city_name = 'Tokyo--Japan'
+    def rankApt(personCoefficentPreferences, apt):
+        diff = 0
+        for key in personCoefficentPreferences:
+            if key not in apt: continue
+            diff += abs(apt[key] - personCoefficentPreferences[key])
+        #print(diff)
+        return diff 
+    cityAptChoice = {
+        'url':'https://www.airbnb.com/rooms/33676580?adults=1&children=0&enable_m3_private_room=true&infants=0&pets=0&check_in=2023-10-25&check_out=2023-10-30&source_impression_id=p3_1695411915_xw1FKQQa0V7znLzQ&previous_page_section_name=1000&federated_search_id=fec99c3c-b5f1-4547-9dda-2bc7758aec94'
+    }
+    personCoefficentPreferences = json_data['getCoefficents']
+
+    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))[:50]
+
+    def get_json_if_possible(apt):
+        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
+            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'))
+            if (len(data) > 0): 
+                data = data[0]
+                data = data.split(':')
+                data[0] = float(data[0])
+                data[1] = float(data[1])
+                return data
+            else: return [0,0]
+        else:
+            return [0, 0]
+
+    geocoordinates = [get_json_if_possible(apt) for apt in apt_list]
+
+    coefficents = {'coffee': 1, 'library': 0, 'bar': .5}
+    keys = coefficents.keys()
+
+    apts  = []
+
+    import random
+    for idx, _ in enumerate(geocoordinates): 
+        #print(idx)
+        apt = {
+            'url': apt_list[idx],
+            'loc': geocoordinates[idx]
+        } 
+        for key in keys:
+            coords = _
+            apt[key] = random.random()
+            #len(fetch_coffee_shops(coords[0], coords[1], [key]))
+        apts.append(apt)
+
+    from collections import defaultdict
+    totals = defaultdict(int)
+    for apt in apts: 
+        for key in keys: 
+            totals[key] += apt[key]
+
+    for apt in apts: 
+        for key in keys: 
+            if totals[key] == 0: totals[key] += .01
+            apt[key] = apt[key] / totals[key]
+    return sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))[0]
+
+
+
+def makePercents(l):
+    max_ = max(l)
+    return [_ / max_ for _ in l]
+
+
+def makeFunctionFromText(text):
+    if text == '': return ''
+    if '___' not in  __: initAlgae()
+    prompt = "sum all numbers from 1 to 10,000"
+    prompt_template=f'''[INST] Write a code in javascript to sum fibonacci from 1 to 100```:
+    {prompt}
+    [/INST]
+    '''
+    input_ids = __['____'](prompt_template, return_tensors='pt').input_ids.cuda()
+    output = __['___'].generate(inputs=input_ids, temperature=0.7, max_new_tokens=512)
+    return re.match(r'[SOL](.*)[/SOL]', __['____'].decode(output[0]))
+
+def makeFnFromEnglish(english):
+    fnText = makeFunctionFromText(english)
+    return fnText
+
+
+def is_real_word(word):
+    word_list = words.words()
+    return word.lower() in word_list
+
+
+def getClassification(string):
+    p = int(random.random() * 5)
+    nouns = findNouns(string)
+    verb_most_acted_on = nouns #findNouns(string)[0] if len(nouns) > 0 else ''
+    return f'{classifications[p]}:  {" ".join(verb_most_acted_on)}'
+
+def processTag(tagged_sentence):
+    return [(orig,tag_map[actual_tag]) for (orig,actual_tag) in tagged_sentence if actual_tag in tag_map]
+
+def findNouns(string):
+    return [noun for noun,tag in processTag(pos_tag(word_tokenize(string))) ]   
+
+
+def generateWinningTeam():
+    from ipynb.fs.defs.geospatial import getCounter
+    return getCounter('celebi')
+
+def findAirbnb(previous, sentence):
+    from ipynb.fs.defs.geospatial import getAllAirbnbInCityThatAreNotNoisy
+    GTorLT = 'not noisy' in sentence
+    data = getAllAirbnbInCityThatAreNotNoisy(GTorLT) #todo make reactive live query
+    return data
+print('wtf2')
+
+
+def getProgram(_, sentence):
+    encodings = getEncodings(sentence)
+    program_generator_cache = json.load(open('encodings.json', 'w'))
+    if encodings in program_generator_cache: return program_generator_cache[encodings]
+
+    json.dump(program_generator_cache, open('encodings.json', 'w'))
+    return {'fn': program_generator_cache[encodings]}
+
+def url_to_file_name(url):
+    return re.sub(r'[^a-zA-Z0-9]', '_', url)
+
+def get_room_id(url):
+    match = re.search(r'rooms/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+def geoDistance(one, two):
+    return geopy.distance.geodesic(one, two).km
+
+
+
+cache = {}
+
+def addToCache(fn, **kwargs):
+    #fn(**kwargs)
+    #cache[f'{fn.__name__}:city:aptUrl'] = result
+    return fn(**kwargs)
+
+
+def my_decorator_func(func):
+    def wrapper_func(*args, **kwargs):
+        # Do something before the function.
+        result = func(*args, **kwargs)
+        result = addToCache(func, **kwargs)
+        #saveCacheToDiskOrRedisOrSqlLiteOr?
+        #   
+        # Do something after the function.
+    return wrapper_func
+def getPlacesOfInterest(aptGeoLocation):
+    aptGeoLocation = aptGeoLocation.split(':')
+    aptGeoLocation =  [float(aptGeoLocation[0]), float(aptGeoLocation[1])]
+    all_json = []
+    return 0
+    if not aptGeoLocation: return print('no aptGeoLocation')
+    latitude = aptGeoLocation[1]
+    longitude = aptGeoLocation[0]
+    url = f"""https://api.mapbox.com/search/searchbox/v1/category/shopping?access_token=pk.eyJ1Ijoic2VhcmNoLW1hY2hpbmUtdXNlci0xIiwiYSI6ImNrNnJ6bDdzdzA5cnAza3F4aTVwcWxqdWEifQ.RFF7CVFKrUsZVrJsFzhRvQ&language=en&limit=20&proximity={longitude}%2C%20{latitude}"""
+    _ = requests.get(url).json()
+    if 'features' not in _: 
+        print(_)
+        return 0
+    for place in _['features']:
+        #print(place)
+        all_json.append(place)
+    poi = []
+    for place in all_json:
+        coords = place['geometry']['coordinates']
+        categories = place['properties']['poi_category']
+        poi.append([coords, categories])
+        #print(place)
+    sorted(poi, key=lambda _: geoDistance(_[0], aptGeoLocation))
+    print(poi)
+    return geoDistance(poi[0][0], aptGeoLocation)
+
+
+
+def getProgram(_, sentence):
+    encodings = getEncodings(sentence)
+    program_generator_cache = json.load(open('encodings.json', 'w'))
+    if encodings in program_generator_cache: return program_generator_cache[encodings]
+
+    json.dump(program_generator_cache, open('encodings.json', 'w'))
+    return {'fn': program_generator_cache[encodings]}
+
+def url_to_file_name(url):
+    return re.sub(r'[^a-zA-Z0-9]', '_', url)
+
+def get_room_id(url):
+    match = re.search(r'rooms/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+def geoDistance(one, two):
+    return geopy.distance.geodesic(one, two).km
+
+
+
+cache = {}
+
+def addToCache(fn, **kwargs):
+    #fn(**kwargs)
+    #cache[f'{fn.__name__}:city:aptUrl'] = result
+    return fn(**kwargs)
+
+
+def my_decorator_func(func):
+    def wrapper_func(*args, **kwargs):
+        # Do something before the function.
+        result = func(*args, **kwargs)
+        result = addToCache(func, **kwargs)
+        #saveCacheToDiskOrRedisOrSqlLiteOr?
+        #   
+        # Do something after the function.
+    return wrapper_func
+def getPlacesOfInterest(aptGeoLocation):
+    aptGeoLocation = aptGeoLocation.split(':')
+    aptGeoLocation =  [float(aptGeoLocation[0]), float(aptGeoLocation[1])]
+    all_json = []
+    return 0
+    if not aptGeoLocation: return print('no aptGeoLocation')
+    latitude = aptGeoLocation[1]
+    longitude = aptGeoLocation[0]
+    url = f"""https://api.mapbox.com/search/searchbox/v1/category/shopping?access_token=pk.eyJ1Ijoic2VhcmNoLW1hY2hpbmUtdXNlci0xIiwiYSI6ImNrNnJ6bDdzdzA5cnAza3F4aTVwcWxqdWEifQ.RFF7CVFKrUsZVrJsFzhRvQ&language=en&limit=20&proximity={longitude}%2C%20{latitude}"""
+    _ = requests.get(url).json()
+    if 'features' not in _: 
+        print(_)
+        return 0
+    for place in _['features']:
+        #print(place)
+        all_json.append(place)
+    poi = []
+    for place in all_json:
+        coords = place['geometry']['coordinates']
+        categories = place['properties']['poi_category']
+        poi.append([coords, categories])
+        #print(place)
+    sorted(poi, key=lambda _: geoDistance(_[0], aptGeoLocation))
+    print(poi)
+    return geoDistance(poi[0][0], aptGeoLocation)
+
+    return [apt for idx, apt in enumerate(airbnbs)
+            #if distance_to_shopping_store[idx] < .1
+            ]
+
+
+def landDistribution(_, sentence):
+    return 123
+    #return landDistribution()
+
+def trees_map(_, sentence):
+    return {
+        'data': [[34, 34], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
+        'component': '<map>'
+    }
+
+
+async def delay(time):
+    await asyncio.sleep(time)
+
+# async def get_html(channel_name):
+#     browser = await pyppeteer.launch(headless=True)
+#     page = await browser.newPage()
+
+#     await page.setViewport({"width": 1920, "height": 1080})
+#     await page.goto(f"https://www.twitch.tv/{channel_name}", {"waitUntil": "networkidle2"})
+
+#     await delay(1)
+
+#     await page.waitForFunction("""
+#     () => {
+#         const el = document.querySelector('div[data-a-target="chat-welcome-message"].chat-line__status');
+#         return !!el;
+#     }
+#     """, polling="raf")
+
+#     selector = '.chat-line__message, .chat-line__status, div[data-a-target="chat-line-message"]'
+#     await page.waitForSelector(selector)
+
+#     text_elements = await page.querySelectorAll(selector)
+#     texts = []
+
+#     for element in text_elements:
+#         content = await page.evaluate('(element) => element.textContent', element)
+#         texts.append(content.strip())
+
+#     await browser.close()
+
+#     with open(f"twitch-{channel_name}.json", "w") as f:
+#         json.dump(texts, f)
+
+#     return texts
+def get_html(): pass
+async def twitch_comments(streamers, sentenceComponentFormData):
+    sentence = sentenceComponentFormData['setences'][0]
+    pattern = r"\[([^\]]+)\]"
+    match = re.search(pattern, sentence)
+    streamers =  match[0][1:-1].replace('\'', '').split(',')
+    streamers = [s.strip() for s in streamers] 
+    # for streamer in streamers:
+    #     subprocess.run(['node', 'RPC/fetch-twitch.js', streamer])
+    # return [json.load(open(f'twitch-{streamer}.json', 'r')) for streamer in streamers]     
+    # loop = asyncio.get_event_loop()
+    # loop.create_task(main())
+    #create 3 threads and every 3 seconds poll chat for new messages
+    #diff the messages and timestamp new ones 
+    tasks = [get_html(streamer) for streamer in streamers]
+    results = await asyncio.gather(*tasks)
+    return results
 

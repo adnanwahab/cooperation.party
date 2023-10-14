@@ -76,7 +76,8 @@ export default function Footer() {
         </div>
         <div className="mt-8 md:order-1 md:mt-0">
           <p className="text-center text-xs leading-5 text-gray-500">
-            &copy; 2024 Cooperation.party, Inc. For the People, by the People
+            &copy; 2024 Cooperation.party - A multi-user English to Data Analysis IDE designed to help you think better @ the office, school and research lab.
+
           </p>
         </div>
       </div>

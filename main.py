@@ -1,5 +1,14 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 import json
 from compiled_functions import jupyter_functions
+=======
+
+import json
+from compiled_functions import jupyter_functions
+print('wtf')
+import time
+>>>>>>> 57cc6d1 (1 hour finish line)
 import glob
 import asyncio
 import inspect
@@ -7,25 +16,33 @@ from shapely.geometry import shape, Point
 import random 
 import torch
 import requests
+<<<<<<< HEAD
 import easyocr
+=======
+>>>>>>> 57cc6d1 (1 hour finish line)
+=======
+from fastapi.middleware.cors import CORSMiddleware
+from compiled_functions import jupyter_functions
+import inspect
+>>>>>>> e2ac0ee (end the demo)
 from fastapi import Request, FastAPI
-import random
-import json 
-import subprocess
-import json
-import torch
-import youtube_dl
-import openai
-import re
-from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, FileResponse
 from collections import defaultdict
 from pydantic import BaseModel
 from typing import List, Optional
 import json
+<<<<<<< HEAD
 import os.path
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+>>>>>>> 57cc6d1 (1 hour finish line)
 def removeWhiteSpace(_):
     return _.strip()
 
@@ -192,6 +209,15 @@ def findNouns(string):
 import random
 from fastapi.middleware.cors import CORSMiddleware
 
+=======
+def substitute(name):
+    for k in jupyter_functions:
+        if (len(name)) < 1: return name
+        if name[0] == '#': return name
+        if k in name:
+            return jupyter_functions[k]
+    return name
+>>>>>>> e2ac0ee (end the demo)
 origins = [
     "https://cooperation.party",
     "http://cooperation.party",
@@ -215,6 +241,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+<<<<<<< HEAD
 messages = []
 cells = {}
 count = 0
@@ -373,9 +400,12 @@ def my_decorator_func(func):
             ]
 
 def landDistribution(_, sentence):
+<<<<<<< HEAD
     #within 10 mile commute time
     #
 
+=======
+>>>>>>> 57cc6d1 (1 hour finish line)
     return 123
     #return landDistribution()
 
@@ -499,23 +529,27 @@ class UserInDB(BaseModel):
     _k: str
     _v: str
 
+=======
+#app.mount("/data/airbnb/h3_poi/", StaticFiles(directory="data/airbnb/h3_poi/"), name="demo")
+>>>>>>> e2ac0ee (end the demo)
 class FnText(BaseModel):
     fn: list[str]
     documentContext: dict
     hashUrl: Optional[str] = ''
 
-#document write on client -> sentenceComponent
-#server says -> data[0:5] + componentType + documentContext 4 state
-#ui state writes to documentContext -> rerun functions that read from it
-#documentContext.suitabilitySliders = {coffee: 1, library: 1}
 
-
+print('sentences')
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
-    #print('FnText', FnText)
     sentences = FnText.fn
-    if len(FnText.hashUrl):
-        sentences = json.load(open('documents/' + FnText.hashUrl))
+    print(sentences)
+    documentContext = {}
+    # args = [
+    #     jupyter_functions['given a favorite pokemon']('', '', '')
+    # ]
+    #return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
+    # if len(FnText.hashUrl):
+    #     sentences = json.load(open('documents/' + FnText.hashUrl))
     functions = [substitute(fn) for fn in sentences]
     
     val = False
@@ -524,7 +558,6 @@ async def makeFn(FnText:FnText):
     print('documentContext', documentContext)
     for i, fn in enumerate(functions): 
         if type(fn) == type(lambda _:_):
-            #print(fn.__name__)
             if inspect.iscoroutinefunction(fn):
                 val = await fn(val, documentContext, sentences[i])
             else:
@@ -534,100 +567,6 @@ async def makeFn(FnText:FnText):
         args.append(val)
     return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
 
-@app.post("/callFn")
-async def admin(request: Request):
-    #print('val', await request.json())
-    json_data = await request.json()
-    city_name = 'Tokyo--Japan'
-    def rankApt(personCoefficentPreferences, apt):
-        diff = 0
-        for key in personCoefficentPreferences:
-            if key not in apt: continue
-            diff += abs(apt[key] - personCoefficentPreferences[key])
-        #print(diff)
-        return diff 
-    cityAptChoice = {
-        'url':'https://www.airbnb.com/rooms/33676580?adults=1&children=0&enable_m3_private_room=true&infants=0&pets=0&check_in=2023-10-25&check_out=2023-10-30&source_impression_id=p3_1695411915_xw1FKQQa0V7znLzQ&previous_page_section_name=1000&federated_search_id=fec99c3c-b5f1-4547-9dda-2bc7758aec94'
-    }
-    personCoefficentPreferences = json_data['getCoefficents']
-
-    apt_list = json.load(open(f'data/airbnb/apt/{city_name}.json'))[:50]
-
-    def get_json_if_possible(apt):
-        if os.path.exists(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'):
-            data = json.load(open(f'data/airbnb/geocoordinates/{get_room_id(apt)}_geoCoordinates.json'))
-            if (len(data) > 0): 
-                data = data[0]
-                data = data.split(':')
-                data[0] = float(data[0])
-                data[1] = float(data[1])
-                return data
-            else: return [0,0]
-        else:
-            return [0, 0]
-
-    geocoordinates = [get_json_if_possible(apt) for apt in apt_list]
-
-    coefficents = {'coffee': 1, 'library': 0, 'bar': .5}
-    keys = coefficents.keys()
-
-    apts  = []
-
-    import random
-    for idx, _ in enumerate(geocoordinates): 
-        #print(idx)
-        apt = {
-            'url': apt_list[idx],
-            'loc': geocoordinates[idx]
-        } 
-        for key in keys:
-            coords = _
-            apt[key] = random.random()
-            #len(fetch_coffee_shops(coords[0], coords[1], [key]))
-        apts.append(apt)
-
-    from collections import defaultdict
-    totals = defaultdict(int)
-    for apt in apts: 
-        for key in keys: 
-            totals[key] += apt[key]
-
-    for apt in apts: 
-        for key in keys: 
-            if totals[key] == 0: totals[key] += .01
-            apt[key] = apt[key] / totals[key]
-    return sorted(apts, key=lambda apt: rankApt(personCoefficentPreferences, apt))[0]
-
-def makePercents(l):
-    max_ = max(l)
-    return [_ / max_ for _ in l]
-
 @app.get("/admin")
-async def admin():
-    cells.clear()
-    return FileResponse('admin.html')
-
-@app.get("/")
-async def metrics():
-    return FileResponse('index.html')
-
-@app.get("client.js")
-async def js():
-    return FileResponse('client.js', media_type="application/javascript")
-
-@app.get("/data/george.txt")
-async def george():
-    return FileResponse('/data/george.txt', media_type="text/plain")
-
-
-
-import uuid 
-
-@app.post("/share")
-async def makeFn(fnText:FnText):
-    id = str(uuid.uuid4())
-    print(fnText, id)
-    with open('documents/' + id, 'w+') as f:
-        json.dump(fnText.fn, f)
-    return id
-
+def admin(): return FileResponse('admin.html')
+print('sentences')

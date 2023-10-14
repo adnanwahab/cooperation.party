@@ -24,6 +24,12 @@ import barchartNotebook from "https://api.observablehq.com/@d3/bar-chart-race-ex
 import HexagonMap from './HexagonMap' //commute and so on
 
 import BarChart from './BarChart';
+
+import Tabs from './Tabs';
+
+import TravelTimeMap from './TravelTimeMap'
+import TableView from './TableView'
+
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
@@ -328,16 +334,28 @@ function get (query) {
 //     </>
 //   );
 // }
+console.log('is this deployed')
 
 async function _() {
   let text = get('textarea').value.split('\n') //TODO whitespace removal
   //text = ['asdfasd', 'asdfasdf', 'asdf']
-  let port = 8000
-  let url = `http://localhost:${port}/makeFn/`
+//  let port = 8000
+  let port = 8005
+//  let url = `http://localhost:${port}/makeFn/`
+  let url = 'http://127.0.0.1:8000/makeFn'
   let useGPU = true
-if (useGPU || window.location.hostname !== 'localhost') {
+  console.log('gesundheit')
    url = `https://pypypy.ngrok.io/makeFn/`
+   //url = `https://hidden-river-3971.fly.dev/makeFn/`
+if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
+  console.log('gesundheit', window.location.hostname)
+   //url = `https://hidden-river-3971.fly.dev/makeFn/`
+   url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
+   url = 'https://pypypy.ngrok.io/makeFn'
+   console.log(url)
 }
+url = 'https://pypypy.ngrok.io/makeFn'
+
   // let fn_ = await fetch('mockData.json');
   // fn_ = await fn_.json();
   // console.log(fn_);
@@ -348,8 +366,9 @@ if (useGPU || window.location.hostname !== 'localhost') {
       referrerPolicy: "no-referrer", 
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      headers: { "Content-Type": "application/json",
-      "ngrok-skip-browser-warning": true,
+      headers: { 
+        "Content-Type": "application/json",
+      //"ngrok-skip-browser-warning": true,
       "Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,
@@ -462,7 +481,6 @@ function Isochronemap(props) {
 }
 
 const isGeoCoordinate = (pair) => {
-
   return Array.isArray(pair) && parseFloat(pair[0][0]) && parseFloat(pair[0][1])
 }
 
@@ -470,15 +488,62 @@ function isIsochroney(datum) {
   return datum[0] && datum[0][0] && datum[0][0][1] && datum[0][0][1].type === 'node'
 }
 
+//list airbnbs in each city -> bar chart
+//find all that are commute distance to best coworking space in each one. 
+
+
+//
+//
+
+//match sentence with presenter on client
+//fetch model with fetch from server
+function SentencePresenter() {
+  let originalSentence = ''
+  return (<>
+    {originalSentence}
+  
+  </>)
+}
 
 
 function compile (dataList, apply_) {
+//  let [getSelected, setSelected] = useState('')
   const result = dataList.map(function (datum, index) {
+    console.log(datum)
+    if (datum.component === '<BarChart>') {
+      return <div class="overflow-scroll h-96"><BarChart 
+      setFormData={setFormData}
+      apply_={apply_}
+      callback={(_) => console.log(_)}
+      data={datum.data}></BarChart></div>
+    }
+
+    if (datum.component === '<traveltimemap>') {
+      console.log('completedemo', documentContext.city)
+      return <TravelTimeMap data={datum.data}></TravelTimeMap>
+    }
+
+    if (datum.component === '<tableview>') {
+
+      return (
+        <>
+      <>{"This apt is best because of these reasons."}</>
+      <TableView data={datum.data}/>
+      </>
+      )
+    }
+
     if (datum.component === '<Hexagonworld>') {
       return <HexagonWorld data={datum.data}/>
     }
+    if (datum && datum.isochrone) {
+      
+      return <><div><Isochronemap  {...datum}></Isochronemap></div> </>
+    }
+
     if (datum[0] && datum[0].isochrone) {
-      return datum.map((datum, idx) => <div key={idx} ><Isochronemap  {...datum}></Isochronemap></div>)
+      
+      return datum.map((datum, idx) =><> <Tabs></Tabs><div key={idx} ><Isochronemap  {...datum}></Isochronemap></div> </>)
     }
     if (datum[0] == '#') return <h1 className="text-xl">{datum}</h1>
     if (isIsochroney(datum)) {
@@ -520,10 +585,21 @@ function TextPresenter(props) {
 }
 
 let templates = {
-  hexagon_world: `map of the future - all airbnbs + pois in the world`,
+  find_best_deals_on_airbnb: `find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench).
+  my schedule is i go to the office 3 x a week my office is at brookfield place i go to yoga 4x a week and i go to rock-climbing 2x a week and i visit the closest park everyday.
+
+  `,
+  remote_year_planning: `
+  for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
+  find all apt within commute distance to coworking`,
+
   optimalhousematchingforgroups: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
+
+  hexagon_world: `map of the future - all airbnbs + pois in the world`,
+
+
   airbnb: `for each continent
   choose a city in each
   find all airbnb in that city
@@ -631,13 +707,12 @@ function App() {
   
   return (
   <>
-  {/* <Header /> */}
+  <Header />
     <div className="grid grid-cols-3">
-      {leftPanel}
-{/* h-96 overflow-scroll */}
-      <div className="col-span-2 ">{components} 
-      {/* <div class="h-96 w-full"><BarChart></BarChart></div> */}
-      </div>
+    {leftPanel}
+
+
+      <div className="col-span-2 ">{components} </div>
       {/* <div>
       1. proximity to water
       2. land usage
@@ -652,7 +727,7 @@ function App() {
       11. light pollution - street lamp density
       </div> */}
     </div>
-    {/* <Footer /> */}
+    <Footer />
 </>
   )
 }
@@ -779,6 +854,3 @@ function Poll() {
 //linked diagrams
 //javascript -> display + run queries on UI
 //python -> automatically create services on infinte data streams 
-
-
-
