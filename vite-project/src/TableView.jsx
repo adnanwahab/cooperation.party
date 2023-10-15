@@ -115,17 +115,13 @@ return (one[1][sortBy] - two[1][sortBy]) //* (dir)
     //complaint_num - h3
     //commute-to-PoI //library + rock climbing + wind surfing
     console.log(getNeighborhoodDetails);
-    const places = ['yoga', 'rock_climbing', 'coworking']
+    const places = ['yoga', 'rock_climbing', 'coworking', 'kite']
   return (
     <>
     <Tabs tabs={tabs}></Tabs>
-    <BarChart data={[...Array(20).keys()].map((_, i) => {
-                  return [Math.random(), Math.random() ]
-            }) || []}></BarChart>
     <BarChart data={(getNeighborhoodDetails || {key: []}).key?.map((_, i) => {
-                console.log('duration',  _.routes[0].duration)
                   return [places[i], _.routes[0].duration ]
-            }) || []}></BarChart>
+            })}></BarChart>
     <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
     <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
     <div className="px-4 sm:px-6 lg:px-8">

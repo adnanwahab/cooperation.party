@@ -13,17 +13,16 @@ import * as d3 from 'd3'
 //window.module = module
 
 export default function BarChart(props) {
-  console.log('props', props.data)
+  if (! props.data) return <>no data</>
   const cb = props.cb || function () {}
   let data = props.data
-  if (! Array.isArray(props.data)) {
-    data = Object.entries(props.data).map(_ => {
+    data = data.map(_ => {
+      console.log('_', _)
       return {
         letter: _[0],
         frequency: _[1]
       }
     })
-  }
   const chartRef = useRef();
   useEffect(() => {
     const runtime = new Runtime();
