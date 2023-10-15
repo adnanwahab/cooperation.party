@@ -117,8 +117,8 @@ reports,
 }) {
     console.log()
   if (routes) { 
-    routes = routes[0].routes[0].geometry
-    //.map(_ => _.routes[0].geometry)
+    //routes = routes[0].routes[0].geometry
+    routes = routes.map(_ => _.routes[0].geometry)
   centroid = routes.coordinates[0]
   }
     //const data = getCsv
