@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import MapView from './MapView'
+import BarChart from './BarChart';
 
 const tabs = [
     { name: 'My Account', href: '#', current: false },
@@ -64,11 +65,38 @@ const people = [
 const isAscending = [false, true, false]
 
 export default function Example(props) {
+  const [selectedApt, setSelected] = useState('')
+  const [getNeighborhoodDetails, setNeighborhoodDetails] = useState([])
+
+  //routes -> render on map
+  //land usage
+
+  useEffect(function () {
+    //console.log(selectedApt)
+      const getNeighborhoodDetails = async function () {
+        let url  = 'https://pypypy.ngrok.io/neighborhoodDetails'
+          let res = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              apt_url: selectedApt[0]
+            })
+          })
+          let json = await res.json()
+          setNeighborhoodDetails(json)
+          console.log(json)
+      }
+      if (selectedApt && selectedApt[0])
+        getNeighborhoodDetails()
+  }, [selectedApt]);
+
+
+
     const keys = ['price',  'good_deal', 'commute_distance', 'num_complaints']
     let [sortBy, setSortBy] = useState(keys[0])
     let data = 
-    
-    
     Object.entries(props.data['Denver--Colorado--United-States.json'])
     .sort(function (one, two) {
         let dir = keys[keys.indexOf(sortBy)] ? -1 : 1
@@ -77,7 +105,7 @@ return (one[1][sortBy] - two[1][sortBy]) //* (dir)
     }).slice(100)
 
     function toggleSortBy(_) {
-        console.log(_,'_')
+        //console.log(_,'_')
         if (_) return keys[keys.indexOf(_)] = ! keys[keys.indexOf(_)];
         setSortBy(_)
     }
@@ -86,11 +114,20 @@ return (one[1][sortBy] - two[1][sortBy]) //* (dir)
     })
     //complaint_num - h3
     //commute-to-PoI //library + rock climbing + wind surfing
+    console.log(getNeighborhoodDetails);
+    const places = ['yoga', 'rock_climbing', 'coworking']
   return (
     <>
     <Tabs tabs={tabs}></Tabs>
-    <MapView data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
-  
+    <BarChart data={[...Array(20).keys()].map((_, i) => {
+                  return [Math.random(), Math.random() ]
+            }) || []}></BarChart>
+    <BarChart data={(getNeighborhoodDetails || {key: []}).key?.map((_, i) => {
+                console.log('duration',  _.routes[0].duration)
+                  return [places[i], _.routes[0].duration ]
+            }) || []}></BarChart>
+    <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
+    <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -150,7 +187,7 @@ return (one[1][sortBy] - two[1][sortBy]) //* (dir)
                     let person = pair[1]
                     
                     return (
-                  <tr key={person.email}>
+                  <tr key={person.email} class="hover:bg-green-500" onMouseMove={_ => setSelected(pair)}>
                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                     <a target="_blank" href={`https://airbnb.com/rooms/${pair[0]}`}>https://airbnb.com/rooms/{pair[0]}</a>
                     </td>

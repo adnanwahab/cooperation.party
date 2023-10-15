@@ -19,7 +19,7 @@ export default function BarChart(props) {
   if (! Array.isArray(props.data)) {
     data = Object.entries(props.data).map(_ => {
       return {
-        letter: _[0].replace('.json', ''),
+        letter: _[0],
         frequency: _[1]
       }
     })
@@ -43,6 +43,7 @@ export default function BarChart(props) {
   //     if (props.callback) props.callback(_)
   //   })
   setInterval(function () {
+    if (! props.setFormData) return
     window.d3 = d3
     d3.selectAll('.bar').on('mouseover.foo', function (e) {
       console.log('selected', e.target.__data__)

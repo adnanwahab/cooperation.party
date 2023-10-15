@@ -104,7 +104,8 @@ function getTooltip(params) {
 
 export default function App({
     // find centroid -> draw isochrone and ensure that all people are within 20 min train
-    centroid,
+    routes={},
+    centroid=[0,0],
 reports,
     hexes,
     _houses,
@@ -114,8 +115,12 @@ reports,
   upperPercentile = 100,
   coverage = 1
 }) {
-    console.log(data)
-    centroid = data[0]
+    console.log()
+  if (routes.key) { 
+    routes = routes.key[0].routes[0].geometry
+    //.map(_ => _.routes[0].geometry)
+  centroid = routes.coordinates[0]
+  }
     //const data = getCsv
 // return (<>
 // This is a map with a clickable legend 
@@ -123,21 +128,21 @@ reports,
 // )
 
   const layers = [
-    new IconLayer({
-        id: 'icon-layer',
-        data: data,
-        pickable: true,
-        // iconAtlas and iconMapping are required
-        // getIcon: return a string
-        iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
-        iconMapping: ICON_MAPPING,
-        getIcon: d => 'marker',
-        onClick: (_)=> _.object.url,
-        sizeScale: 15,
-        getPosition: d => [+ d.longitude, + d.latitude],
-        getSize: d => 5,
-        getColor: d => [Math.random() * 255, 140, 0]
-      }),
+    // new IconLayer({
+    //     id: 'icon-layer',
+    //     data: data,
+    //     pickable: true,
+    //     // iconAtlas and iconMapping are required
+    //     // getIcon: return a string
+    //     iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+    //     iconMapping: ICON_MAPPING,
+    //     getIcon: d => 'marker',
+    //     onClick: (_)=> _.object.url,
+    //     sizeScale: 15,
+    //     getPosition: d => [+ d.longitude, + d.latitude],
+    //     getSize: d => 5,
+    //     getColor: d => [Math.random() * 255, 140, 0]
+    //   }),
     // new H3HexagonLayer({
     //   id: 'h3',
     //   getFillColor: _ => Object.values(d3.rgb(d3.interpolatePurples(_[1].vending_machine / 100))).slice(0, 3),
@@ -170,13 +175,44 @@ reports,
     //     getFillColor: (f) => colorScale(Math.random()),
     //     getElevation: -1
     // }),
-
+    new GeoJsonLayer({
+        id: 'geojson',
+        //data: 
+        data: routes,
+        stroked: false,
+        filled: false,
+        lineWidthMinPixels: 0.5,
+        parameters: {
+          depthTest: false
+        },
+  
+        getLineColor: function (_) {
+            console.log(_)
+            return [255, 0, 255, 255]
+        },
+        getLineWidth: function () {
+            return 1
+        },
+  
+        pickable: true,
+       // onHover: setHoverInfo,
+  
+        // updateTriggers: {
+        //   getLineColor: {year},
+        //   getLineWidth: {year}
+        // },
+  
+        transitions: {
+          getLineColor: 1000,
+          getLineWidth: 1000
+        }
+      })
    
   ];
 
 const INITIAL_VIEW_STATE = {
-  longitude: + centroid.longitude,
-  latitude: + centroid.latitude,
+  longitude: + centroid[0],
+  latitude: + centroid[1],
   zoom: 11,
   maxZoom: 20,
   pitch: 0,
