@@ -14,15 +14,16 @@ import * as d3 from 'd3'
 
 export default function BarChart(props) {
   if (! props.data) return <>no data</>
+  else console.log(props.data)
   const cb = props.cb || function () {}
   let data = props.data
-    data = data.map(_ => {
-      console.log('_', _)
-      return {
-        letter: _[0],
-        frequency: _[1]
-      }
-    })
+    // data = data.map(_ => {
+    //   console.log('_', _)
+    //   return {
+    //     letter: _[0],
+    //     frequency: _[1]
+    //   }
+    // })
   const chartRef = useRef();
   useEffect(() => {
     const runtime = new Runtime();

@@ -116,8 +116,8 @@ reports,
   coverage = 1
 }) {
     console.log()
-  if (routes.key) { 
-    routes = routes.key[0].routes[0].geometry
+  if (routes) { 
+    routes = routes[0].routes[0].geometry
     //.map(_ => _.routes[0].geometry)
   centroid = routes.coordinates[0]
   }

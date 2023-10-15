@@ -85,8 +85,7 @@ export default function Example(props) {
             })
           })
           let json = await res.json()
-          setNeighborhoodDetails(json)
-          console.log(json)
+          setNeighborhoodDetails(json.key)
       }
       if (selectedApt && selectedApt[0])
         getNeighborhoodDetails()
@@ -100,12 +99,10 @@ export default function Example(props) {
     Object.entries(props.data['Denver--Colorado--United-States.json'])
     .sort(function (one, two) {
         let dir = keys[keys.indexOf(sortBy)] ? -1 : 1
-        //console.log(dir)
-return (one[1][sortBy] - two[1][sortBy]) //* (dir)
+        return (one[1][sortBy] - two[1][sortBy]) //* (dir)
     }).slice(100)
 
     function toggleSortBy(_) {
-        //console.log(_,'_')
         if (_) return keys[keys.indexOf(_)] = ! keys[keys.indexOf(_)];
         setSortBy(_)
     }
@@ -119,8 +116,8 @@ return (one[1][sortBy] - two[1][sortBy]) //* (dir)
   return (
     <>
     <Tabs tabs={tabs}></Tabs>
-    <BarChart data={(getNeighborhoodDetails || {key: []}).key?.map((_, i) => {
-                  return [places[i], _.routes[0].duration ]
+    <BarChart data={getNeighborhoodDetails?.map((_, i) => {
+                  return {letter: places[i], frequency:_.routes[0].duration }
             })}></BarChart>
     <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
     <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
