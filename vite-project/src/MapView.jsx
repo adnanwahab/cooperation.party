@@ -188,10 +188,10 @@ reports,
   
         getLineColor: function (_) {
             console.log(_)
-            return [255, 0, 255, 255]
+            return [255, 255, 255, 255]
         },
         getLineWidth: function () {
-            return 1
+            return 100
         },
   
         pickable: true,
