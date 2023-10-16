@@ -113,20 +113,22 @@ reports,
   mapStyle = MAP_STYLE,
   radius = 1000,
   upperPercentile = 100,
-  coverage = 1
+  coverage = 1,
+  left
 }) {
-    console.log()
-  if (routes) { 
+  if (routes.length) { 
     //routes = routes[0].routes[0].geometry
     routes = routes.map(_ => _.routes[0].geometry)
-  centroid = routes.coordinates[0]
+    console.log(routes, 'geometry')
+    centroid = routes[0].coordinates[0]
+    routes = routes[0]
   }
-    //const data = getCsv
-// return (<>
-// This is a map with a clickable legend 
-// </>
-// )
-
+else {
+  return (<>
+  This is a map with a clickable legend 
+  </>
+  )
+}
   const layers = [
     // new IconLayer({
     //     id: 'icon-layer',
@@ -191,7 +193,7 @@ reports,
             return [255, 255, 255, 255]
         },
         getLineWidth: function () {
-            return 100
+            return 1
         },
   
         pickable: true,
@@ -222,7 +224,7 @@ const INITIAL_VIEW_STATE = {
 
 
   return (
-<div className="relative h-96">
+<div className=" absolute h-96" style={{left: `${left}px`}}>
     <h3>Colorize Hexes by suitability for given schedule.</h3>
     <Legend></Legend>
     <DeckGL

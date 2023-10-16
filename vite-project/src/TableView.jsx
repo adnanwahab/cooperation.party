@@ -111,7 +111,6 @@ export default function Example(props) {
     })
     //complaint_num - h3
     //commute-to-PoI //library + rock climbing + wind surfing
-    console.log(getNeighborhoodDetails);
     const places = ['yoga', 'rock_climbing', 'coworking', 'kite']
   return (
     <>
@@ -119,8 +118,10 @@ export default function Example(props) {
     <BarChart data={getNeighborhoodDetails?.map((_, i) => {
                   return {letter: places[i], frequency:_.routes[0].duration }
             })}></BarChart>
-    {/* <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
-    <MapView routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/> */}
+    <div class="relative h-128">
+      <MapView left={0} routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
+      <MapView left={600} routes={getNeighborhoodDetails}  data={Object.values(props.data['Denver--Colorado--United-States.json'])}/>
+    </div>
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
