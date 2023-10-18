@@ -675,18 +675,20 @@ let templates = {
 
 
 
-  remote_year_planning: `
-  for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
-  find all apt within commute distance to coworking`,
+  // remote_year_planning: `
+  // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
+  // find all apt within commute distance to coworking`,
 
  
-  plan_immigrant_housing_or_graduates: `
-  for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
-  find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
+  // plan_immigrant_housing_or_graduates: `
+  // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
+  // find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
 
-  hexagon_world: `map of the future - all airbnbs + pois in the world`,
-
-
+  hexagon_world: `map of the future - all airbnbs + pois in the world
+  barchart every airbnb in every city
+  barchart every house_listing in every city
+  barchart every poi in every city
+  `,
   // airbnb: `for each continent
   // choose a city in each
   // find all airbnb in that city
