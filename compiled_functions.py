@@ -29,7 +29,7 @@ import os.path
 import os
 import openai
 import geopy.distance
-
+import pdfplumber
 import math
 import asyncio
 MAX_LENGTH_APT = 1
@@ -360,7 +360,6 @@ hasRendered = False
 hasRenderedContent = False
 def arxiv (_, sentence, i):
     global hasRendered, hasRenderedContent  # Declare as global to modify
-    import pdfplumber
     import glob
     fileList = glob.glob('./*.pdf')[1:]
     print(fileList)

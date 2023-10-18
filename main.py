@@ -12,16 +12,16 @@ import openai
 from pyngrok import ngrok
 
 # Set configuration options
-config = {
-    'name': 'example',
-    'proto': 'http',
-    'addr': 8000,
-    'host_header': 'rewrite',
-    'subdomain': 'pypypy'
-}
+# config = {
+#     'name': 'example',
+#     'proto': 'http',
+#     'addr': 8000,
+#     'host_header': 'rewrite',
+#     'subdomain': 'pypypy'
+# }
 
-# Open a HTTP tunnel on the specified port
-public_url = ngrok.connect(**config)
+# # Open a HTTP tunnel on the specified port
+# public_url = ngrok.connect(**config)
 #print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
 # Keep the tunnel running until terminated
 #input("Press Enter to exit...")
@@ -149,4 +149,7 @@ async def makeFn(FnText:FnText):
 
 @app.get("/admin")
 def admin(): return FileResponse('admin.html')
-print('sentences')
+
+@app.get("/")
+async def home():
+    return HTMLResponse("Hello world!")
