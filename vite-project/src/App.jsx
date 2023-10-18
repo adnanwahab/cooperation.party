@@ -505,10 +505,77 @@ function SentencePresenter() {
   </>)
 }
 
+/*
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+*/
+const notificationMethods = [
+  { id: 'email', title: 'Email' },
+  { id: 'sms', title: 'Phone (SMS)' },
+  { id: 'push', title: 'Push notification' },
+]
+
+function ShitAss() {
+  const notificationMethods = [
+    'tech conferences', 'political conventions' , 'music festivals'
+  ]  
+
+  function replace_me(content) {
+    document.querySelector('textarea').value = 
+    
+    document.querySelector('textarea')
+    .value.replace('get a list of tech conferences or music festivals one per month.',
+    `get a list of ${content} one per month.`
+    )
+  }
+
+  return (
+    <div>
+      <label className="text-base font-semibold text-gray-900">Notifications</label>
+      <p className="text-sm text-gray-500">How do you prefer to receive notifications?</p>
+      <fieldset className="mt-4">
+        <legend className="sr-only">Notification method</legend>
+        <div className="space-y-4">
+          {notificationMethods.map((notificationMethod) => (
+            <div key={notificationMethod} className="flex items-center" onClick={() => replace_me(notificationMethod)}>
+              <input
+                id={notificationMethod}
+                name="notification-method"
+                type="radio"
+                defaultChecked={notificationMethod === 'email'}
+                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+              />
+              <label htmlFor={notificationMethod} className="ml-3 block text-sm font-medium leading-6 text-gray-900">
+                {notificationMethod}
+              </label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+  )
+}
+
+
 
 function compile (dataList, apply_) {
 //  let [getSelected, setSelected] = useState('')
+console.log(dataList)
   const result = dataList.map(function (datum, index) {
+    if (datum.component === '<clarification>') {
+      return <ShitAss />
+    }
+
     if (datum.component === 'schedule') {
       return 'schedule'
     }
@@ -599,25 +666,35 @@ let templates = {
 
   find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench).
   `,
+
+  how_much_airbnb_revenue_will_your_house_get: `for every house in the world.
+  predict how much revenue it would yield over 30 years.
+  if i have 200k, which ones should i buy in new york.
+  how soon would i get money back?
+  make this work means progress bars + streaming intermediate result + 11 days left come back soon.`,
+
+
+
   remote_year_planning: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find all apt within commute distance to coworking`,
 
-  optimalhousematchingforgroups: `
+ 
+  plan_immigrant_housing_or_graduates: `
   for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
 
   hexagon_world: `map of the future - all airbnbs + pois in the world`,
 
 
-  airbnb: `for each continent
-  choose a city in each
-  find all airbnb in that city
-  i like library
-  i like bar
-  i like coffee
-  filter by 10 min train or drive to a library above 4 star
-  `,
+  // airbnb: `for each continent
+  // choose a city in each
+  // find all airbnb in that city
+  // i like library
+  // i like bar
+  // i like coffee
+  // filter by 10 min train or drive to a library above 4 star
+  // `,
   arxiv_paper_digest: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
   get all diagrams
@@ -665,7 +742,7 @@ let templates = {
   `,
 
 
-  healthcare: await('data/healthcare.json')
+  healthcare: await('data/healthcare.txt')
 
 
 }

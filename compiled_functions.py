@@ -1792,7 +1792,19 @@ def schedule_json_converter(_, documentContext, sentence):
     }
     #return json.loads(result)
 
+
+def join_list_of():
+    return requests.get('music_festivals.json')
+
+
+def request_for_clarification(_, documentContext, sentence):
+    return {'component': '<clarification>',
+            'data': sentence
+            }
+
 jupyter_functions = { #use regexes + spelling corrector + llm to match sentences w/ functions
+    "get a list of ": request_for_clarification, #TODO try regexes + spelling corrector before LLM on client then gpu...? serversider gpu populates client ? user choices populate training data examples -> make some sort of academic consensus -> curated archive of training data sets ? -> show your work for building these 10 demos -> start an open source initiative for fine tunining llms -> make labeling text easy and micro pay users $1 in bitcoin :) or donate like 1 grain of rice a day -> cooperation_data.org -> works for synthetic database registry -> phylogeny taxonomic tree of reasoning -> piaget model of object constance -> what the equivalent in text -> make like 5 llms that are 1m tokens or just a encoder + transformer -> small-language-model -> type 5 sentences -> 5 gpus -> make 5 blocks of code -> execute on one million machines -> parse of wikipedia in 16ms on key press so you can get list of all anime characters and their dialog 
+    #find this quote from youtube - "oh noe my camera" -> 
     "my schedule is": schedule_json_converter,
     "find best deals on airbnb" : find_best_deals_on_airbnb,
     "for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']" : forEachCity,
