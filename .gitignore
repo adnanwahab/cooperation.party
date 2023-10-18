@@ -1,0 +1,17 @@
+# Local Netlify folder
+.netlify
+.venv/*
+.myenv/*
+myenv/
+node_modules/
+.env
+# vite-project/
+.env
+__pycache__/data_
+data_/
+__pycache__/
+osm
+fn_cache.json
+data/cache/fn_cache.json
+data/document_query_cache.json
+data/document_query_cache.json
