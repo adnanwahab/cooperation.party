@@ -1,6 +1,6 @@
 import requests
 import os, json
-import psycopg2
+#import psycopg2
 
 def find_closest_poi(poi_name, coord):
     conn = psycopg2.connect(
