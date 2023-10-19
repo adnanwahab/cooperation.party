@@ -26,9 +26,17 @@ config = {
     'host_header': 'rewrite',
     'subdomain': 'pypypy'
 }
+import os
+print()
 
 # # # Open a HTTP tunnel on the specified port
-public_url = ngrok.connect(**config)
+
+if os.getcwd() != '/Users/adnanwahab/cooperation.party':
+    for i in range(10): print('this is fly.io')
+    ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
+    public_url = ngrok.connect(**config)
+else: 
+    for i in range(10): print('this is mbp')
 # #print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
 # # Keep the tunnel running until terminated
 # #input("Press Enter to exit...")

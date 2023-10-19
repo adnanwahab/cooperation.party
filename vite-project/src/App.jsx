@@ -351,10 +351,12 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
 //   console.log('gesundheit', window.location.hostname)
 //    //url = `https://hidden-river-3971.fly.dev/makeFn/`
 //    url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
-  url = 'https://cooperation-party.fly.dev/makeFn'
-  console.log('I AM AT COOPERATION.PARTY')
+  url = 'http://cooperation-party.fly.dev/makeFn'
+
 //    console.log(url)
 }
+if (window.soda) url = 'http://pypypy.ngrok.io/makeFn'
+
 // url = 'https://pypypy.ngrok.io/makeFn'
 
   // let fn_ = await fetch('mockData.json');
