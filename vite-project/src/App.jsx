@@ -355,7 +355,7 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
 
 //    console.log(url)
 }
-if (window.soda) url = 'https://pypypy.ngrok.io/makeFn'
+url = 'https://pypypy.ngrok.io/makeFn'
 
 // url = 'https://pypypy.ngrok.io/makeFn'
 
