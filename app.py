@@ -12,6 +12,7 @@ app = FastAPI()
 async def home():
     return HTMLResponse("Hello world!")
 
+print('hello world :)')
 
 # from fastapi.middleware.cors import CORSMiddleware
 # from compiled_functions import jupyter_functions
