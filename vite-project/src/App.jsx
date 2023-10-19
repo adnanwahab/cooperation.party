@@ -353,9 +353,9 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
 //    url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
   url = 'http://cooperation-party.fly.dev/makeFn'
 
-//    console.log(url)
+  url = 'https://pypypy.ngrok.io/makeFn'
 }
-url = 'https://pypypy.ngrok.io/makeFn'
+url = 'https://shelbernstein.ngrok.io/makeFn'
 
 // url = 'https://pypypy.ngrok.io/makeFn'
 
@@ -670,11 +670,18 @@ let templates = {
   find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench).
   `,
   //shelter
-  how_much_airbnb_revenue_will_your_house_get: `for every house in the world.
+  how_much_airbnb_revenue_will_your_house_get: `
+  for every house in the world.
   predict how much revenue it would yield over 30 years.
   if i have 200k, which ones should i buy in new york.
   how soon would i get money back?
-  make this work means progress bars + streaming intermediate result + 11 days left come back soon.`,
+  make this work means progress bars + streaming intermediate result + 11 days left come back soon.
+  
+  should you buy this house? depends on x,y,z 
+  
+
+
+  `,
   //water is solved by energy
   //cooperation = OPEN PROBLEM - better information???
   //education = more fun to build cool shit ??? - find citations -
@@ -692,6 +699,11 @@ let templates = {
   // plan_immigrant_housing_or_graduates: `
   // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   // find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
+
+
+  where_to_build_new_houses_for_max_suitability: `
+    given airbnb revenue + commute distance + 100k, where do i plant a new house to get most lifetime happiness out of my fam and so on.
+  `,
   hexagon_world: `map of the future - all airbnbs + pois in the world
   barchart every airbnb in every city
   barchart every house_listing in every city
@@ -737,6 +749,7 @@ let templates = {
   find recent compettions -> diagram how metagame changes
   `,
 
+  //conversation skills for the aspiring citizen scientist - 5th grade + people like communities, humor, and chill energy :)
   // `keenan+kel-humor-transcription`: 
   // `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial
   //  find jokes that are duplicated in modern family
@@ -747,6 +760,10 @@ let templates = {
   visualize how many are of which species in a trees_histogram
   trees_map
   find a place to plant a new tree that is optimal
+
+
+  render routes of a person and plant 1 million trees
+  render a schedule for watering these trees 
   `,
 //  `dota`:  `
 //  make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
@@ -760,6 +777,39 @@ let templates = {
   then categorize the jokes and the other context 
   `,
 
+  sentiment_analysis_news_all_of_it: `
+    people dont remember the stupid shit. they remember the good shit.
+    the world is really 10 billion heroes recogniziing each other. 
+    sci-fi fantasy illusory reality probablity manipulation is becoming common and standard. 
+    what could work better than news? 
+    why do people even like news?
+    what if there was a song daily at lunch about coolest new thing that day
+    more conferences.
+    show how and why it varies -> levels of energy + spiral dynamics
+  `,
+
+
+  music_theory_colors: `
+  7 colors
+  7 tones
+  whats else?
+  `,
+
+  healthy_buddhist_conversation_right_thought_goenka_transcript_plus_coolest_diagrams: `
+    https://www.youtube.com/watch?v=cz7QHNvNFfA&list=PLPJVlVRVmhc4Z01fD57jbzycm9I6W054x
+    dalle on all the things?
+    find concepts that want to be visualized
+    awareness = film strip of focus snap shots
+    how does process of breath -> use regl.party/
+    find research how does focusing on breath make mind more optimal
+  `,
+
+  make_educational_materials_that_studio_would_love: `
+    audit thestudio.yoga
+    use whisper on course materials
+    make diagrams
+    send to them.
+  `,
   // community_building: `
   // get all groups from meetup
   // which ones are most popular
@@ -782,6 +832,37 @@ let templates = {
   
   // `,
 
+  BLS: `
+      what skills are rising fastest
+      parse job listings for every company
+      chart listings over time for each company
+      for each job
+      by industry
+
+      --- python ++
+      --- webgl --
+      --- unity/unreal ++ 
+      how many jobs require math skills
+      how can i demonstrate those
+      how to use LLMs for Mathmagics - read kill math
+
+      khan academy is amazing but too fucking boring
+      i want notebooks generated for each concept -> with automagic code problems that solve world porblem
+
+      link to chapter 0: fundamentals computed -> solve proofs by hand
+      learn math with flash cards
+      how to write mathematically sound code with 
+
+      linear algebra, calculus (AuC for blood sugar estaimes for food)
+      statistics + probability
+  `, //    join bls with better shit
+
+
+  idealism_is_more_effective_in_2023_because_progress: `
+    long time ago idealism sounded cool but impractical
+    but today people working together for a common goal can improve billions of lives 
+    begginigngs of infity -> cite soruces 
+  `,
   robot_revolution: `
   When will robots be cheaper and widely spread?
 
@@ -986,6 +1067,34 @@ distance_to_eutopia: `
     List all nobel prize winners? predict next 100=
   `,
 
+  appreciate_previous_1000_inventions_list_next_1000_inventions: `
+    styofoam was invented during the space race and now it groceries cool while they travel in transit 
+    should every person have their own garden?
+
+  `,
+
+  appreciate_good_writing: `
+  - [ ] review notes and onvert to coop.party
+- [ ] how much can good writing change the world - see paul graham - 600 billion dollars
+- [ ] how much can good writing / journaling change your life / mind? open research topic
+- [ ] now we can automagically add diagrams to our writing and tune that drawing dynamic images like bret victor.
+  `
+
+  //visualizing the mind 
+  //minority report done more humanely -> instead of prison -> detect randomness at earliest onset
+  //mushroom microdose, yoga and hike with eric.
+  //connect to your humanity. problem solved. pdf printed august 10. april 5. october 5. december 5
+  //an engineer or scientist can remove limitations from systems
+  //life was difficult a long time ago.
+  //now we have systems that support various aspects of our humanity.
+  //design and creativity are just the combination of two things
+  //heres the progress bars on important problems that are being solved by everyone in the 100 billion humans
+  //everyone in the last 100 billion humans were heroes.
+  //you can be like navi. you can clone 7 billion instances of yourself to guide the next 1000 billion humans in their future endeavors
+  //war, famine, pestilience and whatever are obsolete, nothing but a memory.
+  //in the next 7-20 years - find out how much - we can move the levers that will make everyone happy care bear wizard sci fi reality - Starcraft MMO yay
+  //honor the sacrifices of the people who came before us. 
+  //infinite party mode 5ever 2029 onwards 
 //  healthcare: await('data/healthcare.txt')
 }
 

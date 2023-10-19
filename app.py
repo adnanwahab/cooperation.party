@@ -36,6 +36,9 @@ if os.getcwd() != '/Users/adnanwahab/cooperation.party':
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
     public_url = ngrok.connect(**config)
 else: 
+    ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
+    config['subdomain'] = 'shelbernstein'
+    public_url = ngrok.connect(**config)
     for i in range(10): print('this is mbp')
 # #print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
 # # Keep the tunnel running until terminated
