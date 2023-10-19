@@ -661,7 +661,7 @@ function TextPresenter(props) {
 //  my schedule is i go to the office 3 x a week my office is at brookfield place i go to yoga 4x a week and i go to rock-climbing 2x a week and i visit the closest park everyday.
 
 let templates = {
-  //
+  //shelter
   find_best_deals_on_airbnb: `
   get a list of tech conferences or music festivals one per month.
 
@@ -669,24 +669,29 @@ let templates = {
 
   find best deals on airbnb that dont have crimes or other issues and then also print a diagnostic report that simulates living there for one month and train distance to my favorite places = (research_institute, bench).
   `,
-
+  //shelter
   how_much_airbnb_revenue_will_your_house_get: `for every house in the world.
   predict how much revenue it would yield over 30 years.
   if i have 200k, which ones should i buy in new york.
   how soon would i get money back?
   make this work means progress bars + streaming intermediate result + 11 days left come back soon.`,
-
-
-
+  //water is solved by energy
+  //cooperation = OPEN PROBLEM - better information???
+  //education = more fun to build cool shit ??? - find citations -
+  //Ecology = how to do design arcologies
+  //pollution = are thoughts pollution? why are some thoughts constructive?? visualize recycling
+  //Energy = what are smart power grids? progress in battery tech: find papers, citations, data -> make diagrams
+  //population = how can we have 100 billion peoeple -> make maps of aqua cities - find meme from twitter
+  //rights = find papers 
+  //health = find papers -> withregard, thestudio
+  //Climate = how do weather predictions happen? einstein told his barber, waitbutwhy, xkcd, 
+  //our existence on earth required work in olden times to be subsistent. 
   // remote_year_planning: `
   // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   // find all apt within commute distance to coworking`,
-
- 
   // plan_immigrant_housing_or_graduates: `
   // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   // find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
-
   hexagon_world: `map of the future - all airbnbs + pois in the world
   barchart every airbnb in every city
   barchart every house_listing in every city
