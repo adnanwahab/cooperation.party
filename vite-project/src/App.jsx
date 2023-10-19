@@ -340,7 +340,7 @@ async function _() {
   let text = get('textarea').value.split('\n').map(_ => _.trim()).filter(_ => _) //TODO whitespace removal
   //text = ['asdfasd', 'asdfasdf', 'asdf']
 //  let port = 8000
-  let port = 8006
+  let port = 8000
 //  let url = `http://localhost:${port}/makeFn/`
   let url = `http://127.0.0.1:${port}/makeFn`
 //   let useGPU = true
