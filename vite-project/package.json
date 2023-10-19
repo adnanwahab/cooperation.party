@@ -13,7 +13,6 @@
     "last-day": "npm run build && mv dist ../last-day"
   },
   "dependencies": {
-    "1420c244c74cb1bb": "https://api.observablehq.com/d/1420c244c74cb1bb.tgz?v=3",
     "@deck.gl/layers": "^8.9.27",
     "@deck.gl/react": "^8.9.27",
     "@headlessui/react": "^1.7.17",
@@ -25,8 +24,10 @@
     "@react-pdf/renderer": "^3.1.13",
     "@rithwikanand/histogram": "https://api.observablehq.com/@rithwikanand/histogram.tgz?v=3",
     "@sandraviz/animated-line-chart": "https://api.observablehq.com/@sandraviz/animated-line-chart.tgz?v=3",
+    "1420c244c74cb1bb": "https://api.observablehq.com/d/1420c244c74cb1bb.tgz?v=3",
     "ab80bfd4252083e3": "https://api.observablehq.com/d/ab80bfd4252083e3.tgz?v=3",
     "add": "^2.0.6",
+    "canvas-confetti": "^1.9.0",
     "d3": "^7.8.5",
     "d3-request": "^1.0.6",
     "deck.gl": "^8.9.27",

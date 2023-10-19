@@ -355,7 +355,7 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
 
 //    console.log(url)
 }
-if (window.soda) url = 'http://pypypy.ngrok.io/makeFn'
+if (window.soda) url = 'https://pypypy.ngrok.io/makeFn'
 
 // url = 'https://pypypy.ngrok.io/makeFn'
 
@@ -700,6 +700,13 @@ let templates = {
   // i like coffee
   // filter by 10 min train or drive to a library above 4 star
   // `,
+
+  power_of_mushrooms: `find all courses that are related to mushrooms 
+    plot how this number is going up
+    get facts related to how mushrooms will improve us economy by 500 billion in next 3 years.
+
+  `,
+
   arxiv_paper_digest: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
   get all diagrams
@@ -746,10 +753,203 @@ let templates = {
   then categorize the jokes and the other context 
   `,
 
+  // community_building: `
+  // get all groups from meetup
+  // which ones are most popular
+  // why are they cool? 
+  // `,
+
+
+  // yoga: `
+  // get interesting research papers aboout mushrooms
+  // `,
+
+
+
+  // yoga: `
+  // get interesting research papers aboout yoga
+  // `,
+
+  // creative_AI: `
+  
+  
+  // `,
+
+  robot_revolution: `
+  When will robots be cheaper and widely spread?
+
+  when will i have robots to clean my house?
+
+  When will i have a robot doctor? - 2 billion kids want this
+
+  When will i have a robot comedian?
+
+  When will i have rosie?
+
+  When will i have mega man x?
+
+  What kinds of labor can robots do?
+
+  How many robots are built every year?
+
+  How is that number changing?
+
+  How many research papers are there for robotics?
+
+  What is the intersection between LLMS and robots?
+
+  What are the big problems in robots?
+
+  How much venture capital is changing in robots?
+
+  how many robot movies and books are there?
+
+  use 5 emojis and make a chatbot.
+  
+  `,
+
+  health_care: `
+  What are the biggest costs in healthcare?
+
+  what is the supply shortage on nurses, technicians, doctors?  
+
+  How can health insurance and malpractice insturance be made cheaper by 
+    diagnosis becoming more effective, precise, less wrong, earlier.
+
+  How are next generation medicines better than previous ones?
+
+  what technologies make next generation medicines possible?
+  `,
+
+resource_utilization_economics: `
+  how many resources are there?
+  how many people can the economy support?
+  Number one: In 1945, corporations paid 50 percent of federal taxes.
+   Now they pay about 5 percent. 
+   Number two: in 1900, 90 percent of Americans were self-employed; now it’s about two percent.
+   how many farmers markets are there?
+   how much do gmos improve crop yields?
+   how many farmers are there?
+   how do resources get to places?
+   What are the different steps in resource transformation from commodity to finished good?
+`,
+
+
+food_flavor_networks: `
+What are all the different foods?
+Why are some good for you?
+what is a food scientist
+what are the coolest jobs in the future? 
+
+`,
+
+is_coffee_good_for_you: `
+i dont know
+the invention of algorthims may be correlated with the invention of arabica coffee
+90% of the population is reliant on caffiene
+caffiene is a femme fatale - menno henselman
+coffee was popularized during the industrial revolution.
+my thesis is that mushroom 2x weekly microdoses + yoga = less mind wandering = less desire for coffee.
+sleep researchers dont drink coffee. investigate matthew walker
+
+`,
+
+
+information_economics: `
+  what are the coolest ideas in hal varian's information economics?
+  What can data scientists do? (prediction, planning, ambiguity resolution, answer questions)
+  How much can a good data scientist improve a system?
+  What are the systems that underpin the foundation or structure of the world?
+  State of Nature when? -> industrial revolution -> today
+  What was lost in each step
+  https://apenwarr.ca/log/
+  Theres so many people rambling on the internet
+  7 billion vectors in 7 billion directions. 
+  But also 7 billion heroes working together to make a better world 
+  What if those vectors were somewhat more aligned to have less duplication and more innovation?
+  https://blakemasters.tumblr.com/peter-thiels-cs183-startup
+
+  What is the investment thesis of ARK and what are the subject staircase ladder to each one?
+  can 5th graders contribute research papers or convert research papers to cool products?
+  does the world need more products? 
+  What are the coolest 100 products of last year?
+  IF you were to make a small italian restaurant, how many users would you need to be happy?
+  How can you make your users happy to know you?
+  What underserverd markets are there
+  What gaps in the market can be identified
+  how can the "market" be visualized" and understood
+  Is the market efficent?
+  What easy problems are solved?
+  What difficult problems are most worth solving?
+  How important is collaboration to solving the most difficult problems?
+`,
+
+video_game_industry: `
+  How fast is the video game industry growing?
+  What is popular content on twitch 
+`,
+
+distance_to_eutopia: `
+  gapminder covers this but reproduce their results from "scratch"
+  whos right, UN or gapminder? and how can we instrument the process ??
+  9 areas of alan kay's paper -> that was awhiles ago. how can it be updated
+  LIVING research papers kind of.
+  take 5 research papers and then synthesize code and data 
+  What data are missing????????
+  What is data and where does come from
+
+`,
+
+  engineering_and_speed_of_light: `
+    What are the all the back of the envelope calculations needed to be a good engineer.
+    D_trace blog.
+    Wouldnt it be cool if there was millions of open source government servers for communal use?
+    What are some new back fo the enveolope calculations?
+    What are the million specific intelligences that will be needed in 10-20 years?
+
+  `,
+
+  text: `
+  most text on the internet is true - so gpt is mostly truthy.
+  how can more text on the internet be even more true.
+  text is a good encoding for reality into dense information.
+  What is information > how does information help people help themselves.
+  imagine the whole world is like sims. you can see progress bars for everyone.
+  imagine you can see a redacted summary of eeryones daily activity on a map
+  
+  `,
+
+  thesis_in_next_7_years: `
+    code gen is super cool
+      what will code gen be useful for? (engineer be more T shaped)
+      the other 99% of the population = be better at computing 
+      what are computers really useful for??
+
+      are there codes that take 3 months of work today that can produced 100x faster? 
+
+      generating images is great work. 
+      generating living diagrams like bret victor may also be great work
+
+      http://www.paulgraham.com/greatwork.html
+
+      make codes that 100% of people want to edit,customize, understand, and audit.
+      make documents that 10% of people want to work on together. - distil.pub = cool but some are a 5 man effort.
+      how much effort does it take to make a cool things?
+      What cool stuff need to be made?
+      How many side projects are there on github?
+      How many side projects are successful in the world?
+      Maybe someday, everyone in the world can make and maintain a cool side project to be self reliant
+      It would be cool to see a traversable network visualization of all these projects?
+      now what some of the most important projects that humanity is doing or about to do. 
+      what are some important projects that need to be done and no one is doing
+      http://www.paulgraham.com/greatwork.html
+
+
+    What are the greatest scientific break throughs of the last decade?
+    List all nobel prize winners? predict next 100=
+  `,
 
 //  healthcare: await('data/healthcare.txt')
-
-
 }
 
 let templateNames = Object.keys(templates);
