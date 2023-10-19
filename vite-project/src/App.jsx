@@ -882,6 +882,7 @@ information_economics: `
   What easy problems are solved?
   What difficult problems are most worth solving?
   How important is collaboration to solving the most difficult problems?
+  http://www.paulgraham.com/greatwork.html - 
 `,
 
 video_game_industry: `
@@ -916,7 +917,36 @@ distance_to_eutopia: `
   What is information > how does information help people help themselves.
   imagine the whole world is like sims. you can see progress bars for everyone.
   imagine you can see a redacted summary of eeryones daily activity on a map
-  
+  how does the brain encode directions, and requests and know that it will be good idea to execute them?
+  if more people write more truthy sentenes on internet, will ai get smarter?
+  if ai gets smarter, how will it help more people help themselves?
+  `,
+
+
+  visualize_value: `make cool shit everyday`,
+  math: `what are coolest ideas in measurement by lockhart`,
+
+  agriculture: `
+    what if every farm had a database?
+    every crop that was planted and yielded makes an update
+    then every farm can see every other farm.
+    then people who need what farm makes can read them and update them to eat them.
+    make a sim city visualization -> what would happen if city plants a building in this area
+    traffic visualization -> simulation = create predicted data for visualization
+    take nyc taxi data -> use this to build function
+    use function to build same data for every road in every other city adjusted by sliders / population density
+  `,
+
+  traffic_analysis: `lewis lehe`,
+  solve_internet_toxicity: `what this? why this bad. 
+    mushroom may now automatically make society better.
+    its possible to manufacture billions of doses and distribute the cheaply.
+    but a revolution in culture = everyone more happy - jk
+    mushrooms can change your mind. make it better. but this lasts maybe a few days or months.
+    to make it permanent and to make more happy everyone in your life
+    create more happy within self -> cite everything you say and have evidence
+    and use evidence for positive good. 
+    cite pg + copy gwern.
   `,
 
   thesis_in_next_7_years: `
