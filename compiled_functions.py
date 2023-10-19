@@ -17,7 +17,7 @@ import json
 import subprocess
 import json
 import os
-import youtube_dl
+#import youtube_dl
 import openai
 import re
 from fastapi.staticfiles import StaticFiles
@@ -33,7 +33,6 @@ import pdfplumber
 import math
 import asyncio
 import aiohttp
-import asyncio
 MAX_LENGTH_APT = 1
 #print('data exists : ', os.path.exists('data'))
 #print('data exists : ', os.listdir('.'))
