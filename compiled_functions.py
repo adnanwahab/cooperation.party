@@ -47,8 +47,8 @@ openai.organization = "org-Yz814AiRJVl9JGvXXiL9ZXPl"
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
 #and make it save to filesystem if a parameter is added 
 document_query_cache = {}
-if os.path.exists('data/document_query_cache.json'):
-    document_query_cache = json.load(open('data/document_query_cache.json'))
+if os.path.exists('document_query_cache.json'):
+    document_query_cache = json.load(open('document_query_cache.json'))
 
 def unstructured_geoSpatial_house_template_query(_):
     if _ in document_query_cache: return document_query_cache[_]
@@ -74,7 +74,7 @@ def unstructured_geoSpatial_house_template_query(_):
     result = response['choices'][0]['message']['content']
     result = json.loads(result)
     document_query_cache[_] = result
-    json.dump(document_query_cache, open('data/document_query_cache.json', 'w+'))
+    json.dump(document_query_cache, open('document_query_cache.json', 'w+'))
     return result
 
 def get_json_if_possible(apt):
@@ -378,7 +378,7 @@ def arxiv (_, sentence, i):
     hasRenderedContent = content
     return content
 
-print('shit', arxiv('','',''))
+#print('shit', arxiv('','',''))
 
 def trees_histogram(_, sentence, i):
     from ipynb.fs.defs.geospatial import trees_histogram
@@ -973,7 +973,7 @@ def isochroneAssertion(geojson_data, point_to_check):
         if polygon.contains(point_to_check): return True
     else : return False
 
-with open('data/document_query_cache.json') as file:
+with open('document_query_cache.json') as file:
     fn_cache = json.load(file)
 
 def cacheThisFunction(func):
@@ -1373,18 +1373,18 @@ def pricing_estimator(_, __, ___):
     columns = json.load(open('data/airbnb/columns/Sicily--Italy.json'))
     return _
 
-all_apt = os.listdir('./data/airbnb/apt/')
+#all_apt = os.listdir('./data/airbnb/apt/')
 
 import os, json, h3
 import geopy.distance
-all_apt = os.listdir('./data/airbnb/apt/')
+#all_apt = os.listdir('./data/airbnb/apt/')
 
 # for _ in all_csv:
 #     _ = _.split('-')
 #         for token in _:
 #//subjective metrics of land-usage, https://morphocode.com/the-making-of-morphocode-explorer/
 
-city_locations = json.load(open('data/airbnb/city_locations.json'))
+#city_locations = json.load(open('data/airbnb/city_locations.json'))
 
 @cacheThisFunction
 def compute_deal_ranking(apt_json):
