@@ -32,6 +32,8 @@ import geopy.distance
 import pdfplumber
 import math
 import asyncio
+import aiohttp
+import asyncio
 MAX_LENGTH_APT = 1
 #print('data exists : ', os.path.exists('data'))
 #print('data exists : ', os.listdir('.'))
@@ -1548,8 +1550,7 @@ def filter_columns(list_of_items, important_columns):
     return result
     
     
-import aiohttp
-import asyncio
+
 
 app = FastAPI()
 

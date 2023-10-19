@@ -6,8 +6,8 @@
 app = "cooperation-party"
 primary_region = "dfw"
 
-[build]
-  builder = "paketobuildpacks/builder:base"
+##[build]
+##  builder = "paketobuildpacks/builder:base"
 
 [env]
   PORT = "8080"

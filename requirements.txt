@@ -19,3 +19,4 @@ Werkzeug==2.3.3
 pdfplumber
 asyncio
 uvicorn
+aiohttp
