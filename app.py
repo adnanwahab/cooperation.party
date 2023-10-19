@@ -5,14 +5,6 @@ Application definition
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-app = FastAPI()
-
-
-@app.get("/")
-async def home():
-    return HTMLResponse("Hello world!")
-
-
 from fastapi.middleware.cors import CORSMiddleware
 from compiled_functions import jupyter_functions
 import inspect
@@ -51,6 +43,7 @@ def substitute(name):
     return name
 
 origins = [
+    "https://cooperation.party",
     "https://cooperation.party",
     "http://cooperation.party",
     "http://localhost.tiangolo.com",
@@ -155,7 +148,7 @@ async def makeFn(FnText:FnText):
         if type(fn) == type(lambda _:_):
             if inspect.iscoroutinefunction(fn):
                 val = await fn(val, documentContext, sentences[i])
-            else:
+            else:   
                 val = fn(val, documentContext, sentences[i])
         else:
             val = fn 
@@ -164,6 +157,10 @@ async def makeFn(FnText:FnText):
 
 @app.get("/admin")
 def admin(): return FileResponse('admin.html')
+
+@app.get("/")
+async def home():
+    return HTMLResponse("Hello world!")
 
 # @app.get("/")
 # async def home():

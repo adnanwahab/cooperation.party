@@ -347,13 +347,14 @@ async function _() {
 //   console.log('gesundheit')
 //    url = `https://pypypy.ngrok.io/makeFn/`
 //    //url = `https://hidden-river-3971.fly.dev/makeFn/`
-// if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
+if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
 //   console.log('gesundheit', window.location.hostname)
 //    //url = `https://hidden-river-3971.fly.dev/makeFn/`
 //    url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
-//    url = 'https://pypypy.ngrok.io/makeFn'
+  url = 'https://cooperation-party.fly.dev/makeFn'
+  console.log('I AM AT COOPERATION.PARTY')
 //    console.log(url)
-// }
+}
 // url = 'https://pypypy.ngrok.io/makeFn'
 
   // let fn_ = await fetch('mockData.json');
@@ -744,7 +745,7 @@ let templates = {
   `,
 
 
-  healthcare: await('data/healthcare.txt')
+//  healthcare: await('data/healthcare.txt')
 
 
 }
