@@ -733,7 +733,9 @@ let templates = {
   pokemon: `given a favorite pokemon - select
   make best team that counters elite 4
   element counters
-  schedule - spend 30 min in viridian city`,
+  
+  find recent compettions -> diagram how metagame changes
+  `,
 
   // `keenan+kel-humor-transcription`: 
   // `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial

@@ -17,3 +17,4 @@ data/document_query_cache.json
 data/document_query_cache.json
 .DS_Store
 data/
+backup_data/
