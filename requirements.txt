@@ -11,3 +11,4 @@ pdfplumber
 asyncio
 uvicorn
 aiohttp
+ngrok

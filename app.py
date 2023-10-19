@@ -16,19 +16,19 @@ from pydantic import BaseModel
 from typing import List, Optional
 import json
 import openai
-# from pyngrok import ngrok
+from pyngrok import ngrok
 
-# # Set configuration options
-# # config = {
-# #     'name': 'example',
-# #     'proto': 'http',
-# #     'addr': 8000,
-# #     'host_header': 'rewrite',
-# #     'subdomain': 'pypypy'
-# # }
+#Set configuration options
+config = {
+    'name': 'example',
+    'proto': 'http',
+    'addr': 8000,
+    'host_header': 'rewrite',
+    'subdomain': 'pypypy'
+}
 
 # # # Open a HTTP tunnel on the specified port
-# # public_url = ngrok.connect(**config)
+public_url = ngrok.connect(**config)
 # #print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
 # # Keep the tunnel running until terminated
 # #input("Press Enter to exit...")
