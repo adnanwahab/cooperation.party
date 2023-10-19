@@ -682,6 +682,27 @@ let templates = {
 
 
   `,
+
+  twitch_plays_robot: `
+    get stream analytics from twitch comments
+
+    anabelle has 2 functions
+    1. make art
+    2. ask anabelle to say funny things to strangers and give gifts + random acts of kind-ness
+
+
+    donate to anabelle.
+    experiment in building 100% consensus - reddit.com/r/place
+
+    twitch plays - 1,165,140 participants - make it funny like infinite seinfeld.
+    human intelligence is infinite beyond measure when collaborating in groups greater than 2^2
+
+    constant stream of cool analytics - webviz
+
+    1 million = 1,800 = subsistence
+
+    build a community that does random or targeted acts of kind-ness - give compliment to stranger. give $20-100 to a person.
+  `,
   //water is solved by energy
   //cooperation = OPEN PROBLEM - better information???
   //education = more fun to build cool shit ??? - find citations -
@@ -700,6 +721,45 @@ let templates = {
   // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   // find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
 
+  visualize_cool_travel_ideas: `
+    trans siberia rail road -> 
+    biking across europe
+    take plane to city and try food - during an event. 
+    get cool pics for insta
+
+    //what would it take to get llama to make a travel guide for you?? 
+    //draw the route from london to japan
+    //this is a spec -> write a good version of this in as little code as possible -> make it cool and visual and exciting + fun.
+  `,
+
+  satellite_imaging_semantic_segmentation: `
+    get all the tiles near my house
+    show me approximate zoning diagrams so i can email my congressman that i want less parking lots and more bus,metro,sidewalk,robutts,
+    what can you do with that?
+    look up cool things to do with satellites
+  `,
+
+  planned_cities: `
+    https://en.wikipedia.org/wiki/List_of_planned_cities
+
+
+    compare and contrast - juxtaposition of wrods and images contain the full spectrum of human experience
+
+      fight urban sprawl and improve connection by building better parks and recreation - leslie knope
+
+      circular so train can deliver passengers to everywhere in same amount of time
+      it takes same amount of time to deliver from center to margin
+
+    Visual Proof why portland + berlin are better
+    which cities are "designed better"
+
+
+    https://www.portlandmaps.com/bps/zoning/#/map/
+  
+    make a drawing -> write a sentence -> get a working app with data bound -> debug the system while it runs -> light-table with code gen 
+  `,
+
+  //theory - socialism is good but capitalism is good and most are done badly cause of plutocracy, selfishness and lack of visibility
 
   where_to_build_new_houses_for_max_suitability: `
     given airbnb revenue + commute distance + 100k, where do i plant a new house to get most lifetime happiness out of my fam and so on.
@@ -996,6 +1056,28 @@ distance_to_eutopia: `
     What are some new back fo the enveolope calculations?
     What are the million specific intelligences that will be needed in 10-20 years?
 
+
+    cost time-series 5-10-30 year prediction for
+    cpu
+    gpu
+    storage
+    network latency + throughput
+    speed of light = constant 
+    frame = 8ms - could be 200fps
+    22 nanoseconds for light to reach eyes - depth imaging
+    keep it actionable
+
+
+    adult population reads 150 words per minute
+
+  `,//
+
+  311: `
+    how many cities have 311 database available
+
+    dispatch repair people to fix roads
+
+    what can we do with this dataset?
   `,
 
   text: `

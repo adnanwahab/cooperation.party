@@ -21,6 +21,6 @@ primary_region = "dfw"
   processes = ["app"]
 
 
-[mounts]
-  source="myapp_data"
-  destination="/data"
+#[mounts]
+#  source="myapp_data"
+#  destination="/data"

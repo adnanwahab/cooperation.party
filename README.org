@@ -1,4 +1,9 @@
-# Visualize Mind Magic
+# Cooperation.party 
+# Visualize Mind Magic - 
+# Built IDE for Data Analysis, Robotics, GovTech - think better @ office, research-lab & school.
+# IDE with database included and createed automagically for you
+# finds data, prepares it, and combines it into something meaningful to create plans, predictions and 
+# 100 free open source run by 100 volunteers - get them to make projects that help you get jobs -> host on your website -> plugin to dns/surge and host
 
 * Make pudding.cool / redblobgames / distil.pub articles 10x easier
 * Document + Visualize + Instrument + Customize Code in english for 100% of people to read and write.
@@ -970,3 +975,47 @@ the first purpose of life is to understand the mind and the secrets of the cosmo
 # requsst for implementation
 * low-code no-code AI generative ART using compute shaders
 * cool beans
+
+
+
+
+# KPIs 
+1. money that we have made people 
+2. all worlds problems measured to be solved specifically in high resolution in 6-20 years.
+3. start small -> measure 311 in every city 
+   make a jupyter notebook -> chart 
+
+# 10 biggest problems measured in each phone, home, neighborhood, city, state, 
+each phone has a exabyte of metadata about everyone else's data - so everyone can simulatenously communicate to everyone else -> meaning im riding my bike to yoga studio then going to office then having dinner with farah -> how does that fit into the picture of 7 billion people drawing an escher drawing -> contribute to the big picture of everyone's puzzle pieces fitting into a tapestry of cool stuff happenining over time 
+
+
+zoom into everyones house - describe what working on
+
+
+# identify, instrument and measure + lower technical risk = cool stuff built faster
+
+# close enough but we'll get there faster when we know exactly how happy everyone.
+# make yourself happy = make others happy.
+
+# utopia = everyone happy = eta 2030 which means no serious complaints no problems
+
+
+
+# ui for sims in everyones house
+# theme safrai + theme hospital +
+# simcity
+# make everything work better 
+# how well does everything work
+# all the cars in the world -> 
+# government has database of every licenese plate snapshot -> soem think creepy -> but this data should really belong to everyone
+# at least all robot cars should be visualizable to everyone - cross industry standard -> important cause trolley problem - how could you \
+# just use simulation -> say you have it. subsidize companies that do it. - make a map of what it looks like. show traffic reduced by 75%.
+# make chart of how much stress is caused by driving. 
+# its cool you can go anywhere. but we could gain so much more if it was like minority report where you can only drive outside city limits -> get this done by 2023
+# find out who is doing this -> upload all your text + meme based screenshots -> make interactive picture book automaticalyl for people of content that is relevant.
+# starcraft mode = see robots make shit
+# satellites -> make a notebook of
+
+4 biggest fears - you should talk to someone lori gottlieb
+# References
+1. https://www.statista.com/statistics/1240622/new-residential-construction-per-capita-usa/
