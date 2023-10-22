@@ -1343,14 +1343,10 @@ async function exportToPdf() {
       doc.text(_, 0, 75 + i * 5, ) 
       console.log(_)
     })
-   
-
+  
     //doc.table(1, 1, window.addToPdf().map(pair => Object.values(pair[1])), labels, { autoSize: true })
-    //['url', 'deal_score', 'price', 'total_estimated_commute_time']
-
-    
+    //['url', 'deal_score', 'price', 'total_estimated_commute_time'] 
   }
-
   doc.save("a4.pdf");
 }
 

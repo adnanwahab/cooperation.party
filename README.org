@@ -5,11 +5,25 @@
 # finds data, prepares it, and combines it into something meaningful to create plans, predictions and 
 # 100 free open source run by 100 volunteers - get them to make projects that help you get jobs -> host on your website -> plugin to dns/surge and host
 
+# cut scope -> generate map + data from one sentence / paragraph.
+# eventually IDE for robotics, geospatial, govtech.
+
 * Make pudding.cool / redblobgames / distil.pub articles 10x easier
 * Document + Visualize + Instrument + Customize Code in english for 100% of people to read and write.
 * Empower 7 billion citizen scientists to learn more better :)
 * Make books like already free easier to learn and love with [SRS](https://gwern.net/spaced-repetition#popularity)
 
+* light said - news every day on repeat
+* now we can we create the news collaboratively together
+* which means an upgrade to government communication with citizens could look like this -> 
+* 300 million documents synchronizing with 300 million others
+* 1-2 hours 
+* how would you get a shinkansen approved by 100% of people
+* you would demonstrate reduction in traffic by 50% in LA 
+* 
+
+
+This is an infrastructure startup, not ui.
 
 
 # cool features todo
@@ -1016,6 +1030,55 @@ zoom into everyones house - describe what working on
 # starcraft mode = see robots make shit
 # satellites -> make a notebook of
 
+# MFE -> observable web components + 
+# make 95% of all databases publicly readable + polyfill this -> 311 in all cities
+## measure upside -> 
+# jupyter functions w/ tests
+
 4 biggest fears - you should talk to someone lori gottlieb
 # References
 1. https://www.statista.com/statistics/1240622/new-residential-construction-per-capita-usa/
+
+
+# is fast fashion bad? what things would you want hand made to be cool
+# help citizens start successfull businesses by verifying market opportunity + discovering gaps in the market or things people want 
+
+# https://www.behance.net/gallery/19514105/Crystals-Zara-Man-2014?locale=en_US
+# https://www.zara.com/us/en/limited-edition-embroidered-sweater-p00693350.html?v1=308106624
+https://www.amazon.com/Roxy-Womens-Beautiful-Morning-Trucker/dp/B0BQRJHN12/ref=cs_sr_dp_2?keywords=Floral%2BHats&qid=1697745924&sr=8-6&th=1&psc=1
+
+
+# you can create a cool story doing anything you want! 
+
+
+https://www.etsy.com/listing/1162629702/holographic-meggings-with-pockets?ga_order=most_relevant&ga_search_type=all&ga_view_type=gallery&ga_search_query=blue+sparkle+leggings+mens&ref=sr_gallery-1-5&referrer_page_guid=234ba577-f85e-400b-b817-92e09fa026bb&organic_search_click=1&variation0=2698334031&variation1=2456807202
+
+
+# use this as a template https://clearbit.com/
+
+# measure progress 
+# https://www.youtube.com/watch?v=6zJKJb4dCsQ
+1000 datums per city
+what percentage parks -> make a script and fetch reflect.url and then save to disk.
+1. using public data dumps of IOT - find these 
+2. sateliites might 
+3. robots and shit
+4. people hand editing maps and shit
+5. 311
+6.
+
+make a ai -> reads your "identiy" tells you who you are like jc denton - not useful
+research helios and people inspired by that -> less wrong -> 
+
+
+# make a dataset of all people projects and how cool and when + effort
+like kaggle but reproducability
+
+
+
+
+# Influences
+1. dynamic land in the browser -> write down whatever -> plan on how to make a vaccine
+2. reflect + jupyter + obs (reactive variable model but client + fly.io(db) + desktop)
+3. write sentences -> each one makes a diagram -> edits real world -> plants a tree -> build house w/ robots
+4. starcraft mode but add pylons - measure apm + effective resource utilization (everyone in government wants to see how each resource is utilized - make more people vote)

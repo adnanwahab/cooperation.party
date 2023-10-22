@@ -1627,7 +1627,7 @@ async def rankAptByUserPreferences(special_case, schedule):
     #  'New-Orleans--Louisiana--United-States.json',
     #  ]
     apt_json = {
-        city: filter_columns(json.load(open(f'./data/columns/{city}.json')), important_columns) for city in special_case#cities[:1])
+        city: filter_columns(json.load(open(f'./data/airbnb/columns/{city}.json')), important_columns) for city in special_case#cities[:1])
     }
     for city in apt_json:
         apt_json[city] = apt_json[city][:100]
@@ -1801,7 +1801,32 @@ def request_for_clarification(_, documentContext, sentence):
             'data': sentence
             }
 
-jupyter_functions = { #use regexes + spelling corrector + llm to match sentences w/ functions
+def predict_revenue():
+    #partition by city
+    #get the closest 10
+    #get their calendar availability for 90 days
+    #multiply days rented by price
+    #account for seasonal + stuff like new york rule you cant rent less than 30 days
+    #predict most profitable cities to rent
+    return {'component':'<HouseRevenuePrediction>',
+            'data':''}
+
+
+def geoCodeAddress():
+    return {
+        'component': '<geocoder>'
+    }
+
+def howMuchCanYouEarn():
+    return {
+        'component': '<earningsCalculator>'
+    }
+
+jupyter_functions = {
+    "given all the zillow listings in a city, predict how much airbnb revenue it would it make if i rented it out 50% of the time. also predict usage.": geoCodeAddress,
+    "predict most profitable cities to rent.":howMuchCanYouEarn,
+    """"given all the zillow listings in a city, predict how much airbnb revenue it would it make if i rented it out 50% of the time. also predict usage.""": predict_revenue,
+    #use regexes + spelling corrector + llm to match sentences w/ functions
     "get a list of ": request_for_clarification, #TODO try regexes + spelling corrector before LLM on client then gpu...? serversider gpu populates client ? user choices populate training data examples -> make some sort of academic consensus -> curated archive of training data sets ? -> show your work for building these 10 demos -> start an open source initiative for fine tunining llms -> make labeling text easy and micro pay users $1 in bitcoin :) or donate like 1 grain of rice a day -> cooperation_data.org -> works for synthetic database registry -> phylogeny taxonomic tree of reasoning -> piaget model of object constance -> what the equivalent in text -> make like 5 llms that are 1m tokens or just a encoder + transformer -> small-language-model -> type 5 sentences -> 5 gpus -> make 5 blocks of code -> execute on one million machines -> parse of wikipedia in 16ms on key press so you can get list of all anime characters and their dialog 
     #find this quote from youtube - "oh noe my camera" -> 
     "my schedule is": schedule_json_converter,

@@ -3,6 +3,196 @@ import {useEffect, useState} from 'react'
 import MapView from './MapView'
 import BarChart from './BarChart';
 
+let cool_beans = [
+  [
+      "Mobile World Conference",
+      "Spain",
+      "Barcelona",
+      "January 24-27"
+  ],
+  [
+      "IBM Think 2020",
+      "US",
+      "San Francisco",
+      "February 5-7"
+  ],
+  [
+      "Cisco Live Melbourne",
+      "Australia",
+      "Melbourne",
+      "March 3-6 "
+  ],
+  [
+      "Salesloft’s Rev2020",
+      "US",
+      "San Francisco",
+      "April 9-11"
+  ],
+  [
+      "SaaStr",
+      "US",
+      "San Jose",
+      "June 10-12"
+  ],
+  [
+      "Microsoft WSLConf",
+      "US",
+      "Shanghai",
+      "July 10-11 "
+  ],
+  [
+      "Facebook Global Marketing Summit",
+      "US",
+      "Singapore",
+      "August 9-12"
+  ],
+  [
+      "Concur Fusion",
+      "US",
+      "Taiwan",
+      "September 9-12"
+  ],
+  [
+      "Qualtrics X4",
+      "Japan",
+      "Tokyo",
+      "October 10-12"
+  ],
+  [
+      "Intel Labs Day",
+      "US",
+      "San Francisco",
+      "November-12"
+  ],
+  [
+      "SXSW",
+      "US",
+      "Austin",
+      "December 12-22"
+  ],
+  [
+      "Microsoft MVP Global Summit",
+      "US",
+      "Bellevue",
+      "January 15-20"
+  ],
+  [
+      "F5 Agility 2020",
+      "US",
+      "Orlando",
+      "February 16-19"
+  ],
+  [
+      "SAP Ariba Live",
+      "US",
+      "Las Vegas",
+      "March 16-18"
+  ],
+  [
+      "Game Developers Conference",
+      "US",
+      "San Francisco",
+      "April 16-20"
+  ],
+  [
+      "Domopalooza",
+      "US",
+      "Salt Lake City",
+      "May 12-20 "
+  ],
+  [
+      "Nvidia’s GTC",
+      "US",
+      "San Jose",
+      "June 22-26"
+  ],
+  [
+      "EmTech Asia",
+      "Singapore",
+      "Singapore ",
+      "July 24-26"
+  ],
+  [
+      "Oracle Modern Business Experience 2020",
+      "US",
+      "Chicago",
+      "August 23-26 "
+  ],
+  [
+      "Adobe Summit",
+      "US",
+      "Las Vegas",
+      "September-29"
+  ],
+  [
+      "Okta’s Oktane 2020",
+      "US",
+      "San Francisco",
+      "October 30-April 2"
+  ],
+  [
+      "Atlassian Summit 2020",
+      "US",
+      "Las Vegas",
+      "November 31-April 2"
+  ],
+  [
+      "Google Cloud Next ‘20",
+      "US",
+      "San Francisco",
+      "December 6-8 "
+  ],
+  [
+      "Outreach Unleash",
+      "US",
+      "San Diego",
+      "January 7-9"
+  ],
+  [
+      "Facebook F8 Conference",
+      "US",
+      "San Jose",
+      "February 5-6"
+  ],
+  [
+      "Shopify Unite",
+      "Canada",
+      "Toronto",
+      "March 6-8 "
+  ],
+  [
+      "Google I/O",
+      "US",
+      "Mountain View",
+      "April 12-14"
+  ],
+  [
+      "TNW 2020",
+      "Netherlands",
+      "Amsterdam",
+      "May 18-19"
+  ],
+  [
+      "CERAWeek 2020",
+      "US",
+      "Houston",
+      "June 9-13"
+  ],
+  [
+      "ICLR 2020",
+      " Ethiopia.",
+      "Addis Ababa",
+      "July 26-30"
+  ],
+  [
+      "Collision",
+      "Canada",
+      "Toronto",
+      "August 22-25"
+  ]
+]
+
+
 const tabs = [
     { name: 'My Account', href: '#', current: false },
     { name: 'Company', href: '#', current: false },
@@ -14,24 +204,96 @@ const tabs = [
     return classes.filter(Boolean).join(' ')
   }
 
-  const SelectComponent = ({ options, setSelectedValue, selectedValue}) => {
+
+
+
+function Steps({options, setSelectedValue, selectedValue}) {
+
+  const steps = options.map ((_, index) => 
+    {
+      return     { id: _, 
+        
+        
+        name: cool_beans[index].join('\n'), 
+        
+        
+        href: '#', status: 
+      
+      
+    selectedValue === _ ? 'current'  : 'upcoming'
+    
+    }
+
+    }
+    //{ id: 'Step 2', name: 'Application form', href: '#', status: 'upcoming' },
+    //{ id: 'Step 3', name: 'Preview', href: '#', status: 'upcoming' },
+  )
   
+  const onClick = (index) => {
+
+    steps[index].upcoming = 'current'
+
+    steps[index].status = 'current'
+    setSelectedValue(options[index])
+  }
     return (
-      <div>
-        <select
-        className='city-selector'
-          value={selectedValue}
-          onChange={e => setSelectedValue(e.target.value)}
-        >
-          <option value="" disabled>Select an option</option>
-          {options.map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
+      <nav aria-label="Progress">
+        <ol role="list" className="space-y-4 md:flex md:space-x-8 md:space-y-0">
+          {steps.map((step, index) => (
+            <li key={step.name} className="md:flex-1" onClick={() => onClick(index)}>
+              {step.status === 'complete' ? (
+                <a
+                  href={step.href}
+                  className="group flex flex-col border-l-4 border-indigo-600 py-2 pl-4 hover:border-indigo-800 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
+                >
+                  <span className="text-sm font-medium text-indigo-600 group-hover:text-indigo-800">{step.id}</span>
+                  <span className="text-sm font-medium">{step.name}</span>
+                </a>
+              ) : step.status === 'current' ? (
+                <a
+                  href={step.href}
+                  className="flex flex-col border-l-4 border-indigo-600 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
+                  aria-current="step"
+                >
+                  <span className="text-sm font-medium text-indigo-600">{step.id}</span>
+                  <span className="text-sm font-medium">{step.name}</span>
+                </a>
+              ) : (
+                <a
+                  href={step.href}
+                  className="group flex flex-col border-l-4 border-gray-200 py-2 pl-4 hover:border-gray-300 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4"
+                >
+                  <span className="text-sm font-medium text-gray-500 group-hover:text-gray-700">{step.id}</span>
+                  <span className="text-sm font-medium">{step.name}</span>
+                </a>
+              )}
+            </li>
           ))}
-        </select>
-      </div>
-    );
+        </ol>
+      </nav>
+    )
+  }
+
+  const SelectComponent = (props) => {
+    return <Steps
+    {...props}
+    ></Steps>
+    // return 
+    //   <div>
+    //     <select
+    //     className='city-selector'
+    //       value={selectedValue}
+    //       onChange={e => setSelectedValue(e.target.value)}
+    //     >
+    //       <option value="" disabled>Select an option</option>
+    //       {options.map((option, index) => (
+    //         <option key={index} value={option}>
+    //           {option}
+    //         </option>
+    //       ))}
+    //     </select>
+    //   </div>
+    // );
   };
   
  function Tabs({tabs}) {
