@@ -31,7 +31,7 @@ print()
 
 # # # Open a HTTP tunnel on the specified port
 
-if os.getcwd() != '/Users/adnanwahab/cooperation.party':
+if os.getcwd() != '/Users/shelbernstein/cooperation.party':
     for i in range(10): print('this is fly.io')
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
     public_url = ngrok.connect(**config)
