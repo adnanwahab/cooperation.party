@@ -22,6 +22,12 @@
 * you would demonstrate reduction in traffic by 50% in LA 
 * 
 
+# start with research paper = knowledge
+# make maps + other diagrams = display knowledge
+# people edit maps + other diagrams = starcraft mode -> add pylons
+# generate programs for logging, metrics, visualization + instructions for people + robots
+
+
 
 This is an infrastructure startup, not ui.
 

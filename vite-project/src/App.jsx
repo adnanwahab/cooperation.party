@@ -31,8 +31,8 @@ import TravelTimeMap from './TravelTimeMap'
 import TableView from './TableView'
 import compile from './compile'
 import templates from './templates'
-let templateNames = Object.keys(templates).slice(0, 6)
-let templateContent = Object.values(templates).slice(0, 6)
+let templateNames = Object.keys(templates).slice(0, 7)
+let templateContent = Object.values(templates).slice(0, 7)
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
@@ -616,7 +616,7 @@ function App() {
         setCount(index)
         }  
       }
-      key={key} value={index}>{index} - {key}</li>)
+      key={key} value={index}>{1 + index} - {key}</li>)
       }
     </ul>
     <Favicon url={cat} />
