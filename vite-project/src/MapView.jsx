@@ -12,7 +12,6 @@ import {IconLayer} from '@deck.gl/layers';
 //import {interpolatePurples} from  'https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3'
 import {interpolatePurples} from "https://cdn.skypack.dev/d3-scale-chromatic@3";
 
-import {cellToLatLng} from 'h3-js'
 const ICON_MAPPING = {
     marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
   };
@@ -122,7 +121,7 @@ reports,
     //routes = routes[0].routes[0].geometry
     routes = routes.map(_ => _.routes[0].geometry)
     //console.log(routes, 'geometry')
-    centroid = routes[0].coordinates[0]
+    //centroid = routes[0].coordinates[0]
     routes = routes
   }
 else {
@@ -184,8 +183,7 @@ else {
   ];
 
   routes.map((route, route_index) => {
-    centroid = route.coordinates[0]
-    console.log('centroid - ', centroid)
+    //centroid = route.coordinates[0]
     let newLayer = new GeoJsonLayer({
       id: 'geojson',
       //data: 
@@ -222,22 +220,11 @@ else {
   })
 
   h3_hexes
-  centroid = [0,0]
-  if (h3_hexes) {
-    let len = Object.keys(h3_hexes).length
 
-    
-    let places  = Object.keys(h3_hexes).map(_ => {
-      return cellToLatLng(_)
-    }).forEach(_ => { 
-      centroid[0] += _[0]
-      centroid[1] += _[1]
-    })
-    
-    console.log('i am a centroid', centroid)
-    centroid[0] /= len
-    centroid[1] /= len
-    console.log('i am a centroid', centroid)
+  if (h3_hexes) {
+
+   
+  
 
     layers = [
       new H3HexagonLayer({
@@ -284,8 +271,8 @@ const INITIAL_VIEW_STATE = {
     <h3>Colorize Hexes by suitability for given schedule.</h3>
     <Legend></Legend>
     <DeckGL
-        width={500}
-        height={500}
+        width={400}
+        height={400}
 
       layers={layers}
       effects={[lightingEffect]}

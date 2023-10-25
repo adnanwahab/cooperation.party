@@ -2,6 +2,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import {useEffect, useState} from 'react'
 import MapView from './MapView'
 import BarChart from './BarChart';
+import {cellToLatLng} from 'h3-js'
 
 let cool_beans = [
   [
@@ -411,6 +412,20 @@ export default function Example(props) {
     const barChartData = routes?.map((_, i) => {
       return {letter: Object.keys(props.schedule)[i], frequency:_.routes[0].duration }
   });
+
+    let centroid = [0,0]
+    Object.keys(props.h3_hexes[selectedCity]).map(_ => {
+      return cellToLatLng(_)
+    }).forEach(_ => { 
+      centroid[0] += _[0]
+      centroid[1] += _[1]
+    })
+
+    let len = Object.keys(props.h3_hexes[selectedCity]).length
+
+    centroid[0] /= len
+    centroid[1] /= len
+
   return (
     <>
     <SelectComponent 
@@ -419,10 +434,10 @@ export default function Example(props) {
     options={tabs}></SelectComponent>
     <BarChart data={barChartData} city={selectedCity} schedule={Object.keys(props.schedule).join('')}></BarChart>
     <div class="relative h-96 w-96">
-      <MapView left={0} routes={props.routes[selectedIndex]}  data={Object.values(props.data[selectedCity])}/>
-      <MapView left={600} h3_hexes={props.h3_hexes[selectedCity]} routes={getNeighborhoodDetails}  data={Object.values(props.data[selectedCity])}/>
+      <MapView centroid={centroid} left={0} routes={props.routes[selectedIndex]}  data={Object.values(props.data[selectedCity])}/>
+      <MapView centroid={centroid} left={600} h3_hexes={props.h3_hexes[selectedCity]} routes={getNeighborhoodDetails}  data={Object.values(props.data[selectedCity])}/>
     </div>
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="mt-20 px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         </div>

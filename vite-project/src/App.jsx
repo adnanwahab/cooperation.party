@@ -589,7 +589,7 @@ function App() {
     {leftPanel}
 
 
-      <div className="col-span-2 ">{components} </div>
+      <div className="col-span-2 overflow-scroll">{components} </div>
       {/* <div>
       1. proximity to water
       2. land usage
