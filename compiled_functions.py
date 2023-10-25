@@ -1597,7 +1597,7 @@ async def fetch(session, apt, schedule):
     for todo in schedule:
         result = await fetch_overpass_data(todo, start_lat, start_lng)
         await asyncio.sleep(1.5)
-        if len(result['elements']) == 0: 
+        if not result or 'elements' not in result or len(result['elements']) == 0: 
             print('no ' + todo)
             continue
         result = result['elements'][0]
@@ -1693,7 +1693,7 @@ async def find_best_deals_on_airbnb(prevData, documentContext, sentence):
     #print('schedule', schedule)
     #cities = os.listdir('./data/airbnb/apt')
     
-    cities = list(json.load(open('./data/airbnb/better_continents.json')).keys())
+    cities = list(json.load(open('./data/airbnb/city_locations.json')).keys())[:3]
     data, h3_hexes, routes = await rankAptByUserPreferences(cities, schedule)
     return {'data': data,
             'schedule': schedule,
@@ -1812,12 +1812,12 @@ def predict_revenue():
             'data':''}
 
 
-def geoCodeAddress():
+def geoCodeAddress(_, __, ___):
     return {
         'component': '<geocoder>'
     }
 
-def howMuchCanYouEarn():
+def howMuchCanYouEarn(_, __, ___):
     return {
         'component': '<earningsCalculator>'
     }

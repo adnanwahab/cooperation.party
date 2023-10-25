@@ -66,7 +66,7 @@ origins = [
     "*",
     "pypypy.ngrok.io",
     "http://localhost:5173",
-    "localhost:5173"  
+    "https://localhost:5173"  
 ]
 app = FastAPI()
 app.add_middleware(

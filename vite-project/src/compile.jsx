@@ -1,3 +1,48 @@
+import TableView from './TableView'
+
+
+function ShitAss() {
+  const notificationMethods = [
+    'tech conferences', 'political conventions' , 'music festivals'
+  ]  
+
+  function replace_me(content) {
+    document.querySelector('textarea').value = 
+    
+    document.querySelector('textarea')
+    .value.replace('get a list of tech conferences or music festivals one per month.',
+    `get a list of ${content} one per month.`
+    )
+  }
+
+  return (
+    <div>
+      <label className="text-base font-semibold text-gray-900">Clarifications</label>
+      <p className="text-sm text-gray-500">How do you prefer to receive notifications?</p>
+      <fieldset className="mt-4">
+        <legend className="sr-only">Notification method</legend>
+        <div className="space-y-4">
+          {notificationMethods.map((notificationMethod) => (
+            <div key={notificationMethod} className="flex items-center" onClick={() => replace_me(notificationMethod)}>
+              <input
+                id={notificationMethod}
+                name="notification-method"
+                type="radio"
+                defaultChecked={notificationMethod === 'email'}
+                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+              />
+              <label htmlFor={notificationMethod} className="ml-3 block text-sm font-medium leading-6 text-gray-900">
+                {notificationMethod}
+              </label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+  )
+}
+
+
 const List = (list) => 
   (<ul className="overflow-scroll h-64">
     <li key="item font-white">{list.length}</li>
@@ -26,7 +71,7 @@ function geoCoder ({onChange}) {
 
 export default function compile (dataList, apply_) {
 //  let [getSelected, setSelected] = useState('')
-  //console.log(dataList)
+  console.log(dataList)
   //const [address, setAddress] = useState('')
 
   const result = dataList.map(function (datum, index) {

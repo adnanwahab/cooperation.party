@@ -7,7 +7,7 @@ import './App.css'
 import Favicon from "react-favicon";
 //npm install react-favicon --save
 import {Runtime, Inspector} from "@observablehq/runtime";
-import notebook2 from "35ca09d7f1457ad3";
+//import notebook2 from "35ca09d7f1457ad3";
 import Header from './Header'
 
 import HexagonWorld from './hexagon_world';
@@ -28,7 +28,6 @@ import BarChart from './BarChart';
 import Tabs from './Tabs';
 
 import TravelTimeMap from './TravelTimeMap'
-import TableView from './TableView'
 import compile from './compile'
 import templates from './templates'
 let templateNames = Object.keys(templates).slice(0, 7)
@@ -518,46 +517,6 @@ const notificationMethods = [
   { id: 'push', title: 'Push notification' },
 ]
 
-function ShitAss() {
-  const notificationMethods = [
-    'tech conferences', 'political conventions' , 'music festivals'
-  ]  
-
-  function replace_me(content) {
-    document.querySelector('textarea').value = 
-    
-    document.querySelector('textarea')
-    .value.replace('get a list of tech conferences or music festivals one per month.',
-    `get a list of ${content} one per month.`
-    )
-  }
-
-  return (
-    <div>
-      <label className="text-base font-semibold text-gray-900">Clarifications</label>
-      <p className="text-sm text-gray-500">How do you prefer to receive notifications?</p>
-      <fieldset className="mt-4">
-        <legend className="sr-only">Notification method</legend>
-        <div className="space-y-4">
-          {notificationMethods.map((notificationMethod) => (
-            <div key={notificationMethod} className="flex items-center" onClick={() => replace_me(notificationMethod)}>
-              <input
-                id={notificationMethod}
-                name="notification-method"
-                type="radio"
-                defaultChecked={notificationMethod === 'email'}
-                className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-              />
-              <label htmlFor={notificationMethod} className="ml-3 block text-sm font-medium leading-6 text-gray-900">
-                {notificationMethod}
-              </label>
-            </div>
-          ))}
-        </div>
-      </fieldset>
-    </div>
-  )
-}
 
 
 
