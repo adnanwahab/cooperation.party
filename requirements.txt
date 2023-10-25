@@ -1,0 +1,14 @@
+shapely
+requests
+fastapi
+openai
+pydantic
+geopy
+h3
+openai
+flask_cors
+pdfplumber
+asyncio
+uvicorn
+aiohttp
+pyngrok
