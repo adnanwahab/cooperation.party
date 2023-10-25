@@ -1,4 +1,6 @@
 import TableView from './TableView'
+import TrafficMap from './TrafficMap'
+import HexagonWorld from './hexagon_world';
 
 
 function ShitAss() {
@@ -49,11 +51,11 @@ const List = (list) =>
     {list.map((item, idx) => <li key={idx}>{item}</li>)}
   </ul>)
 
-function geoCoder ({onChange}) {
+function GeoCoder ({onChange}) {
     return <input onChange={onChange} type="text"></input>
   }
   
-  function earningsCalculator({address}) {
+  function EarningsCalculator({address}) {
     //goal make 1,000 millionaires in 30-90 days
     return <>{address ? '1 million' : 'idk depends on where you live'}</>
   }
@@ -75,12 +77,15 @@ export default function compile (dataList, apply_) {
   //const [address, setAddress] = useState('')
 
   const result = dataList.map(function (datum, index) {
-    if (datum.component === '<geocoder>') {
-      return <geoCoder onChange={(e) => setAddress(e.target.value)}/>
+    if (datum.component === '<trafficMap>') {
+      return <TrafficMap></TrafficMap>
+    }
+    if (datum.component === '<GeoCoder>') {
+      return <GeoCoder onChange={(e) => setAddress(e.target.value)}/>
     }
 
-    if (datum.component === '<earningsCalculator>') {
-      return <earningsCalculator setAddress="onChange"/>
+    if (datum.component === '<EarningsCalculator>') {
+      return <EarningsCalculator setAddress="onChange"/>
 
     }
 

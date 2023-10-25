@@ -20,7 +20,13 @@ let templates = {
   predict most profitable cities to rent.
   `,
 
-  twitch_collaboratively_robot_comedian_builds_houses: `
+  airbnb_hexagon_world: `map of the future - all airbnbs + pois in the world
+  barchart every airbnb in every city
+  barchart every house_listing in every city
+  barchart every poi in every city
+`,
+
+  bot_party: `
     get stream analytics from twitch comments
 
     anabelle has 2 functions
@@ -44,6 +50,10 @@ let templates = {
     end goal = twitch builds houses
 
     make reddit.com/r/place -> convert to reality
+    twitch_collaboratively_robot_comedian_builds_houses
+    get roomba to be on a map
+    Have robots measure and solve alan kay's 10 problems for every city in world
+    shelter, water, pollution, population, rights, 
   `,
 
 //put sliders for reality - see different configs maybe before its built -> figma for houses
@@ -63,24 +73,26 @@ traffic_map: `
   2. 50% more parks.
 
   3. 20% cheaper rent - more houses less parking spaces
+
+  traffic_map
 `,
 
 //make IDE so everyone can analyze their own thoughts at least
 //some people publish data analysis - redacted details for whole world or 
-  magi_diagram: `
-  100% consensus on every dollar spent by government is possible
+  // magi_diagram: `
+  // 100% consensus on every dollar spent by government is possible
 
-  if the ideas and execution is good enough then more people will want to agree
+  // if the ideas and execution is good enough then more people will want to agree
 
-  the better the laws and communication of those budget spending -> the more people will want to participate -> upward spiral because both contribute to each other's growth and happinesss
+  // the better the laws and communication of those budget spending -> the more people will want to participate -> upward spiral because both contribute to each other's growth and happinesss
 
-  people could propose changes and see how the execution is different and maybe impossible.
+  // people could propose changes and see how the execution is different and maybe impossible.
 
-  good diagrams + conversations can redefine our understanding of the world in a positive way
+  // good diagrams + conversations can redefine our understanding of the world in a positive way
 
 
-  measure all 10 alan kay's problems in every neighborhood & city in the world.
-  `,
+  // measure all 10 alan kay's problems in every neighborhood & city in the world.
+  // `,
 
   arxiv_paper_digest: `find all papers on https://scholar.google.com/scholar?start=0&q=IPC&hl=en&as_sdt=0,44
   find papers which are good but not highly cited yet and find papers that may be highly cited in future 
@@ -96,50 +108,50 @@ traffic_map: `
   `,
   
 
-  robot_revolution: `
-  When will robots be cheaper and widely spread?
+  // robot_revolution: `
+  // When will robots be cheaper and widely spread?
 
-  when will i have robots to clean my house?
+  // when will i have robots to clean my house?
 
-  When will i have a robot doctor? - 2 billion kids want this
+  // When will i have a robot doctor? - 2 billion kids want this
 
-  When will i have a robot comedian?
+  // When will i have a robot comedian?
 
-  When will i have rosie?
+  // When will i have rosie?
 
-  When will i have mega man x?
+  // When will i have mega man x?
 
-  What kinds of labor can robots do?
+  // What kinds of labor can robots do?
 
-  How many robots are built every year?
+  // How many robots are built every year?
 
-  How is that number changing?
+  // How is that number changing?
 
-  How many research papers are there for robotics?
+  // How many research papers are there for robotics?
 
-  What is the intersection between LLMS and robots?
+  // What is the intersection between LLMS and robots?
 
-  What are the big problems in robots?
+  // What are the big problems in robots?
 
-  How much venture capital is changing in robots?
+  // How much venture capital is changing in robots?
 
-  how many robot movies and books are there?
+  // how many robot movies and books are there?
 
-  use 5 emojis and make a chatbot.
+  // use 5 emojis and make a chatbot.
   
-  `,
+  // `,
 
-  make_educational_materials_that_studio_would_love: `
-    self-care is altruistic. it will make you more curious and not selfish - what is the diagram for that? 
+  // make_educational_materials_that_studio_would_love: `
+  //   self-care is altruistic. it will make you more curious and not selfish - what is the diagram for that? 
 
-    geometry is sacred - right angles -> 
+  //   geometry is sacred - right angles -> 
     
-    the better you fit yourself the better you fit others 
-  `,
+  //   the better you fit yourself the better you fit others 
+  // `,
 
-  ark_is_the_shit: `
+  // ark_is_the_shit: `
   
-  `,
+  // `,
   
   //water is solved by energy
   //cooperation = OPEN PROBLEM - better information???
@@ -159,54 +171,50 @@ traffic_map: `
   // for every city in ['Tokyo, Japan', 'Houston, Texas', 'Madrid, Spain']
   // find 10 houses and each house is close to the residents favorite preferences. All like bar, half like research_institute, only 1 likes clinic (two people like restaurant, two people like library, two people like atm,  none of them like vending_machine and they all like bench but half like libraries and the other half prefer parking_space and some prefer bank while others prefer place_of_worship and some like disco and the others prefer country.) - they all want to be less than 90 min train distance to Sensō-ji`,
 
-  visualize_cool_travel_ideas: `
-    trans siberia rail road -> 
-    biking across europe
-    take plane to city and try food - during an event. 
-    get cool pics for insta
+  // visualize_cool_travel_ideas: `
+  //   trans siberia rail road -> 
+  //   biking across europe
+  //   take plane to city and try food - during an event. 
+  //   get cool pics for insta
 
-    //what would it take to get llama to make a travel guide for you?? 
-    //draw the route from london to japan
-    //this is a spec -> write a good version of this in as little code as possible -> make it cool and visual and exciting + fun.
-  `,
+  //   //what would it take to get llama to make a travel guide for you?? 
+  //   //draw the route from london to japan
+  //   //this is a spec -> write a good version of this in as little code as possible -> make it cool and visual and exciting + fun.
+  // `,
 
-  satellite_imaging_semantic_segmentation: `
-    get all the tiles near my house
-    show me approximate zoning diagrams so i can email my congressman that i want less parking lots and more bus,metro,sidewalk,robutts,
-    what can you do with that?
-    look up cool things to do with satellites
-  `,
+  // satellite_imaging_semantic_segmentation: `
+  //   get all the tiles near my house
+  //   show me approximate zoning diagrams so i can email my congressman that i want less parking lots and more bus,metro,sidewalk,robutts,
+  //   what can you do with that?
+  //   look up cool things to do with satellites
+  // `,
 
-  planned_cities: `
-    https://en.wikipedia.org/wiki/List_of_planned_cities
-
-
-    compare and contrast - juxtaposition of wrods and images contain the full spectrum of human experience
-
-      fight urban sprawl and improve connection by building better parks and recreation - leslie knope
-
-      circular so train can deliver passengers to everywhere in same amount of time
-      it takes same amount of time to deliver from center to margin
-
-    Visual Proof why portland + berlin are better
-    which cities are "designed better"
+  // planned_cities: `
+  //   https://en.wikipedia.org/wiki/List_of_planned_cities
 
 
-    https://www.portlandmaps.com/bps/zoning/#/map/
+  //   compare and contrast - juxtaposition of wrods and images contain the full spectrum of human experience
+
+  //     fight urban sprawl and improve connection by building better parks and recreation - leslie knope
+
+  //     circular so train can deliver passengers to everywhere in same amount of time
+  //     it takes same amount of time to deliver from center to margin
+
+  //   Visual Proof why portland + berlin are better
+  //   which cities are "designed better"
+
+
+  //   https://www.portlandmaps.com/bps/zoning/#/map/
   
-    make a drawing -> write a sentence -> get a working app with data bound -> debug the system while it runs -> light-table with code gen 
-  `,
+  //   make a drawing -> write a sentence -> get a working app with data bound -> debug the system while it runs -> light-table with code gen 
+  // `,
 
   //theory - socialism is good but capitalism is good and most are done badly cause of plutocracy, selfishness and lack of visibility
 
-  where_to_build_new_houses_for_max_suitability: `
-    given airbnb revenue + commute distance + 100k, where do i plant a new house to get most lifetime happiness out of my fam and so on.
-  `,
-  hexagon_world: `map of the future - all airbnbs + pois in the world
-  barchart every airbnb in every city
-  barchart every house_listing in every city
-  barchart every poi in every city
-  `,
+  // where_to_build_new_houses_for_max_suitability: `
+  //   given airbnb revenue + commute distance + 100k, where do i plant a new house to get most lifetime happiness out of my fam and so on.
+  // `,
+
   // airbnb: `for each continent
   // choose a city in each
   // find all airbnb in that city
@@ -236,17 +244,16 @@ traffic_map: `
   // `get transcript from https://www.youtube.com/watch?v=a02S4yHHKEw&ab_channel=AllThatOfficial
   //  find jokes that are duplicated in modern family
   //  `,
-   tree_planting: `find all trees in nyc 
-   plot on a map
-  reccomend places to plant a tree based on h3
-  visualize how many are of which species in a trees_histogram
-  trees_map
-  find a place to plant a new tree that is optimal
+  //  tree_planting: `find all trees in nyc 
+  //  plot on a map
+  // reccomend places to plant a tree based on h3
+  // visualize how many are of which species in a trees_histogram
+  // trees_map
+  // find a place to plant a new tree that is optimal
 
-
-  render routes of a person and plant 1 million trees
-  render a schedule for watering these trees 
-  `,
+  // render routes of a person and plant 1 million trees
+  // render a schedule for watering these trees 
+  // `,
 //  `dota`:  `
 //  make a dictionary/graph out of https://dota2.fandom.com/wiki/Category:Counters
 //   should look like complements, counterThem, countersYou
@@ -257,6 +264,7 @@ traffic_map: `
   get all transcript
   then find the jokes
   then categorize the jokes and the other context 
+  print transcript
   `,
 
   // sentiment_analysis_news_all_of_it: `

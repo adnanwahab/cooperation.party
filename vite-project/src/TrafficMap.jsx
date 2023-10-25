@@ -133,7 +133,11 @@ export default function TrafficMap({
   ];
 
   return (
+  <div className="relative">
+  <div className=" absolute h-96" style={{left: `${150}px`}}>
     <DeckGL
+    width={500}
+      height={500}
       layers={layers}
       effects={theme.effects}
       initialViewState={initialViewState}
@@ -141,5 +145,7 @@ export default function TrafficMap({
     >
       <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
     </DeckGL>
+    </div>
+    </div>
   );
 }

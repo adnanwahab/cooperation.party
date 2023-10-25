@@ -35,6 +35,7 @@
     "react-favicon": "^2.0.3",
     "react-leaflet": "^4.2.1",
     "react-map-gl": "^7.1.0",
+    "surge": "^0.23.1",
     "underscore": "^1.13.6",
     "yarn": "^1.22.19"
   },

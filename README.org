@@ -1,6 +1,14 @@
 # Cooperation.party 
 # Visualize Mind Magic - 
 # Built IDE for Data Analysis, Robotics, GovTech - think better @ office, research-lab & school.
+
+
+# true goal = make robotics IDE for sending requests to robotic consciousness
+
+#export robotic face using cooperation -> each document may have multiple apps / routes ?
+
+#linked diagrams make sense of the world and make it more navigable -> more you understand world as it is = better you can ask robots to make better
+
 # IDE with database included and createed automagically for you
 # finds data, prepares it, and combines it into something meaningful to create plans, predictions and 
 # 100 free open source run by 100 volunteers - get them to make projects that help you get jobs -> host on your website -> plugin to dns/surge and host

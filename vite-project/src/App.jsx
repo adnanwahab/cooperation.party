@@ -10,7 +10,6 @@ import {Runtime, Inspector} from "@observablehq/runtime";
 //import notebook2 from "35ca09d7f1457ad3";
 import Header from './Header'
 
-import HexagonWorld from './hexagon_world';
 import Footer from './Footer'
 //import notebook from "3f6e237936d0a0c7";
 // import { MapContainer } from 'react-leaflet/MapContainer'
@@ -30,6 +29,7 @@ import Tabs from './Tabs';
 import TravelTimeMap from './TravelTimeMap'
 import compile from './compile'
 import templates from './templates'
+
 let templateNames = Object.keys(templates).slice(0, 7)
 let templateContent = Object.values(templates).slice(0, 7)
 //pick optimal housing location for next 10-30 years 

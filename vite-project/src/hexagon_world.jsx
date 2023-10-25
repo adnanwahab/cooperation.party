@@ -26,6 +26,8 @@ import {latLngToCell, cellToLatLng} from "h3-js";
 //const h3 = require("h3-js");
 
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
+import BarChart from './BarChart';
+
 import * as d3 from 'd3'
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
@@ -98,7 +100,18 @@ const lightingEffect = new LightingEffect({ambientLight, sunLight});
 /* eslint-disable react/no-deprecated */
 export default function App(props) {
   let data = props.data
-  console.log(props)
+  console.log('hexagon_world', props.data)
+
+
+  const barChartData = Object.entries(props.data).map((_) => {
+    return {letter: _[0], frequency: _[1] }
+  });
+  return <>
+  This is a hexagon world
+
+  <BarChart data={barChartData} />
+  </>
+
   let entries = Object.values(data)
   let All = {} 
 

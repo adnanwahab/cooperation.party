@@ -1359,11 +1359,11 @@ def forEachCity(_, documentContext, ___):
 def world_map(_, __, ___):
     print('world map' + 'fix bugs?')
     cols = [s.replace('.json', '') for s in os.listdir('data/airbnb/h3_poi/')]
-
     return {
-        'airbnbsInEachCity': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/apt/*.json')},
-        'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
-            'hexAgonations': retrieveAggregation(cols),
+        # 'airbnbsInEachCity': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/apt/*.json')},
+        # 'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
+        #     'hexAgonations': retrieveAggregation(cols),
+        'data': {_:len(json.load(open(_))) for _ in glob.glob('data/airbnb/apt/*.json')},
             'component': '<Hexagonworld>'
     }
 
@@ -1548,9 +1548,6 @@ def filter_columns(list_of_items, important_columns):
     #print(result)
     return result
     
-    
-
-
 app = FastAPI()
 
 #URL = "https://api.mapbox.com/your-endpoint-here"  # Update with your Mapbox API endpoint
@@ -1814,15 +1811,28 @@ def predict_revenue():
 
 def geoCodeAddress(_, __, ___):
     return {
-        'component': '<geocoder>'
+        'component': '<GeoCoder>'
     }
 
 def howMuchCanYouEarn(_, __, ___):
     return {
-        'component': '<earningsCalculator>'
+        'component': '<EarningsCalculator>'
     }
 
+def traffic_map(_, __, ___):
+    return {
+        'component': '<trafficMap>',
+        'data': []
+    }
+
+
+def return_transcript(_, __, ___):
+    print('hello keenan')
+    return open('./keenan_kel_transcript.txt').read()
+
 jupyter_functions = {
+    "print transcript": return_transcript,
+    "traffic_map": traffic_map,
     "given all the zillow listings in a city, predict how much airbnb revenue it would it make if i rented it out 50% of the time. also predict usage.": geoCodeAddress,
     "predict most profitable cities to rent.":howMuchCanYouEarn,
     """"given all the zillow listings in a city, predict how much airbnb revenue it would it make if i rented it out 50% of the time. also predict usage.""": predict_revenue,
