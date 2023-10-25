@@ -24,14 +24,21 @@ import HexagonMap from './HexagonMap' //commute and so on
 
 import BarChart from './BarChart';
 
-import Tabs from './Tabs';
-
 import TravelTimeMap from './TravelTimeMap'
 import compile from './compile'
 import templates from './templates'
+//1 million appartments -> 10  million routes -> 1-3 weeks to compute
+//written as much code as you can for this setup
+//to actually complete this app = deploy it desktop and upgrade the machine by 10x 
+//
 
-let templateNames = Object.keys(templates).slice(0, 7)
-let templateContent = Object.values(templates).slice(0, 7)
+
+
+
+
+
+let templateNames = Object.keys(templates).slice(0, 9)
+let templateContent = Object.values(templates).slice(0, 9)
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
