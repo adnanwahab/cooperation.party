@@ -1411,10 +1411,10 @@ export default function Header() {
           href="#" className="hidden rounded p-8 text-sm font-semibold leading-6 text-white bg-blue-500">
             Share <span aria-hidden="true">&rarr;</span>
           </a>
-          {/* <a href="#about">About</a> */}
-          <MyPopover />
-          {/* <a href="#settings">Settings</a> */}
           <MyDropdown />
+          {/* export */}
+          <MyPopover /> 
+          {/* about */}
         </div>
       </nav>
       <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
