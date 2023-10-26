@@ -908,15 +908,16 @@ def aggregate_poi_in_h3_cell(h3_cells, fn):
             pass
     print(time.time() - then)
     return h3_cells
-poi_names = [s.strip() for s in json.load(open('./data/airbnb/poi_names.json'))]
 
-preferences = {}
+#poi_names = [s.strip() for s in json.load(open('./data/airbnb/poi_names.json'))]
 
-coefficents = preferences
-people_names = 'fred bob sally panda velma alref wilbur steven dan michael'.split(' ')
-people_preferences = {}
+#preferences = {}
 
-for person in people_names: people_preferences[person] = [random.random() for _ in range(10)]
+#coefficents = preferences
+#people_names = 'fred bob sally panda velma alref wilbur steven dan michael'.split(' ')
+#people_preferences = {}
+
+#for person in people_names: people_preferences[person] = [random.random() for _ in range(10)]
 people_preferences = {
  'fred': [1, 0, 0, 0, 0, 0, 0, 0, 0, .5],
  'bob': [0, 1, 0, 0, 0, 0, 0, 0, .5, 0],
