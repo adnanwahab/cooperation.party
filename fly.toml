@@ -22,5 +22,5 @@ primary_region = "dfw"
 
 
 [mounts]
-  source="myapp_data"
-  destination="/myapp_data"
+  source="_data"
+  destination="_data"
