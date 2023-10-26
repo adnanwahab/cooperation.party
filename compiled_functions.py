@@ -1553,8 +1553,9 @@ app = FastAPI()
 
 #URL = "https://api.mapbox.com/your-endpoint-here"  # Update with your Mapbox API endpoint
 
-with open('data/cache/overpass_cache.json') as fp:
-    overpass_cache = json.load(fp)
+# with open('data/cache/overpass_cache.json') as fp:
+#     overpass_cache = json.load(fp)
+overpass_cache = {}
 async def fetch_overpass_data(todo, latitude, longitude):
     key = todo+str(latitude)+str(longitude)
     if key in overpass_cache: return overpass_cache[key]
