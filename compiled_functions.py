@@ -974,9 +974,9 @@ def isochroneAssertion(geojson_data, point_to_check):
         if polygon.contains(point_to_check): return True
     else : return False
 
-with open('data/cache/document_query_cache.json') as file:
-    fn_cache = json.load(file)
-
+# with open('data/cache/document_query_cache.json') as file:
+#     fn_cache = json.load(file)
+fn_cache = {}
 def cacheThisFunction(func):
     def _(*args):
         key = hash(func.__name__ + str(hash(json.dumps(args))))
