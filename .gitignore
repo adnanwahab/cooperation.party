@@ -12,9 +12,7 @@ data_/
 __pycache__/
 osm
 fn_cache.json
-data/cache/fn_cache.json
-data/document_query_cache.json
-data/document_query_cache.json
+
 .DS_Store
 backup_data/
 fastapi_env/
