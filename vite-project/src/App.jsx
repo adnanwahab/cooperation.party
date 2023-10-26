@@ -30,10 +30,6 @@ import templates from './templates'
 //1 million appartments -> 10  million routes -> 1-3 weeks to compute
 //written as much code as you can for this setup
 //to actually complete this app = deploy it desktop and upgrade the machine by 10x 
-//
-
-
-
 
 
 
@@ -356,7 +352,7 @@ async function _() {
 //   console.log('gesundheit')
 //    url = `https://pypypy.ngrok.io/makeFn/`
 //    //url = `https://hidden-river-3971.fly.dev/makeFn/`
-if (window.location.hostname == 'cooperation.party' || window.location.hostname === 'https://hidden-river-3971.fly.dev') {
+if (window.location.hostname == 'cooperation.party') {
 //   console.log('gesundheit', window.location.hostname)
 //    //url = `https://hidden-river-3971.fly.dev/makeFn/`
 //    url = 'https://180b-73-77-43-211.ngrok-free.app/makeFn'
@@ -364,8 +360,12 @@ if (window.location.hostname == 'cooperation.party' || window.location.hostname 
 
   url = 'https://pypypy.ngrok.io/makeFn'
 }
-url = 'https://shelbernstein.ngrok.io/makeFn'
 
+
+url = 'https://shelbernstein.ngrok.io/makeFn'
+//on MBP localhost
+console.log('mbp', url === 'https://shelbernstein.ngrok.io/makeFn')
+console.log('prod+fly.io', url === 'https://pypypy.ngrok.io/makeFn')
 // url = 'https://pypypy.ngrok.io/makeFn'
 
   // let fn_ = await fetch('mockData.json');

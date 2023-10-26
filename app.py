@@ -17,6 +17,12 @@ from typing import List, Optional
 import json
 import openai
 from pyngrok import ngrok
+import fastapi_vite
+
+templates = Jinja2Templates(directory='templates')
+templates.env.globals['vite_hmr_client'] = fastapi_vite.vite_hmr_client
+templates.env.globals['vite_asset'] = fastapi_vite.vite_asset
+
 
 #Set configuration options
 config = {
@@ -34,12 +40,12 @@ import os
 if os.getcwd() != '/Users/shelbernstein/cooperation.party':
     for i in range(10): print('this is fly.io')
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
-    public_url = ngrok.connect(**config)
+    #public_url = ngrok.connect(**config)
 else: 
     for i in range(10): print('this is mbp')
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
     config['subdomain'] = 'shelbernstein'
-    public_url = ngrok.connect(**config)
+    #public_url = ngrok.connect(**config)
 
 
 #import fastapi_vite
@@ -180,4 +186,4 @@ def admin(): return FileResponse('./templates/admin.html')
 
 @app.get("/")
 async def home():
-    return HTMLResponse("Hello happy healthy and safe world.")
+    return HTMLResponse("Hello happy healthy and safe world!")
