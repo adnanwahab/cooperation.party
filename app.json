@@ -1,6 +1,0 @@
-{
-  "name": "FastAPI Hello World",
-  "description": "A barebones Python web app for deploying FastAPI",
-  "repository": "https://github.com/bennylope/python-deployments-hello-world",
-  "keywords": ["python", "fastapi"]
-}

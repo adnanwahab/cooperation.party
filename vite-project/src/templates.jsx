@@ -343,6 +343,8 @@ meditation_not_medication: `
   subsidize yoga + meditation
   find that paper -> people who do yoga + meditation develop an ego about higher consciousness.
 `,
+eliminate_misdiagnosis: `health care is becoming increasingly quantitivate because SCA`,
+
 
   // sentiment_analysis_news_all_of_it: `
   //   people dont remember the stupid shit. they remember the good shit.

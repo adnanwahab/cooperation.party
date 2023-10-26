@@ -167,12 +167,8 @@ async def makeFn(FnText:FnText):
     return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
 
 @app.get("/admin")
-def admin(): return FileResponse('admin.html')
+def admin(): return FileResponse('./templates/admin.html')
 
 @app.get("/")
 async def home():
     return HTMLResponse("Hello world!")
-
-# @app.get("/")
-# async def home():
-#     return HTMLResponse("Hello world!")

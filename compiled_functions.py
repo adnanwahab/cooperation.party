@@ -47,8 +47,8 @@ openai.organization = "org-Yz814AiRJVl9JGvXXiL9ZXPl"
 #decorate - cache -> fn + parameters -> stringify+hash the paramers = fn+hash(paramers) = key
 #and make it save to filesystem if a parameter is added 
 document_query_cache = {}
-if os.path.exists('document_query_cache.json'):
-    document_query_cache = json.load(open('document_query_cache.json'))
+if os.path.exists('data/cache/document_query_cache.json'):
+    document_query_cache = json.load(open('data/cache/document_query_cache.json'))
 
 def unstructured_geoSpatial_house_template_query(_):
     if _ in document_query_cache: return document_query_cache[_]
@@ -74,7 +74,7 @@ def unstructured_geoSpatial_house_template_query(_):
     result = response['choices'][0]['message']['content']
     result = json.loads(result)
     document_query_cache[_] = result
-    json.dump(document_query_cache, open('document_query_cache.json', 'w+'))
+    json.dump(document_query_cache, open('data/cache/document_query_cache.json', 'w+'))
     return result
 
 def get_json_if_possible(apt):
@@ -908,7 +908,7 @@ def aggregate_poi_in_h3_cell(h3_cells, fn):
             pass
     print(time.time() - then)
     return h3_cells
-poi_names = [s.strip() for s in json.load(open('./poi_names.json'))]
+poi_names = [s.strip() for s in json.load(open('./data/airbnb/poi_names.json'))]
 
 preferences = {}
 
@@ -973,7 +973,7 @@ def isochroneAssertion(geojson_data, point_to_check):
         if polygon.contains(point_to_check): return True
     else : return False
 
-with open('document_query_cache.json') as file:
+with open('data/cache/document_query_cache.json') as file:
     fn_cache = json.load(file)
 
 def cacheThisFunction(func):
@@ -983,7 +983,7 @@ def cacheThisFunction(func):
         if key in fn_cache: return json.loads(fn_cache[key])
         val = func(*args)
         fn_cache[key] = json.dumps(val)
-        json.dump(fn_cache, open('data/document_query_cache.json', 'w+'))
+        json.dump(fn_cache, open('data/cache/document_query_cache.json', 'w+'))
         return val
     return _
 
@@ -1093,8 +1093,8 @@ def attempt_at_building_communities(_, documentContext, sentence):
             h3_cells[hex_id][key] = h3_cells[hex_id][key] / totals[key]
             
     _houses = [_housing(url, h3_cells,idx,geo_coords[idx]) for idx, url in enumerate(all_houses)]
-    json.dump(_houses, open('_houses.json', 'w+'))
-    json.dump(h3_cells, open('h3_cells.json', 'w+'))
+    json.dump(_houses, open('data/airbnb/_houses.json', 'w+'))
+    json.dump(h3_cells, open('data/airbnb/h3_cells.json', 'w+'))
     print('what am doing?')
 
     def distanceToTokyo(house):
@@ -1552,7 +1552,7 @@ app = FastAPI()
 
 #URL = "https://api.mapbox.com/your-endpoint-here"  # Update with your Mapbox API endpoint
 
-with open('overpass_cache.json') as fp:
+with open('data/cache/overpass_cache.json') as fp:
     overpass_cache = json.load(fp)
 async def fetch_overpass_data(todo, latitude, longitude):
     key = todo+str(latitude)+str(longitude)
@@ -1828,7 +1828,7 @@ def traffic_map(_, __, ___):
 
 def return_transcript(_, __, ___):
     print('hello keenan')
-    return open('./keenan_kel_transcript.txt').read()
+    return open('./data/youtube-transcription/keenan_kel_transcript.txt').read()
 
 def getMostBooked(city_apt_list):
     items = list(city_apt_list.items())
@@ -1836,7 +1836,6 @@ def getMostBooked(city_apt_list):
     for id, apt in items:
         apt['availability_365'] = float(apt['availability_365']) / 365
     return [(float(apt['latitude']), float(apt['longitude']), apt['availability_365']) for id, apt in items]
-
 
 
 def where_to_build_buy_airbnb(_, __, ___):
