@@ -296,6 +296,26 @@ plot on map
 what are the DIY kits out there you can use and find reviews
 diagram all crispr studies
 `,
+cure_to_cancer: `
+  visualize all the causes of cancer. 
+  visualize all the solutions.
+  get all research papers.
+  and then list them in a table.
+  have diagrams for the most cost effective ones.
+`,
+
+information_economics: `
+  Hal Varian - visualize these
+`,
+
+progress_to_eutopia: `
+  alan kay's 10 hows measured in every city neighborhood.
+
+`,
+
+skills_company_visualization: `
+  take a url of careers -> parse all the required skills -> can gpt do this not yet.
+`,
 food_flavor_networks: `
 What are all the different foods?
 Why are some good for you?

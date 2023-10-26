@@ -37,8 +37,8 @@ import templates from './templates'
 
 
 
-let templateNames = Object.keys(templates).slice(0, 9)
-let templateContent = Object.values(templates).slice(0, 9)
+let templateNames = Object.keys(templates).slice(0, 12)
+let templateContent = Object.values(templates).slice(0, 12)
 //pick optimal housing location for next 10-30 years 
 //visualize school disticts
 //visualize proximity to closest whole foods
