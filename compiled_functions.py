@@ -362,7 +362,7 @@ hasRenderedContent = False
 def arxiv (_, sentence, i):
     global hasRendered, hasRenderedContent  # Declare as global to modify
     import glob
-    fileList = glob.glob('./*.pdf')[1:]
+    fileList = glob.glob('data/pdf/*.pdf')
     print(fileList)
     content = []
     if hasRendered: return hasRenderedContent
