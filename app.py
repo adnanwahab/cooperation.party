@@ -171,4 +171,4 @@ def admin(): return FileResponse('./templates/admin.html')
 
 @app.get("/")
 async def home():
-    return HTMLResponse("Hello world!")
+    return HTMLResponse("Hello happy healthy and safe world.")
