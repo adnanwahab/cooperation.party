@@ -191,6 +191,28 @@ async def home():
     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
 
 
+def get_airbnb_data_for_city(city_name: str):
+    #return [{"id": 1, "name": "Sample Airbnb 1"}, {"id": 2, "name": "Sample Airbnb 2"}]
+    with open(f'data/airbnb/apt/{city_name}.json') as file:
+        return json.load(file)
+
+@app.get("/data/airbnb/apt/{city_name}")
+async def get_airbnb_for_city(city_name: str):
+    # Fetch data using the helper function
+    data = get_airbnb_data_for_city(city_name)
+    print(city_name)
+    # Check if data is present, if not, return an error
+    if not data:
+        raise HTTPException(status_code=404, detail=f"No data found for city: {city_name}")
+    
+    return data
+
+
+# @app.get("/data/airbnb/apt/")
+# async def home():
+#     called = subprocess.run(["ls", "-l"], capture_output=True)
+#     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
+
 # @app.get("/")
 # async def index():
 #     StaticFiles(
@@ -214,3 +236,28 @@ from fastapi.staticfiles import StaticFiles
 #     check_dir=True,
 #     follow_symlink=False
 # )
+
+from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.exception_handlers import http_exception_handler
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+# def SPA(app: FastAPI, build_dir: Union[Path, str]) -> FastAPI:
+# # Serves a React application in the root directory
+
+#     @app.exception_handler(StarletteHTTPException)
+#     async def _spa_server(req: Request, exc: StarletteHTTPException):
+#         if exc.status_code == 404:
+#             return FileResponse(f'{build_dir}/index.html', media_type='text/html')
+#         else:
+#             return await http_exception_handler(req, exc)
+
+#     if isinstance(build_dir, str):
+#         build_dir = Path(build_dir)
+
+#     app.mount(
+#         '/vite-app/dit',
+#         StaticFiles(directory=build_dir / 'dist'),
+#         name='React app static files',
+#     )

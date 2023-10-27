@@ -39,9 +39,10 @@ let templates = {
   `,
 
   how_much_airbnb_revenue_will_your_house_get: `
+
+  make a map of most booked apts.
   given all the zillow listings in a city, predict how much airbnb revenue it would it make if i rented it out 50% of the time. also predict usage.
   predict most profitable cities to rent.
-  make a map of most booked apts.
   `,
 
   find_best_deals_on_airbnb: `
@@ -346,6 +347,37 @@ meditation_not_medication: `
   find that paper -> people who do yoga + meditation develop an ego about higher consciousness.
 `,
 eliminate_misdiagnosis: `health care is becoming increasingly quantitivate because SCA`,
+//solve LIghts be L
+//make a demo which solves all problems in the world within the mind and NEIGHBORHOOD AND CITY
+//biggest one is poverty in 20 years.
+//how many home people and stray cats 
+
+//the track - do your studies- do your grades - see whats good - love the science in your teachers mind.
+//diagram HOW GOOD wim HOFF breathing IS for you.
+//Get oxygen not nitrous
+//make better diagnosis with DATA SCICENe - crunch the numbers on your desktop
+//every kid with a desktop can download cooperation.party and run it on PREM.
+//what you needed in 5th grade - improve science and solve problems easy and fun.
+//there u go whole internet = datum -> better world
+Buddhism: ``,
+//Okay renderbuffer
+//right thought means reasonsing which means rationality which means no substances that alter your mind's functioning
+//observing your mind for long periods of time = inner Strength
+//you should have gone to vipassana is the only story. that they know 
+//and you don't know who they are are or what they know
+// BUT brian people's and willnotfear told me it changed their life.
+//day 26 1 hour a day
+//november 17 - 2021 
+//what can amazon sell and not sell?
+//shopify
+//etsy sparkle tights is the story. deleteed.
+//earn your way back. it will work out
+//This is powerful medicine for our times, more than you can imagine. 
+//you dont know until a meditation retreat for 10 - 49 days
+//practitiioners learn the patterns of their mind and so forth I DONT KNOW for another month
+//i  HAVE A DEADLINE
+//and i did 2 years ago to visit vipassana
+//Rignt thought + right action.
 
 
   // sentiment_analysis_news_all_of_it: `

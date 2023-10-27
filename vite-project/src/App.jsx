@@ -359,6 +359,8 @@ if (window.location.hostname == 'cooperation.party') {
   url = 'http://cooperation-party.fly.dev/makeFn'
 
   url = 'https://pypypy.ngrok.io/makeFn'
+} else if (window.location.hostname === 'localhost:5173') {
+
 }
 
 
@@ -577,7 +579,7 @@ function App() {
       <li
       className="hover:bg-purple-500 truncate"
       style={{'border': index == count ? '1px solid purple' : '' }}
-      onMouseOver={(e) => {
+      onClick={(e) => {
         get('textarea').value = templateContent[index]
         setCount(index)
         }  
