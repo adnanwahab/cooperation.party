@@ -188,10 +188,13 @@ def admin(): return FileResponse('./templates/admin.html')
 @app.get("/")
 async def home():
     called = subprocess.run(["ls", "-l"], capture_output=True)
-    return HTMLResponse("Hello happy healthy and safe world!" + called.stdout)
+    return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
 
 
-    from fastapi.staticfiles import StaticFiles
+
+
+
+from fastapi.staticfiles import StaticFiles
 
 
 # StaticFiles(
