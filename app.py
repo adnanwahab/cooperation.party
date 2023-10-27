@@ -49,11 +49,11 @@ else:
     public_url = ngrok.connect(**config)
 
 
-import fastapi_vite
+# import fastapi_vite
 
-templates = Jinja2Templates(directory='templates')
-templates.env.globals['vite_hmr_client'] = fastapi_vite.vite_hmr_client
-templates.env.globals['vite_asset'] = fastapi_vite.vite_asset
+# templates = Jinja2Templates(directory='templates')
+# templates.env.globals['vite_hmr_client'] = fastapi_vite.vite_hmr_client
+# templates.env.globals['vite_asset'] = fastapi_vite.vite_asset
 
 #public_url = ngrok.connect(**config)
 # #print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
@@ -189,3 +189,16 @@ def admin(): return FileResponse('./templates/admin.html')
 async def home():
     called = subprocess.run(["ls", "-l"], capture_output=True)
     return HTMLResponse("Hello happy healthy and safe world!" + called.stdout)
+
+
+    from fastapi.staticfiles import StaticFiles
+
+
+# StaticFiles(
+#     '*',
+#     directory=None,
+#     packages=None,
+#     html=False,
+#     check_dir=True,
+#     follow_symlink=False
+# )

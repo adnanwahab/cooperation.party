@@ -6,6 +6,7 @@ let templates = {
   // find recent compettions -> diagram how metagame changes
   // `,
   //shelter
+
   bot_party: `
   Render Anabelle Map"
     get stream analytics from twitch comments
@@ -42,6 +43,7 @@ let templates = {
   predict most profitable cities to rent.
   make a map of most booked apts.
   `,
+
   find_best_deals_on_airbnb: `
   get a list of tech conferences or music festivals one per month.
 
