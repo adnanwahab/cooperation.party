@@ -41,12 +41,12 @@ import os
 if os.getcwd() != '/Users/shelbernstein/cooperation.party':
     for i in range(10): print('this is fly.io')
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
-    public_url = ngrok.connect(**config)
+    #public_url = ngrok.connect(**config)
 else: 
     for i in range(10): print('this is mbp')
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
     config['subdomain'] = 'shelbernstein'
-    public_url = ngrok.connect(**config)
+    #//public_url = ngrok.connect(**config)
 
 
 # import fastapi_vite
@@ -185,12 +185,21 @@ async def makeFn(FnText:FnText):
 @app.get("/admin")
 def admin(): return FileResponse('./templates/admin.html')
 
-@app.get("/")
+@app.get("/ls")
 async def home():
     called = subprocess.run(["ls", "-l"], capture_output=True)
     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
 
 
+# @app.get("/")
+# async def index():
+#     StaticFiles(
+#         '*',
+#         directory=None,
+#         packages=None,
+#         html=False,
+#         check_dir=True,
+#         follow_symlink=False
 
 
 
