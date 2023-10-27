@@ -1573,7 +1573,7 @@ async def fetch_overpass_data(todo, latitude, longitude):
             if response.status == 200:
                 result = await response.json()
                 overpass_cache[key] = result
-                json.dump(overpass_cache, open('overpass_cache.json', 'w+'))
+                json.dump(overpass_cache, open('data/airbnb/overpass_cache.json', 'w+'))
                 return result
             else:
                 content = await response.text()
