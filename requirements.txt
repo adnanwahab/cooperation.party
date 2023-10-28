@@ -1,0 +1,15 @@
+shapely
+requests
+fastapi
+openai
+pydantic
+geopy
+h3
+openai
+flask_cors
+pdfplumber
+asyncio
+uvicorn
+aiohttp
+pyngrok
+git+https://github.com/paolodina/fastapi-vite.git@temporary-import-fix#egg=fastapi-vite
