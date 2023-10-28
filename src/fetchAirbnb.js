@@ -85,14 +85,11 @@ const get_apt = async (city_name, page, latlng) => {
     fs.writeFileSync(fp, JSON.stringify(result, null, 2));
 }
 
-async function main(locations) {
+async function main(alphabet_char) {
     const browser = await puppeteer.launch({ headless: true });  // Change to false if you want to view the browser
     const page = await browser.newPage();
-    for (let city_name in locations) {
-        if (/\\u[\da-fA-F]{4}/.test(city_name)) {
-            console.log('skipping', city_name)
-            continue
-        }
+    for (let tuple in alphabet_char) {
+        let [city_name, location] = alphabet_char[tuple]
         await get_apt(city_name, page, locations[city_name])
         await sleep(500)
     }
