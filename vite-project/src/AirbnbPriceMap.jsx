@@ -69,7 +69,7 @@ function AirbnbWorldMap(props) {
     bearing: 0
   }   
   return (<>
-    <h3 class="">World Map</h3>
+    <h3 class="">World Map - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <div className="relative h-96" style={{left: `${props.left}px`}}>
     <Legend></Legend>
     <DeckGL
