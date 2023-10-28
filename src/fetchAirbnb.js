@@ -1,16 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs')
-
-
-//given a city
-//get all apt urls get 20
-
-//given an apt url
-//get the img urls
-
-//make these callable from python
-let fn = process.argv[2]
-async function delay(ms) {
+const path = require('path')
+async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -37,7 +28,7 @@ const get_img_url = async (apt_listing) => {
         //document.documentElement.scrollHeight
         window.scrollBy(0, 100000);
       });
-    await delay(3000)
+    await sleep(3000)
     page.evaluate(_ => {
         //document.documentElement.scrollHeight
         window.scrollBy(0, 100000);
@@ -45,7 +36,7 @@ const get_img_url = async (apt_listing) => {
         document.querySelectorAll('.hnwb2pb.dir.dir-ltr')[3].scrollIntoView()
         document.querySelector('.cj0q2ib.sne7mb7.rp6dtyx.c1y4i074.dir.dir-ltr').click()
       });
-      await delay(1000)
+      await sleep(1000)
     //console.log('SCROLLING IS DONE')
     // Get all the tweets on the page
     let selector = ('.gm-style img')
@@ -60,37 +51,52 @@ const get_img_url = async (apt_listing) => {
     await browser.close();
 }
 
+function urlToFileName(url) {
+    const match = url.match(/rooms\/(\d+)/);
+    if (match && match[1]) {
+        return match[1];
+    }
+    // Handle the case where there's no match.
+    // You can either return a default value, throw a custom error, or simply return null.
+    return null;  // or throw new Error("Invalid URL format");
+}
 
 
-
-
-const get_apt = async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    
-    // Go to the Twitter homepage
-    let url = 'https://www.airbnb.com/s/New-Delhi--NCT-of-Delhi--India/homes?tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&flexible_trip_lengths%5B%5D=one_week&monthly_start_date=2023-10-01&monthly_length=3&price_filter_input_type=0&price_filter_num_nights=5&channel=EXPLORE&query=New%20Delhi%2C%20NCT%20of%20Delhi%2C%20India&date_picker_type=calendar&source=structured_search_input_header&search_type=filter_change&place_id=ChIJLbZ-NFv9DDkRzk0gTkm3wlI&pagination_search=true&cursor=eyJzZWN0aW9uX29mZnNldCI6MCwiaXRlbXNfb2Zmc2V0IjowLCJ2ZXJzaW9uIjoxfQ%3D%3D'
+const get_apt = async (city_name, page, latlng) => {
+    let url = `https://www.airbnb.com/s/${city_name}/homes`
+    const fp = path.resolve(`data/airbnb/apt/${city_name}.json`);
     await page.goto(url, { waitUntil: 'networkidle2' });
+    const qs = '.cy5jw6o.dir.dir-ltr a';
+    await page.waitForSelector(qs);
+    let tweets = await page.$$eval(qs, (tweetNodes) => {
+        return tweetNodes.map(tweet => (tweet.href) );
+    })
     
-    // Wait for the page to load completely
-    await page.waitForSelector('.timeline');
-    
-    // Get all the tweets on the page
-    const tweets = await page.$$eval('.tweet', (tweets) => {
-        return tweets.map((tweet) => ({
-            text: tweet.querySelector('.text').innerText,
-            author: tweet.querySelector('.author').innerText,
-            date: tweet.querySelector('.date').innerText,
-        }));
-    });
-    
-    console.log(tweets);
-    
+    tweets = Array.from(new Set(tweets.map(urlToFileName).filter(_ => _)))
+
+    let result = {}
+    tweets.forEach((listing_id) =>  {
+        let newlatlng = [latlng[0] + Math.random() * .1, latlng[1] + Math.random() * .1]
+        result[listing_id] = newlatlng
+    })
+    console.log(city_name, tweets.length, latlng)
+    fs.writeFileSync(fp, JSON.stringify(result, null, 2));
+}
+
+async function main() {
+    const browser = await puppeteer.launch({ headless: true });  // Change to false if you want to view the browser
+    const page = await browser.newPage();
+    let locations = JSON.parse(fs.readFileSync('data/all_city_names.json'))
+    for (let city_name in locations) {
+        await get_apt(city_name, page, locations[city_name])
+        await sleep(500)
+    }
     await browser.close();
 }
 
-if (fn === 'get_apt') get_apt(process.argv[3])
-if (fn === 'get_img_url') get_img_url(process.argv[3])
+main()
+
+
 
 const makeURL = ({ne_lng, ne_lat, sw_lat, sw_lng, city_name, zoom_level}) => `https://www.airbnb.com/s/${city_name}/homes?place_id=ChIJ674hC6Y_WBQRujtC6Jay33k&refinement_paths%5B%5D=%2Fhomes&flexible_trip_dates%5B%5D=april&flexible_trip_dates%5B%5D=august&flexible_trip_dates%5B%5D=december&flexible_trip_dates%5B%5D=february&flexible_trip_dates%5B%5D=january&flexible_trip_dates%5B%5D=july&flexible_trip_dates%5B%5D=june&flexible_trip_dates%5B%5D=march&flexible_trip_dates%5B%5D=may&flexible_trip_dates%5B%5D=november&flexible_trip_dates%5B%5D=october&flexible_trip_dates%5B%5D=september&flexible_trip_lengths%5B%5D=one_week&date_picker_type=flexible_dates&search_type=user_map_move&tab_id=home_tab&query=cairo&monthly_start_date=2023-10-01&monthly_length=3&price_filter_input_type=0&price_filter_num_nights=5&channel=EXPLORE&ne_lat=${ne_lat}&ne_lng=${ne_lng}&sw_lat=${sw_lat}&sw_lng=${sw_lng}&zoom=16&zoom_level=16&search_by_map=true`
 const fetch100Pages = (location) => {
