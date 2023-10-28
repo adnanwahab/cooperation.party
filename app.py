@@ -207,6 +207,16 @@ async def get_airbnb_for_city(city_name: str):
     
     return data
 
+import os
+@app.get("/cityList")
+async def get_list_of_cities_with_airbnbs_hopefully(city_name: str):
+    # Fetch data using the helper function
+    data = os.listdir('data/airbnb/apt')
+    # Check if data is present, if not, return an error
+    if not data:
+        raise HTTPException(status_code=404, detail=f"No data found for city: {city_name}")
+    
+    return data
 
 # @app.get("/data/airbnb/apt/")
 # async def home():

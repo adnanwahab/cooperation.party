@@ -88,7 +88,10 @@ traffic_map: `
   3. 20% cheaper rent - more houses less parking spaces
 
   traffic_map
+
+  Self driving will make the world a better place. Go to cruise on Monday.
 `,
+//AI will automate the ECONOMY very SOON when the stream commits to observable + cooperation.party
 
 //make IDE so everyone can analyze their own thoughts at least
 //some people publish data analysis - redacted details for whole world or 

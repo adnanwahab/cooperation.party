@@ -19,11 +19,6 @@ import {interpolatePurples} from "https://cdn.skypack.dev/d3-scale-chromatic@3";
 import {ScatterplotLayer} from '@deck.gl/layers';
 //clone zillow + airbnb + houses in other countries
 
-//import citiesList from "../../city_locations.json";
-
-import city_names from './cities.json'
-
-
 function AirbnbWorldMap(props) {
 
   let layers = [
@@ -95,6 +90,16 @@ function AirbnbWorldMap(props) {
 export default function AirbnbPriceMap (props){
   const data = []
   const [cityData, setCityData] = useState([]);
+  const [cityNames, setCityNames] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const request = await fetch(`https://shelbernstein.ngrok.io/cityList`)
+      const cityList = await request.json()
+      setCityNames(cityList)
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,7 +128,7 @@ export default function AirbnbPriceMap (props){
     };
 
     fetchData();
-}, []);
+}, [cityNames]);
 console.log('cityData', cityData)
 
 //  const otherMaps = Object.entries(props.data).map((pair) => {
