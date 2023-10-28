@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState} from 'react';
+import * as d3 from 'd3';
+import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {createRoot} from 'react-dom/client';
 import {Map} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
@@ -139,7 +142,25 @@ const city_locations = [
 
 function AirbnbWorldMap(props) {
 
-  const layers = []
+  const layers = [
+    new ScatterplotLayer({
+      id: 'scatterplot-layer',
+      data:props.data.slice(0, 1e5),
+      pickable: true,
+      opacity: 0.8,
+      stroked: true,
+      filled: true,
+      radiusScale: 6,
+      radiusMinPixels: 10,
+      radiusMaxPixels: 10,
+      lineWidthMinPixels: 1,
+      getPosition: d => d.slice(0,2),
+      //getPosition: d => centroid,
+      getRadius: d => 10,
+      getFillColor: d => [Math.random()* 255, 0, 255],
+      getLineColor: d => [0, 0, 0]
+    })
+  ]
   
   const INITIAL_VIEW_STATE = {
     longitude: 0,
@@ -150,7 +171,7 @@ function AirbnbWorldMap(props) {
     maxZoom: 20,
     pitch: 0,
     bearing: 0
-  }    
+  }   
   return (<>
     <h3 class="">World Map</h3>
     <div className=" relative h-96" style={{left: `${props.left}px`}}>
@@ -179,24 +200,35 @@ export default function AirbnbPriceMap (props){
   const data = []
   const [cityData, setCityData] = useState([]);
 
-  //figure promise.all http streaming 
-  //add a progress bar - few seconds to render -> rainbow
-
-  // city_locations.slice(0, 10).forEach(async (city_name) => {
-  //   const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
-  //   const json = await req.json()
-  //   for (let key in json) {
-  //     data.push(
-  //       json[key]
-  //     )
-  //   }
-  // })
-  // Promise.all()
-
   useEffect(() => {
+    const fetchData = async () => {
+        const data = [];
 
-  }, [])
+        const promises = city_locations.slice(0, 10).map(async city_name => {
+            const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
+            const json = await req.json();
+            for (let key in json) {
+                data.push(json[key].map(parseFloat));
+            }
+            return data;
+        });
 
+        Promise.allSettled(promises).then(results => {
+            const allData = [];
+            results.forEach(result => {
+                if (result.status === 'fulfilled') {
+                    allData.push(...result.value);
+                } else {
+                    console.error("Error occurred:", result.reason);
+                }
+            });
+            setCityData(allData);
+        });
+    };
+
+    fetchData();
+}, []);
+console.log('cityData', cityData)
 
 //  const otherMaps = Object.entries(props.data).map((pair) => {
 //     return <JustMap title={pair[0]} data={pair[1]} left={0} />
@@ -204,7 +236,7 @@ export default function AirbnbPriceMap (props){
 const otherMaps = null
 
   return ( <>
-    <AirbnbWorldMap data={data}></AirbnbWorldMap>
+    <AirbnbWorldMap data={cityData}></AirbnbWorldMap>
   
     {otherMaps}
   </>)
@@ -233,7 +265,7 @@ function JustMap(props) {
     console.log('onlyMap',props.data)
     const layer = new ScatterplotLayer({
         id: 'scatterplot-layer',
-        data:props.data,
+        data: d3.shuffle(props.data).slice(0,1e5),
         pickable: true,
         opacity: 0.8,
         stroked: true,
@@ -293,8 +325,7 @@ const ICON_MAPPING = {
   };
   
 
-import * as d3 from 'd3';
-import {H3HexagonLayer} from '@deck.gl/geo-layers';
+
 const COLOR_SCALE = [
     [65, 182, 196],
     [127, 205, 187],
