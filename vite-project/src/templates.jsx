@@ -6,37 +6,11 @@ let templates = {
   // find recent compettions -> diagram how metagame changes
   // `,
   //shelter
-
-  bot_party: `
-  Render Anabelle Map"
-    get stream analytics from twitch comments
-
-    anabelle has 2 functions
-    1. make art
-    2. ask anabelle to say funny things to strangers and give gifts + random acts of kind-ness
-
-
-    donate to anabelle.
-    experiment in building 100% consensus - reddit.com/r/place
-
-    twitch plays - 1,165,140 participants - make it funny like infinite seinfeld.
-    human intelligence is infinite beyond measure when collaborating in groups greater than 2^2
-
-    constant stream of cool analytics - webviz
-
-    1 million = 1,800 = subsistence
-
-    build a community that does random or targeted acts of kind-ness - give compliment to stranger. give $20-100 to a person.
-
-
-    end goal = twitch builds houses
-
-    make reddit.com/r/place -> convert to reality
-    twitch_collaboratively_robot_comedian_builds_houses
-    get roomba to be on a map
-    Have robots measure and solve alan kay's 10 problems for every city in world
-    shelter, water, pollution, population, rights, 
-  `,
+  airbnb_hexagon_world: `map of the future - all airbnbs + pois in the world
+  barchart every airbnb in every city
+  barchart every house_listing in every city
+  barchart every poi in every city
+`,
 
   how_much_airbnb_revenue_will_your_house_get: `
 
@@ -58,10 +32,37 @@ let templates = {
 
 
 
-  airbnb_hexagon_world: `map of the future - all airbnbs + pois in the world
-  barchart every airbnb in every city
-  barchart every house_listing in every city
-  barchart every poi in every city
+
+
+bot_party: `
+Render Anabelle Map"
+  get stream analytics from twitch comments
+
+  anabelle has 2 functions
+  1. make art
+  2. ask anabelle to say funny things to strangers and give gifts + random acts of kind-ness
+
+
+  donate to anabelle.
+  experiment in building 100% consensus - reddit.com/r/place
+
+  twitch plays - 1,165,140 participants - make it funny like infinite seinfeld.
+  human intelligence is infinite beyond measure when collaborating in groups greater than 2^2
+
+  constant stream of cool analytics - webviz
+
+  1 million = 1,800 = subsistence
+
+  build a community that does random or targeted acts of kind-ness - give compliment to stranger. give $20-100 to a person.
+
+
+  end goal = twitch builds houses
+
+  make reddit.com/r/place -> convert to reality
+  twitch_collaboratively_robot_comedian_builds_houses
+  get roomba to be on a map
+  Have robots measure and solve alan kay's 10 problems for every city in world
+  shelter, water, pollution, population, rights, 
 `,
 
 
