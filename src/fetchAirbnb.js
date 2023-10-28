@@ -69,7 +69,11 @@ const get_apt = async (city_name, page, latlng) => {
     if (fs.existsSync(fp)) return console.log('skipping', city_name)
     await page.goto(url, { waitUntil: 'networkidle2' });
     const qs = '.cy5jw6o.dir.dir-ltr a';
+    try {
     await page.waitForSelector(qs);
+    } catch (e) {
+        return console.log(e)
+    }
     let tweets = await page.$$eval(qs, (tweetNodes) => {
         return tweetNodes.map(tweet => (tweet.href) );
     })
