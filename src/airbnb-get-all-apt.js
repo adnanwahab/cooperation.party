@@ -42,7 +42,7 @@ async function getApt(location, page) {
 
 
 async function main() {
-    const browser = await puppeteer.launch({ headless: false });  // Change to false if you want to view the browser
+    const browser = await puppeteer.launch({ headless: true });  // Change to false if you want to view the browser
     const page = await browser.newPage();
     let locations = JSON.parse(fs.readFileSync('data/all_city_names.json'))
     for (let city_name in locations) {
