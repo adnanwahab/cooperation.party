@@ -88,6 +88,10 @@ async function main() {
     const page = await browser.newPage();
     let locations = JSON.parse(fs.readFileSync('data/all_city_names.json'))
     for (let city_name in locations) {
+        if (/\\u[\da-fA-F]{4}/.test(city_name)) {
+            console.log('skipping', city_name)
+            continue
+        }
         await get_apt(city_name, page, locations[city_name])
         await sleep(500)
     }
