@@ -90,7 +90,7 @@ async function main(alphabet_char) {
     const page = await browser.newPage();
     for (let tuple in alphabet_char) {
         let [city_name, location] = alphabet_char[tuple]
-        await get_apt(city_name, page, locations[city_name])
+        await get_apt(city_name, page, location)
         await sleep(500)
     }
     await browser.close();
