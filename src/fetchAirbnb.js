@@ -65,6 +65,7 @@ function urlToFileName(url) {
 const get_apt = async (city_name, page, latlng) => {
     let url = `https://www.airbnb.com/s/${city_name}/homes`
     const fp = path.resolve(`data/airbnb/apt/${city_name}.json`);
+    console.log(fp)
     if (fs.existsSync(fp)) return console.log('skipping', city_name)
     await page.goto(url, { waitUntil: 'networkidle2' });
     const qs = '.cy5jw6o.dir.dir-ltr a';
