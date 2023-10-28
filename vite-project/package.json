@@ -1,0 +1,52 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start-local": "vite --config ../../../vite.config.local.mjs",
+    "build": "vite build",
+    "deploy": "vite build && surge dist",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "last-day": "npm run build && mv dist ../last-day"
+  },
+  "dependencies": {
+    "@deck.gl/layers": "^8.9.27",
+    "@deck.gl/react": "^8.9.27",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@loaders.gl/csv": "^3.4.14",
+    "@observablehq/runtime": "5",
+    "@react-pdf/renderer": "^3.1.13",
+    "add": "^2.0.6",
+    "canvas-confetti": "^1.9.0",
+    "d3": "^7.8.5",
+    "d3-request": "^1.0.6",
+    "deck.gl": "^8.9.27",
+    "h3-js": "^4.1.0",
+    "jspdf": "^2.5.1",
+    "leaflet": "^1.9.4",
+    "mapbox-gl": "^2.0.0",
+    "maplibre-gl": "^3.3.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-favicon": "^2.0.3",
+    "react-leaflet": "^4.2.1",
+    "react-map-gl": "^7.1.0",
+    "surge": "^0.23.1",
+    "underscore": "^1.13.6",
+    "yarn": "^1.22.19"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "vite": "^4.4.5"
+  }
+}

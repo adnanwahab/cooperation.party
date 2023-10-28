@@ -1,0 +1,37 @@
+# flyctl launch added from .gitignore
+# Local Netlify folder
+**/.netlify
+**/.venv/*
+**/.myenv/*
+**/myenv
+**/node_modules
+**/data
+**/.env
+# vite-project/
+
+# flyctl launch added from vite-project/.gitignore
+# Logs
+vite-project/**/logs
+vite-project/**/*.log
+vite-project/**/npm-debug.log*
+vite-project/**/yarn-debug.log*
+vite-project/**/yarn-error.log*
+vite-project/**/pnpm-debug.log*
+vite-project/**/lerna-debug.log*
+
+vite-project/**/node_modules
+vite-project/**/dist
+vite-project/**/dist-ssr
+vite-project/**/*.local
+
+# Editor directories and files
+vite-project/**/.vscode/*
+!vite-project/**/.vscode/extensions.json
+vite-project/**/.idea
+vite-project/**/.DS_Store
+vite-project/**/*.suo
+vite-project/**/*.ntvs*
+vite-project/**/*.njsproj
+vite-project/**/*.sln
+vite-project/**/*.sw?
+fly.toml

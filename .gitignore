@@ -1,0 +1,20 @@
+# Local Netlify folder
+.netlify
+.venv/*
+.myenv/*
+myenv/
+node_modules/
+.env
+# vite-project/
+.env
+__pycache__/data_
+data_/
+__pycache__/
+osm
+fn_cache.json
+.DS_Store
+backup_data/
+fastapi_env/
+data/worldcitiespop.csv
+worldcitiespop.csv
+data/worldcitiespop.csv
