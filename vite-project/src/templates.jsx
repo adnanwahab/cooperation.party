@@ -313,9 +313,7 @@ cure_to_cancer: `
   have diagrams for the most cost effective ones.
 `,
 
-information_economics: `
-  Hal Varian - visualize these
-`,
+
 
 progress_to_eutopia: `
   alan kay's 10 hows measured in every city neighborhood.
@@ -507,8 +505,9 @@ sleep researchers dont drink coffee. investigate matthew walker
 
 `,
 
-
 information_economics: `
+Hal Varian - visualize these
+
   what are the coolest ideas in hal varian's information economics?
   What can data scientists do? (prediction, planning, ambiguity resolution, answer questions)
   How much can a good data scientist improve a system?

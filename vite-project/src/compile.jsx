@@ -77,7 +77,7 @@ function GeoCoder ({onChange}) {
 
 export default function compile (dataList, apply_) {
 //  let [getSelected, setSelected] = useState('')
-  console.log(dataList)
+  //console.log('dataList', dataList)
   //const [address, setAddress] = useState('')
 
   const result = dataList.map(function (datum, index) {

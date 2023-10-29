@@ -338,7 +338,7 @@ function get (query) {
 //     </>
 //   );
 // }
-console.log('is this deployed')
+//console.log('is this deployed')
 
 async function _() {
   let text = get('textarea').value.split('\n').map(_ => _.trim()).filter(_ => _) //TODO whitespace removal
@@ -476,7 +476,7 @@ function Isochronemap(props) {
           </div>
   })
   return <>
-  <div class="text-xl">{props.city}</div>
+  <div className="text-xl">{props.city}</div>
     <HexagonMap {...props}></HexagonMap>
     {[...Array(8).keys()].map(_ => <br key={_}/>)}
     {_}
@@ -547,7 +547,6 @@ function App() {
 
   const apply_ = underscore.debounce(function () {
     async function apply_(){
-      console.log('hello')
       let data = await _()
       data = compile(data, apply_);
   
@@ -568,9 +567,9 @@ function App() {
   }, [count])
 
   const leftPanel = (
-    <div class="p-5 xs:hidden sm:hidden sm:hidden lg:block">
+    <div className="p-5 xs:hidden sm:hidden sm:hidden lg:block">
     <CodeEditor apply_={apply_}></CodeEditor>        
-    <label class='block text-gray-500'>pick a template</label>
+    <label className='block text-gray-500'>pick a template</label>
       <ul
       value={getSelect}
       className="w-96 m-5 text-gray-500">
@@ -586,12 +585,12 @@ function App() {
       key={key} value={index}>{1 + index} - {key}</li>)
       }
     </ul>
-    <Favicon url={cat} />
+    {/* <Favicon url={cat} /> */}
   </div>
   )
   
   return (
-  <div class="overflow-scroll h-screen">
+  <div className="overflow-scroll h-screen">
   <Header />
     <div className="grid grid-cols-4">
     {leftPanel}

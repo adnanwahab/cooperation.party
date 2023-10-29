@@ -70,7 +70,7 @@ function AirbnbWorldMap(props) {
     bearing: 0
   }   
   return (<>
-    <h3 class="">World Map - Scroll to zoom in to see every home in the world at a higher resolution</h3>
+    <h3 className="">World Map - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <div className="relative h-96" style={{left: `${props.left}px`}}>
     <Legend></Legend>
     <DeckGL
@@ -161,9 +161,7 @@ const [isShowing, setIsShowing] = useState(true)
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        I will fade in and out
- 
-    <AirbnbWorldMap data={cityData}></AirbnbWorldMap>
+     <AirbnbWorldMap data={cityData}></AirbnbWorldMap>
     </Transition>
     {otherMaps}
   </>)
@@ -222,7 +220,7 @@ function JustMap(props) {
       }      
 
     return (<>
-    <h3 class="">{props.title}</h3>
+    <h3 className="">{props.title}</h3>
     <div className=" relative h-96" style={{left: `${props.left}px`}}>
     <Legend></Legend>
     <DeckGL
