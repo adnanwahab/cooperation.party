@@ -194,7 +194,8 @@ async def home():
 def get_airbnb_data_for_city(city_name: str):
     #return [{"id": 1, "name": "Sample Airbnb 1"}, {"id": 2, "name": "Sample Airbnb 2"}]
     with open(f'data/airbnb/apt/{city_name}.json') as file:
-        return list(json.load(file).items())[:1000]
+        data = list(json.load(file).items())[:1000]
+    return data
 
 @app.get("/data/airbnb/apt/{city_name}")
 async def get_airbnb_for_city(city_name: str):

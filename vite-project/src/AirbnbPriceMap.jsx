@@ -33,7 +33,7 @@ function AirbnbWorldMap(props) {
       radiusMinPixels: 10,
       radiusMaxPixels: 10,
       lineWidthMinPixels: 1,
-      getPosition: d => [d[1][1], d[1][0]],
+      getPosition: d => [d[1][0], d[1][1]].map(parseFloat),
       onClick: ({object}) => {
         console.log(object)
         let url = `https://www.airbnb.com/rooms/${object[0]}`
@@ -115,12 +115,10 @@ export default function AirbnbPriceMap (props){
   useEffect(() => {
     const fetchData = async () => {
         const data = [];
-        console.log(cityNames)
-
         for (let key of cityNames) {
           
         }
-        const promises = cityNames.slice(0, 100).map(async city_name => {
+        const promises = cityNames.slice(0, 1000).map(async city_name => {
             const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
             const json = await req.json();
             for (let key in json) {
