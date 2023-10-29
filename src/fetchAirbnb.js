@@ -87,6 +87,7 @@ const get_apt = async (city_name, page, latlng) => {
     })
     console.log(city_name, tweets.length, latlng)
     fs.writeFileSync(fp, JSON.stringify(result, null, 2));
+    await sleep(500)
 }
 
 async function main(alphabet_char) {
@@ -95,7 +96,6 @@ async function main(alphabet_char) {
     for (let tuple in alphabet_char) {
         let [city_name, location] = alphabet_char[tuple]
         await get_apt(city_name, page, location)
-        await sleep(500)
     }
     await browser.close();
 }
