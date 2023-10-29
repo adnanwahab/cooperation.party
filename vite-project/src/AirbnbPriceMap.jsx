@@ -87,6 +87,12 @@ function AirbnbWorldMap(props) {
   );
 }
 
+
+async function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
 export default function AirbnbPriceMap (props){
   const data = []
   const [cityData, setCityData] = useState([]);
@@ -104,12 +110,16 @@ export default function AirbnbPriceMap (props){
   useEffect(() => {
     const fetchData = async () => {
         const data = [];
+        console.log(cityNames)
 
-        const promises = city_names.slice(0, 100).map(async city_name => {
+        for (let key of cityNames) {
+          
+        }
+        const promises = cityNames.slice(0, 100).map(async city_name => {
             const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
             const json = await req.json();
             for (let key in json) {
-                data.push(json[key].map(parseFloat));
+                data.push(json[key].map(parseFloat).concat(key));
             }
             return data;
         });

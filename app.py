@@ -209,13 +209,14 @@ async def get_airbnb_for_city(city_name: str):
 
 import os
 @app.get("/cityList")
-async def get_list_of_cities_with_airbnbs_hopefully(city_name: str):
+async def get_list_of_cities_with_airbnbs_hopefully():
     # Fetch data using the helper function
-    data = os.listdir('data/airbnb/apt')
+    data = [_.replace('.json', '') for _ in  os.listdir('data/airbnb/apt')]
+    print(data)
     # Check if data is present, if not, return an error
     if not data:
         raise HTTPException(status_code=404, detail=f"No data found for city: {city_name}")
-    
+
     return data
 
 # @app.get("/data/airbnb/apt/")
@@ -247,7 +248,7 @@ from fastapi.staticfiles import StaticFiles
 #     follow_symlink=False
 # )
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.exception_handlers import http_exception_handler
