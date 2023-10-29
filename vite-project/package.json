@@ -15,6 +15,7 @@
   "dependencies": {
     "@deck.gl/layers": "^8.9.27",
     "@deck.gl/react": "^8.9.27",
+    "@fullstory/browser": "^1.7.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@loaders.gl/csv": "^3.4.14",

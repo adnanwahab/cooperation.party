@@ -24,7 +24,7 @@ function AirbnbWorldMap(props) {
   let layers = [
     new ScatterplotLayer({
       id: 'scatterplot-layer',
-      data:props.data.slice(0, 1e4),
+      data:props.data,
       pickable: true,
       opacity: 0.8,
       stroked: true,
@@ -33,7 +33,7 @@ function AirbnbWorldMap(props) {
       radiusMinPixels: 10,
       radiusMaxPixels: 10,
       lineWidthMinPixels: 1,
-      getPosition: d => [d[1][0], d[1][1]].map(parseFloat),
+      getPosition: d => [d[1][1], d[1][0]].map(parseFloat),
       onClick: ({object}) => {
         console.log(object)
         let url = `https://www.airbnb.com/rooms/${object[0]}`
