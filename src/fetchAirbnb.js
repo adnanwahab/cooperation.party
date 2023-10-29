@@ -72,7 +72,10 @@ const get_apt = async (city_name, page, latlng) => {
     try {
     await page.waitForSelector(qs);
     } catch (e) {
-        return console.log(e)
+        fs.writeFileSync(fp, JSON.stringify({
+            '123': latlng
+        }))
+        return console.log(e, city_name)
     }
     let tweets = await page.$$eval(qs, (tweetNodes) => {
         return tweetNodes.map(tweet => (tweet.href) );
@@ -87,7 +90,6 @@ const get_apt = async (city_name, page, latlng) => {
     })
     console.log(city_name, tweets.length, latlng)
     fs.writeFileSync(fp, JSON.stringify(result, null, 2));
-    await sleep(500)
 }
 
 async function main(alphabet_char) {
@@ -136,3 +138,24 @@ const fetch100Pages = (location) => {
         }
     }
 }
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
+
+process.on('exit', (code) => {
+    if (code === 1) {
+        // Relaunch the script when it exits with code 1 (which we set above on error)
+        require('child_process').spawn(process.argv.shift(), process.argv, {
+            cwd: process.cwd(),
+            detached: true,
+            stdio: 'inherit'
+        });
+    }
+});

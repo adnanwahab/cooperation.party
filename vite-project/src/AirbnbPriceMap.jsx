@@ -118,7 +118,7 @@ export default function AirbnbPriceMap (props){
         for (let key of cityNames) {
           
         }
-        const promises = cityNames.slice(0, 1000).map(async city_name => {
+        const promises = cityNames.slice(0, 100).map(async city_name => {
             const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
             const json = await req.json();
             for (let key in json) {
