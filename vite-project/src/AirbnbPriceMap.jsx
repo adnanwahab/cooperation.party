@@ -18,6 +18,7 @@ import {interpolatePurples} from "https://cdn.skypack.dev/d3-scale-chromatic@3";
 
 import {ScatterplotLayer} from '@deck.gl/layers';
 //clone zillow + airbnb + houses in other countries
+import { Transition } from '@headlessui/react'
 
 function AirbnbWorldMap(props) {
 
@@ -149,10 +150,21 @@ export default function AirbnbPriceMap (props){
 //     return <JustMap title={pair[0]} data={pair[1]} left={0} />
 //   })
 const otherMaps = null
-
+const [isShowing, setIsShowing] = useState(true)
   return ( <>
+        <Transition
+        show={isShowing}
+        enter="transition-opacity duration-75"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-150"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        I will fade in and out
+ 
     <AirbnbWorldMap data={cityData}></AirbnbWorldMap>
-  
+    </Transition>
     {otherMaps}
   </>)
 }
@@ -180,7 +192,7 @@ function JustMap(props) {
     console.log('onlyMap',props.data)
     const layer = new ScatterplotLayer({
         id: 'scatterplot-layer',
-        data: d3.shuffle(props.data).slice(0,1e5),
+        data: d3.shuffle(props.data).slice(0,1e4),
         pickable: true,
         opacity: 0.8,
         stroked: true,

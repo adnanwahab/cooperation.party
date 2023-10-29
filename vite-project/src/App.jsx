@@ -32,7 +32,6 @@ import templates from './templates'
 //to actually complete this app = deploy it desktop and upgrade the machine by 10x 
 
 
-
 let templateNames = Object.keys(templates).slice(0, 12)
 let templateContent = Object.values(templates).slice(0, 12)
 //pick optimal housing location for next 10-30 years 
@@ -366,8 +365,8 @@ if (window.location.hostname == 'cooperation.party') {
 
 url = 'https://shelbernstein.ngrok.io/makeFn'
 //on MBP localhost
-console.log('mbp', url === 'https://shelbernstein.ngrok.io/makeFn')
-console.log('prod+fly.io', url === 'https://pypypy.ngrok.io/makeFn')
+//console.log('mbp', url === 'https://shelbernstein.ngrok.io/makeFn')
+//console.log('prod+fly.io', url === 'https://pypypy.ngrok.io/makeFn')
 // url = 'https://pypypy.ngrok.io/makeFn'
 
   // let fn_ = await fetch('mockData.json');
