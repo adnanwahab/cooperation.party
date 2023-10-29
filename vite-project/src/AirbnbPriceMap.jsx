@@ -24,7 +24,7 @@ function AirbnbWorldMap(props) {
   let layers = [
     new ScatterplotLayer({
       id: 'scatterplot-layer',
-      data:props.data.slice(0, 1e5),
+      data:props.data.slice(0, 1e4),
       pickable: true,
       opacity: 0.8,
       stroked: true,
@@ -33,7 +33,12 @@ function AirbnbWorldMap(props) {
       radiusMinPixels: 10,
       radiusMaxPixels: 10,
       lineWidthMinPixels: 1,
-      getPosition: d => d.slice(0,2),
+      getPosition: d => [d[1][1], d[1][0]],
+      onClick: ({object}) => {
+        console.log(object)
+        let url = `https://www.airbnb.com/rooms/${object[0]}`
+        window.open(url)
+      },
       //getPosition: d => centroid,
       getRadius: d => 10,
       getFillColor: d => [Math.random()* 255, 0, 255],
@@ -119,7 +124,7 @@ export default function AirbnbPriceMap (props){
             const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
             const json = await req.json();
             for (let key in json) {
-                data.push(json[key].map(parseFloat).concat(key));
+                data.push(json[key]);
             }
             return data;
         });
@@ -133,13 +138,14 @@ export default function AirbnbPriceMap (props){
                     console.error("Error occurred:", result.reason);
                 }
             });
+
             setCityData(allData);
         });
     };
 
     fetchData();
 }, [cityNames]);
-console.log('cityData', cityData)
+//console.log('cityData', cityData)
 
 //  const otherMaps = Object.entries(props.data).map((pair) => {
 //     return <JustMap title={pair[0]} data={pair[1]} left={0} />
@@ -187,6 +193,7 @@ function JustMap(props) {
         lineWidthMinPixels: 1,
         getPosition: d => d.slice(0,2).reverse(),
         //getPosition: d => centroid,
+  
         getRadius: d => 30,
         getFillColor: d => [(d[2]) * 255, 0, 255],
         getLineColor: d => [0, 0, 0]
