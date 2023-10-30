@@ -221,7 +221,6 @@ async def get_list_of_cities_with_airbnbs_hopefully():
 
 from fastapi.responses import StreamingResponse
 import time
-
 async def stream_content():
     headers = {
         "X-Total-Chunks": str(3173957)  # This is another way to signal the total chunks
@@ -237,19 +236,13 @@ async def stream_content():
                 yield line
         #yield f"{f.readline()} i like poo\n"
 
-class OsmBbox(BaseModel):
-    min_lat: float
-    max_lat: float
-    min_lng: float
-    max_lng: float
-
 import requests 
 def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     places = []
     query = f"""
     [out:json][timeout:25];
     (
-        node["amenity"="bench"]({min_lat},{min_lng},{max_lat},{max_lng});
+        node["amenity"="bench"]({min_lat},{min_lng},{min_lat + 1},{min_lng + 1});
     );
     out body;
     """ 
@@ -275,11 +268,51 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     random.shuffle(places)
     return places[:100]
 
+
+import aiohttp
+import asyncio
+async def getAllRoutesFaster():
+    routes = []
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, apt) for city in apt_json for apt in apt_json[city]  ]
+        print(len(tasks))
+        routes = await asyncio.gather(*tasks)
+        #apt_json[city] = sorted(apt_json[city], key=lambda _: _['good_deal'])[:100]
+    #apt_json, h3_complaints = compute_311(apt_json)
+    #print(h3_complaints)
+    #apt_json, routes = compute_travel_time(apt_json, schedule)
+    return routes
+
+async def fetch(session, apt):
+    routes = []
+    travel_time = 0
+    start_lng = float(apt['longitude'])
+    start_lat = float(apt['latitude'])
+    for todo in schedule:
+        result = await fetch_overpass_data(todo, start_lat, start_lng)
+        await asyncio.sleep(1.5)
+        if not result or 'elements' not in result or len(result['elements']) == 0: 
+            print('no ' + todo)
+            continue
+        result = result['elements'][0]
+        print('result', result)
+        end_lng = result['lon']
+        end_lat = result['lat']
+        url = f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lat}%3B{end_lng}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
+        async with session.get(url) as response:
+            route = await response.json()
+            if route and len(route['routes']) > 0: 
+                travel_time += route['routes'][0]['duration']
+                routes.append(route)
+    apt['commute_distance'] = travel_time
+    return routes
+
 def fetchRoad(start, end):
-    start_lng = start[0]
-    start_lat = start[1]
-    end_lng = end[0]
-    end_lat = end[1]
+    print(start, end)
+    start_lng = start['lon']
+    start_lat = start['lat']
+    end_lng = end['lon']
+    end_lat = end['lat']
     url = f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lat}%3B{end_lng}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
     response = requests.get(url)
     if response.status_code == 200:
@@ -301,13 +334,13 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
     prev = time.time()
     places = fetch_coworking(min_lat, min_lng, max_lat, max_lng)
     routes = []
-    # for place in places: 
-    #     for place_two in places:
-    #         routes.append(
-    #             fetchRoad(
-    #                 place, place_two
-    #             )
-    #         )
+    for place in places[:5]: 
+        for place_two in places[5:10]:
+            routes.append(
+                fetchRoad(
+                    place, place_two
+                )
+            )
     print(len(places))
     return {
         'places': places,

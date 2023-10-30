@@ -30,6 +30,10 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 }   
 
+
+INITIAL_VIEW_STATE.longitude = 139
+INITIAL_VIEW_STATE.latitude = 35
+INITIAL_VIEW_STATE.zoom = 10
 function ProgressBar (props) {
   let style = {width: `${props.percentage}%`}
   return (<div className="fixed top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
@@ -38,6 +42,8 @@ function ProgressBar (props) {
 function AirbnbWorldMap(props) {
   const [cityData, setCityData] = useState([]);
   const [cityNames, setCityNames] = useState([])
+  const [routes, setRoutes] = useState([])
+  const [markers, setMarkers] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,23 +146,24 @@ function AirbnbWorldMap(props) {
       getColor: d => [Math.random() * 255, 140, 0]
     })
 
-  let routes = []
+
   routes.map((route, route_index) => {
-    //centroid = route.coordinates[0]
+    console.log(route)
     let newLayer = new GeoJsonLayer({
       id: 'geojson',
       //data: 
-      data: route,
-      stroked: false,
-      filled: false,
-      lineWidthMinPixels: 0.5,
+      data: route.routes[0].geometry,
+      stroked: true,
+      filled: true,
+      lineWidthScale: 20,
+      lineWidthMinPixels: 10,
       parameters: {
         depthTest: false
       },
 
       getLineColor: function (_) {
           //console.log(_)
-          return [255, 0, 0, 255]
+          return [255, Math.random() * 255, 0, 255]
       },
       getLineWidth: function () {
           return 20
@@ -177,6 +184,7 @@ function AirbnbWorldMap(props) {
     })
     layers.push(newLayer)
   })
+  console.log('layers', layers)
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
 
   const fetchRoutes = async () => {
@@ -185,8 +193,8 @@ function AirbnbWorldMap(props) {
     let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
     const response = await fetch(url);
     const json = await response.json();
-    console.log(json.places.length)
-    //if (json.places.length) console.log('wtf', currentViewState.left)
+    setRoutes(json.routes)
+    console.log(json.routes.length)
   }
 
   useEffect(() => {
