@@ -102,7 +102,6 @@ function AirbnbWorldMap(props) {
       lineWidthMinPixels: 1,
       getPosition: d => [d[1][1], d[1][0]].map(parseFloat),
       onClick: ({object}) => {
-        console.log(object)
         let url = `https://www.airbnb.com/rooms/${object[0]}`
         window.open(url)
       },
@@ -137,10 +136,10 @@ function AirbnbWorldMap(props) {
   }   
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
   return (<>
-    <h3 className="">World Map - Scroll to zoom in to see every home in the world at a higher resolution</h3>
+    <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <ColorLabels></ColorLabels>
-    <ProgressBar percentage={props.data.length}></ProgressBar>
+    <ProgressBar percentage={props.data.length / 1e4}></ProgressBar>
     <DeckGL
         width={1200}
         height={600}
@@ -219,39 +218,31 @@ export default function AirbnbPriceMap (props){
       const data = [];
       
       const fetchCity = async city_name => {
-          await sleep(500);
-          //console.log('lol', city_name)
+          //await sleep(500);
           const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
           const json = await req.json();
           return json;
       };
   
       for (let i = 0; i < cityNames.length; i += CHUNK_SIZE) {
-        
-          const chunk = cityNames.slice(i, i + CHUNK_SIZE);
-          const promises = chunk.map(city_name => fetchCity(city_name));
-          
-          const results = await Promise.allSettled(promises);
-          
-          results.forEach(result => {
-              if (result.status === 'fulfilled') {
-                  for (let key in result.value) {
-                      data.push(result.value[key]);
-                      setData(data);
-                  }
-              } else {
-                  console.error("Error occurred:", result.reason);
-              }
-          });
+          const city_name = cityNames[i];
+          const newData = await fetchCity(city_name)
+          //console.log(newData)
+          for (let key in newData) {
+            data.push(newData[key]);
+            setData(data);
+            console.log(newData[key], data.length)
+          }
       }
   };  
 
     fetchData(setCityData);
 }, [cityNames]);
 
+
 const [isShowing, setIsShowing] = useState(true)
   return ( <>
-        <Transition
+        {/* <Transition
         show={isShowing}
         enter="transition-opacity duration-75"
         enterFrom="opacity-0"
@@ -259,9 +250,9 @@ const [isShowing, setIsShowing] = useState(true)
         leave="transition-opacity duration-150"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-      >
+      > */}
      <AirbnbWorldMap data={cityData}></AirbnbWorldMap>
-    </Transition>
+    {/* </Transition> */}
   </>)
 }
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';

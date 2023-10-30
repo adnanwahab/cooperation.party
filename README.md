@@ -1,4 +1,16 @@
 # Cooperation.party 
+
+find andrew from famo.us
+show this
+write down This tool exists for within certain companies
+which means on zoom requery 
+use it to debug surge pricing for outliers like 
+use to it debug surge pricing for house market - which means good deals
+in travel and in real estate 
+its too costly to to do at scale so mapbox + google cant do this yet.
+make it easy for zoox 
+
+
 KPIS 
 Make as many good dataset as kaggle in 5 days 
 improve housing market 
