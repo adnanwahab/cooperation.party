@@ -14,7 +14,10 @@ import {ScatterplotLayer} from '@deck.gl/layers';
 import { Transition } from '@headlessui/react'
 import { WebMercatorViewport } from '@deck.gl/core';
 import {DataFilterExtension} from '@deck.gl/extensions';
-
+import {IconLayer} from '@deck.gl/layers';
+const ICON_MAPPING = {
+  marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+};
 const INITIAL_VIEW_STATE = {
   longitude: 12,
   latitude: 29,
@@ -122,9 +125,9 @@ function AirbnbWorldMap(props) {
           }
       }
 
-      setCityData(newCityData);
+      //setCityData(newCityData);
   };  
-    fetchData();
+    //fetchData();
 }, [cityNames]);
 
   //console.log('cityData.length', cityData.length)
@@ -172,13 +175,82 @@ function AirbnbWorldMap(props) {
       // },  // in seconds
       //filterRange: [43200, 46800],  // 12:00 - 13:00
       //extensions: [new DataFilterExtension({filterSize: 1})]
-      
+
     })
   ]
+  let places = []
+  let iconLayer = new IconLayer({
+      id: 'icon-layer',
+      data: places,
+      pickable: true,
+      // iconAtlas and iconMapping are required
+      // getIcon: return a string
+      iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+      iconMapping: ICON_MAPPING,
+      getIcon: d => 'marker',
+      onClick: (_)=> _.object.url,
+      sizeScale: 15,
+      getPosition: d => [+ d.longitude, + d.latitude],
+      getSize: d => 5,
+      getColor: d => [Math.random() * 255, 140, 0]
+    })
 
+  let routes = []
+  routes.map((route, route_index) => {
+    //centroid = route.coordinates[0]
+    let newLayer = new GeoJsonLayer({
+      id: 'geojson',
+      //data: 
+      data: route,
+      stroked: false,
+      filled: false,
+      lineWidthMinPixels: 0.5,
+      parameters: {
+        depthTest: false
+      },
 
+      getLineColor: function (_) {
+          //console.log(_)
+          return [255, 0, 0, 255]
+      },
+      getLineWidth: function () {
+          return 20
+      },
 
+      pickable: true,
+     // onHover: setHoverInfo,
+
+      // updateTriggers: {
+      //   getLineColor: {year},
+      //   getLineWidth: {year}
+      // },
+
+      transitions: {
+        getLineColor: 1000,
+        getLineWidth: 1000
+      }
+    })
+    layers.push(newLayer)
+  })
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
+
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      const min_lat = currentViewState.top
+      const min_lng = currentViewState.left
+      const max_lat = currentViewState.bottom
+      const max_lng = currentViewState.right
+      let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${min_lat}&min_lng=${min_lng}&max_lat=${max_lat}&max_lng=${max_lng}`
+      const response = await fetch(url);
+      const json = await response.json()
+      console.log(json)
+    }
+    fetchRoutes()
+    return () => {}
+  }, [currentViewState.left])
+
+
+
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <h3 className="">{cityData.length}</h3>

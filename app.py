@@ -278,10 +278,17 @@ def fetchRoad(start, end):
     if response.status_code == 200:
         data = response.json()
         return data
-    
-@app.post("/osm_bbox/")
-async def stream(OsmBbox: OsmBbox):
-    places = fetch_coworking(OsmBbox.min_lat, OsmBbox.min_lng, OsmBbox.max_lat, OsmBbox.max_lng)
+
+#use query params
+@app.get("/osm_bbox/")
+#async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
+async def stream():
+    print('OSM_BBOX')
+    # print(f'min_lat, min_lng, max_lat, max_lng',
+    #       min_lat, min_lng, max_lat, max_lng
+    # )
+    places = []
+    #fetch_coworking(OsmBbox.min_lat, OsmBbox.min_lng, OsmBbox.max_lat, OsmBbox.max_lng)
     routes = []
     for place in places: 
         for place_two in places:
