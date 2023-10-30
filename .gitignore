@@ -24,4 +24,3 @@ planet-osm.db-journal
 planet.db
 planet.db-journal
 *.db
-city_location.json
