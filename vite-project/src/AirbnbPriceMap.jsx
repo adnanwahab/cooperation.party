@@ -14,18 +14,18 @@ import {ScatterplotLayer} from '@deck.gl/layers';
 import { Transition } from '@headlessui/react'
 import { WebMercatorViewport } from '@deck.gl/core';
 
+const INITIAL_VIEW_STATE = {
+  longitude: 12,
+  latitude: 29,
+  zoom: 1.24,
+  minZoom: 1,
+  maxZoom: 17,
+  pitch: 0,
+  bearing: 0
+}   
 
 function ProgressBar (props) {
   let style = {width: `${props.percentage}%`}
-  //let [_, set_] = useState(0)
-
-  // useEffect(function _() {
-  //   setTimeout(() => {
-  //     set_(_+1)
-
-  //   }, 1000)
-  // }, [_])
-
   return (<div className="fixed top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
 }
 
@@ -132,8 +132,10 @@ function AirbnbWorldMap(props) {
   let layers = [
     new ScatterplotLayer({
       id: 'scatterplot-layer',
-      data:cityData,
+      //data: cityData,
       //data:'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/scatterplot/manhattan.json',
+      //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/_houses.json',
+      data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all_city_names.json',
       pickable: true,
       opacity: 0.8,
       stroked: true,
@@ -143,11 +145,16 @@ function AirbnbWorldMap(props) {
       radiusMaxPixels: 10,
       lineWidthMinPixels: 1,
       //getPosition: d => [d[1][0], d[1][1]].map(parseFloat),
+      // getPosition: d => {
+      //   let val = [d[1][0], d[1][1]].map(parseFloat)
+      //   console.log(val)
+      //   val = [Math.random() * 90, Math.random() * 180]
+      //   val = d.location
+      //   return val
+      // },
       getPosition: d => {
-        let val = [d[1][0], d[1][1]].map(parseFloat)
-        //console.log(val)
-        //val = [Math.random() * 90, Math.random() * 180]
-        return val
+        console.log(d)
+        return d.location
       },
       //getPosition: d => [d[0], d[1], 0],
       onClick: ({object}) => {
@@ -162,15 +169,7 @@ function AirbnbWorldMap(props) {
   ]
 
 
-  const INITIAL_VIEW_STATE = {
-    longitude: 12,
-    latitude: 29,
-    zoom: 1.24,
-    minZoom: 1,
-    maxZoom: 17,
-    pitch: 0,
-    bearing: 0
-  }   
+
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
