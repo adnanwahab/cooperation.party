@@ -245,11 +245,7 @@ class OsmBbox(BaseModel):
 
 import requests 
 def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
-
-    # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
-    # return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
     places = []
-
     query = f"""
     [out:json][timeout:25];
     (
@@ -276,9 +272,8 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     else: 
         print('we are shit out of luck', response.status_code)
         return []
-    return random.shuffle(places)[:100]
-#fetch_coworking(35, 139)
-
+    random.shuffle(places)
+    return places[:100]
 
 def fetchRoad(start, end):
     start_lng = start[0]
@@ -287,20 +282,23 @@ def fetchRoad(start, end):
     end_lat = end[1]
     url = f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lat}%3B{end_lng}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
     response = requests.get(url)
-
     if response.status_code == 200:
         data = response.json()
-        print(data)
         return data
     else: 
         print('we are shit out of luck', response.status_code)
         return []
 
-
-
 #use query params
+prev = time.time()
 @app.get("/osm_bbox/")
 async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
+    global prev
+    if abs(time.time() - prev) < 1:
+        prev = time.time()
+        print('too soon')
+        return {'places': [], 'routes': []}
+    prev = time.time()
     places = fetch_coworking(min_lat, min_lng, max_lat, max_lng)
     routes = []
     # for place in places: 

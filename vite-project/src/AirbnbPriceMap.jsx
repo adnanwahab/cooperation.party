@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import * as d3 from 'd3';
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {Map} from 'react-map-gl';
@@ -179,21 +179,19 @@ function AirbnbWorldMap(props) {
   })
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
 
-  useEffect(_.throttle(() => {
-    const fetchRoutes = async () => {
-      const min_lat = currentViewState.top
-      const min_lng = currentViewState.left
-      const max_lat = currentViewState.bottom
-      const max_lng = currentViewState.right
-      const {top, left, right, bottom} = currentViewState
-      let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${min_lat}&min_lng=${min_lng}&max_lat=${max_lat}&max_lng=${max_lng}`
-      const response = await fetch(url);
-      const json = await response.json()
-      //console.log(top, left, right, bottom)
-      console.log(Date.now(), json)
-    }
-    fetchRoutes()
-  }, 5000, {leading: false}), [currentViewState.left])
+  const fetchRoutes = async () => {
+
+    const {top, left, right, bottom} = currentViewState;
+    let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+    const response = await fetch(url);
+    const json = await response.json();
+    console.log(json.places.length)
+    //if (json.places.length) console.log('wtf', currentViewState.left)
+  }
+
+  useEffect(() => {
+    fetchRoutes();
+  }, [currentViewState.left]);
 
 
 
@@ -212,9 +210,10 @@ function AirbnbWorldMap(props) {
       controller={true}
       getTooltip={getTooltip}
       glOptions={{preserveDrawingBuffer: true}}
-      onViewStateChange={({viewState}) => {
+      onViewStateChange={_.debounce(({viewState}) => {
+        //console.log('wtf dont do that')
         setViewState(computeBoundingBox(viewState))
-      }}
+      }, 1000)}
       // parameters={
       //   blendFunc: [GL.ONE, GL.ONE, GL.ONE, GL.ONE],
       //   depthTest: false
