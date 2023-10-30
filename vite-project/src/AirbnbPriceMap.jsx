@@ -26,7 +26,7 @@ function ProgressBar (props) {
   //   }, 1000)
   // }, [_])
 
-  return (<div className="relative top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
+  return (<div className="fixed top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
 }
 
 function processChunk(list) {
@@ -87,6 +87,7 @@ async function fetchData(setState) {
 }
 
 function AirbnbWorldMap(props) {
+  console.log(props.data.length)
   let layers = [
     new ScatterplotLayer({
       id: 'scatterplot-layer',
@@ -139,7 +140,7 @@ function AirbnbWorldMap(props) {
     <h3 className="">World Map - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <ColorLabels></ColorLabels>
-    <ProgressBar percentage={Math.random()}></ProgressBar>
+    <ProgressBar percentage={props.data.length}></ProgressBar>
     <DeckGL
         width={1200}
         height={600}
@@ -219,13 +220,14 @@ export default function AirbnbPriceMap (props){
       
       const fetchCity = async city_name => {
           await sleep(500);
-          console.log('lol', city_name)
+          //console.log('lol', city_name)
           const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
           const json = await req.json();
           return json;
       };
   
       for (let i = 0; i < cityNames.length; i += CHUNK_SIZE) {
+        
           const chunk = cityNames.slice(i, i + CHUNK_SIZE);
           const promises = chunk.map(city_name => fetchCity(city_name));
           
@@ -242,7 +244,6 @@ export default function AirbnbPriceMap (props){
               }
           });
       }
-  
   };  
 
     fetchData(setCityData);
