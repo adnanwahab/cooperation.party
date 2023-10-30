@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {Map} from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
-import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
 import DeckGL from '@deck.gl/react';
 import {GeoJsonLayer} from '@deck.gl/layers';
@@ -14,7 +13,9 @@ import { Transition } from '@headlessui/react'
 import { WebMercatorViewport } from '@deck.gl/core';
 import {DataFilterExtension} from '@deck.gl/extensions';
 import {IconLayer} from '@deck.gl/layers';
-import _, { map } from 'underscore'
+import _ from 'underscore'
+import * as turf from '@turf/turf';
+
 
 const ICON_MAPPING = {
   marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -30,9 +31,9 @@ const INITIAL_VIEW_STATE = {
 }   
 
 
-INITIAL_VIEW_STATE.longitude = 139
-INITIAL_VIEW_STATE.latitude = 35
-INITIAL_VIEW_STATE.zoom = 10
+// INITIAL_VIEW_STATE.longitude = 139
+// INITIAL_VIEW_STATE.latitude = 35
+// INITIAL_VIEW_STATE.zoom = 10
 function ProgressBar (props) {
   let style = {width: `${props.percentage}%`}
   return (<div className="fixed top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
@@ -43,6 +44,7 @@ function AirbnbWorldMap(props) {
   const [cityNames, setCityNames] = useState([])
   const [routes, setRoutes] = useState([])
   const [markers, setMarkers] = useState([])
+  const [getPercent, setPercent] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -131,17 +133,22 @@ function AirbnbWorldMap(props) {
       getColor: d => [Math.random() * 255, 140, 0]
     })
 
-
   routes.map((route, route_index) => {
-    console.log(route)
+    //console.log(route)
+    let prev = route.geometry
+    // let datum = {
+    //   coordinates: prev.coordinates.slice(0, prev.coordinates.length),
+    //   type: 'LineString'
+    // }
+    //console.log(prev.coordinates.length * getPercent, getPercent)
     let newLayer = new GeoJsonLayer({
-      id: 'geojson',
+      id: 'geojson' + route_index,
       //data: 
-      data: route.routes[0].geometry,
+      data: prev,
       stroked: true,
       filled: true,
-      lineWidthScale: 20,
-      lineWidthMinPixels: 10,
+      lineWidthScale: 10,
+      lineWidthMinPixels: 5,
       parameters: {
         depthTest: false
       },
@@ -153,14 +160,23 @@ function AirbnbWorldMap(props) {
       getLineWidth: function () {
           return 20
       },
-
       pickable: true,
-     // onHover: setHoverInfo,
-
       // updateTriggers: {
       //   getLineColor: {year},
       //   getLineWidth: {year}
       // },
+
+      getFilterValue: function (one, two, three, four){
+        return false
+        return false
+        return true
+        return false
+        return false && Math.random() > .5
+      },  // in seconds
+//      filterRange: [43200, 46800],  // 12:00 - 13:00
+    
+      // Define extensions
+      extensions: [new DataFilterExtension({filterSize: 1})],
 
       transitions: {
         getLineColor: 1000,
@@ -169,24 +185,55 @@ function AirbnbWorldMap(props) {
     })
     layers.push(newLayer)
   })
-  console.log('layers', layers)
+
+
+  
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
-
   const fetchRoutes = async () => {
+    let {top, left, right, bottom} = currentViewState;
+    // let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+    // const response = await fetch(url);
+    // const json = await response.json();
+    // let top = 34;
+    // let left = 138;
+    // let bottom = 36;
+    // let right = 139;
+    //console.log(top, left, right, bottom)
 
-    const {top, left, right, bottom} = currentViewState;
-    let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
-    const response = await fetch(url);
-    const json = await response.json();
-    setRoutes(json.routes)
-    console.log(json.routes.length)
+    // const req = await fetch(
+    //   `https://api.mapbox.com/directions/v5/mapbox/driving/${top},${left};${right},${bottom}?alternatives=false&geometries=geojson&language=en&overview=full&steps=false&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
+    // );
+    for (let i = 0; i < 100; i++) {
+      let min_lat = left + Math.random(), 
+      min_lng = top + Math.random(), 
+      max_lat = right + Math.random(), 
+      max_lng = bottom + Math.random();
+      const req = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${min_lat},${min_lng};${max_lat},${max_lng}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
+      );
+  
+  
+      let json = await req.json();
+      routes.push.apply(routes, json.routes)
+      setRoutes(routes)
+    }
+
+    
+    //console.log('json', json)
+
+ 
+    setPercent(0)
+    setTimeout(function recur () {
+      //setPercent(getPercent+.1)
+      //if (getPercent < 1) setTimeout(recur, 100)
+    }, 100)
+    //setMarkers(json.places)
+    //console.log(json.routes.length)
   }
 
   useEffect(() => {
     fetchRoutes();
   }, [currentViewState.left]);
-
-
 
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
@@ -222,6 +269,8 @@ function AirbnbWorldMap(props) {
     <div>
       <div>Latitude: {currentViewState.top.toPrecision(4)} , {currentViewState.bottom.toPrecision(4)}</div>
       <div>Longitude: {currentViewState.left.toPrecision(4)} , {currentViewState.right.toPrecision(4)}</div>
+      <div>Routes Drawn: {routes.length}</div>
+      <div>Places Of Interest Drawn: {markers.length}</div>
     </div>
     </>
   );
@@ -233,6 +282,10 @@ async function fetchInterestingData (min_lat, min_lng, max_lat, max_lng) {
   const request = await fetch(`https://shelbernstein.ngrok.io/cityList`)
   const cityList = await request.json()
 }
+function clamp (_, min, max) {
+  return Math.max(Math.min(_, max), min)
+}
+
 
 function computeBoundingBox(viewPort) {
   const viewport = new WebMercatorViewport({...viewPort});
@@ -240,10 +293,10 @@ function computeBoundingBox(viewPort) {
   const bottomRight = viewport.unproject([viewport.width, viewport.height]);
 
   const boundingBox = {
-    top: topLeft[1],
-    left: topLeft[0],
-    bottom: bottomRight[1],
-    right: bottomRight[0],
+    top: clamp(topLeft[1], -90, 90),
+    left: clamp(topLeft[0], -180, 180),
+    bottom: clamp(bottomRight[1], -90, 90),
+    right: clamp(bottomRight[0], -180, 180),
     centroid: [viewport.latitude, viewport.longitude]
   };
   //console.log('bbox', boundingBox)

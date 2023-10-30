@@ -237,6 +237,8 @@ async def stream_content():
         #yield f"{f.readline()} i like poo\n"
 
 import requests 
+#find out max requests sent to both overpass + mapbox
+
 def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     places = []
     query = f"""
@@ -244,16 +246,17 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     (
         node["amenity"="bench"]({min_lat},{min_lng},{min_lat + 1},{min_lng + 1});
     );
-    out body;
+    (._;._;);
+    out 0..100;
     """ 
 
-    query = f"""
-    [out:json][timeout:25];
-    (
-        node["amenity"="bench"]({34},{138},{35},{139});
-    );
-    out body;
-    """ 
+# query = f"""
+# [out:json][timeout:25];
+# (
+#     node["amenity"="bench"]({34},{138},{35},{139});
+# );
+# out body;
+# """ 
     import random
     overpass_url = "https://overpass-api.de/api/interpreter"
     response = requests.get(overpass_url, params={'data': query})
@@ -330,7 +333,6 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
     global prev
     if abs(time.time() - prev) < 1:
         prev = time.time()
-        print('too soon')
         return {'places': [], 'routes': []}
     prev = time.time()
     places = fetch_coworking(min_lat, min_lng, max_lat, max_lng)
@@ -363,12 +365,7 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
 #         html=False,
 #         check_dir=True,
 #         follow_symlink=False
-
-
-
 from fastapi.staticfiles import StaticFiles
-
-
 # StaticFiles(
 #     '*',
 #     directory=None,
@@ -377,26 +374,21 @@ from fastapi.staticfiles import StaticFiles
 #     check_dir=True,
 #     follow_symlink=False
 # )
-
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.exception_handlers import http_exception_handler
 from starlette.exceptions import HTTPException as StarletteHTTPException
-
 # def SPA(app: FastAPI, build_dir: Union[Path, str]) -> FastAPI:
 # # Serves a React application in the root directory
-
 #     @app.exception_handler(StarletteHTTPException)
 #     async def _spa_server(req: Request, exc: StarletteHTTPException):
 #         if exc.status_code == 404:
 #             return FileResponse(f'{build_dir}/index.html', media_type='text/html')
 #         else:
 #             return await http_exception_handler(req, exc)
-
 #     if isinstance(build_dir, str):
 #         build_dir = Path(build_dir)
-
 #     app.mount(
 #         '/vite-app/dit',
 #         StaticFiles(directory=build_dir / 'dist'),
