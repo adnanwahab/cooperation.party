@@ -6,7 +6,7 @@ import maplibregl from 'maplibre-gl';
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
 import DeckGL from '@deck.gl/react';
 import {GeoJsonLayer} from '@deck.gl/layers';
-import {interpolatePurples} from "https://cdn.skypack.dev/d3-scale-chromatic@3";
+import {interpolateRainbow} from "https://cdn.skypack.dev/d3-scale-chromatic@3";
 import {ScatterplotLayer} from '@deck.gl/layers';
 //clone zillow + airbnb + houses in other countries
 import { Transition } from '@headlessui/react'
@@ -105,7 +105,10 @@ function AirbnbWorldMap(props) {
       },
       //getPosition: d => centroid,
       getRadius: d => 10,
-      getFillColor: d => [Math.random()* 255, 0, 255],
+      getFillColor: d => {
+        let rgb = d3.rgb(interpolateRainbow(d[0]))
+        return [rgb.r, rgb.g, rgb.b]
+      },
       // getFilterValue: f => {
       //   //console.log(f)
       //   //f.properties.timeOfDay
@@ -133,59 +136,44 @@ function AirbnbWorldMap(props) {
       getColor: d => [Math.random() * 255, 140, 0]
     })
 
-  routes.map((route, route_index) => {
-    //console.log(route)
-    let prev = route.geometry
-    // let datum = {
-    //   coordinates: prev.coordinates.slice(0, prev.coordinates.length),
-    //   type: 'LineString'
-    // }
-    //console.log(prev.coordinates.length * getPercent, getPercent)
-    let newLayer = new GeoJsonLayer({
-      id: 'geojson' + route_index,
-      //data: 
-      data: prev,
-      stroked: true,
-      filled: true,
-      lineWidthScale: 10,
-      lineWidthMinPixels: 5,
-      parameters: {
-        depthTest: false
-      },
-
-      getLineColor: function (_, i, idx) {
-          return [255, Math.random() * 255, 0, 255]
-      },
-      getLineWidth: function () {
-          return 20
-      },
-      pickable: true,
-      // updateTriggers: {
-      //   getLineColor: {year},
-      //   getLineWidth: {year}
-      // },
-
-      getFilterValue: function (one, two, three, four){
-        return false
-        return false
-        return true
-        return false
-        return false && Math.random() > .5
-      },  // in seconds
-//      filterRange: [43200, 46800],  // 12:00 - 13:00
-    
-      // Define extensions
-      extensions: [new DataFilterExtension({filterSize: 1})],
-
-      transitions: {
-        getLineColor: 1000,
-        getLineWidth: 1000
-      }
-    })
-    layers.push(newLayer)
+  const allCoordinates = []
+  routes.forEach((route) => {
+    route.geometry.coordinates.forEach((list, i ) => list.push(i / route.geometry.coordinates.length))
+    allCoordinates.push(...route.geometry.coordinates)
   })
+  console.log('allCoordeinates', allCoordinates)
+  let roads = new ScatterplotLayer({
+    id: 'roads',
+    data: allCoordinates,
+    pickable: false,
+    opacity: 1.,
+    stroked: false,
+    filled: true,
+    radiusScale: 1,
+    radiusMinPixels: 5,
+    radiusMaxPixels: 5,
+    lineWidthMinPixels: 1,
+    getPosition: (one, two, three) => {
+      return one
+    },
+    //getPosition: d => [d[0], d[1], 0],
+    //getPosition: d => centroid,
+    getRadius: d => 10,
+    getFillColor: (_, datum) => {
+      let rgb = d3.rgb(interpolateRainbow(_[2]))
+      return [rgb.r, rgb.g, rgb.b]
+      return [0, 255 * _[2], 255]
+    },
+    // getFilterValue: f => {
+    //   //console.log(f)
+    //   //f.properties.timeOfDay
+    //   return Math.random () > .5
+    // },  // in seconds
+    //filterRange: [43200, 46800],  // 12:00 - 13:00
+    //extensions: [new DataFilterExtension({filterSize: 1})]
 
-
+  })
+  layers.push(roads)
   
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
   const fetchRoutes = async () => {
@@ -193,21 +181,11 @@ function AirbnbWorldMap(props) {
     // let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
     // const response = await fetch(url);
     // const json = await response.json();
-    // let top = 34;
-    // let left = 138;
-    // let bottom = 36;
-    // let right = 139;
-    //console.log(top, left, right, bottom)
-
-    // const req = await fetch(
-    //   `https://api.mapbox.com/directions/v5/mapbox/driving/${top},${left};${right},${bottom}?alternatives=false&geometries=geojson&language=en&overview=full&steps=false&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
-    // );
-    console.log(123)
-    for (let i = 0; i < 1; i++) {
-      let min_lat = left + Math.random(), 
-      min_lng = top + Math.random(), 
-      max_lat = right + Math.random(), 
-      max_lng = bottom + Math.random();
+    for (let i = 0; i < 6; i++) {
+      let min_lat = left + .05 * Math.random(), 
+      min_lng = top + .05 * Math.random(), 
+      max_lat = right + .05 * Math.random(), 
+      max_lng = bottom + .05 * Math.random();
       const req = await fetch(
         `https://api.mapbox.com/directions/v5/mapbox/driving/${min_lat},${min_lng};${max_lat},${max_lng}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
       );
