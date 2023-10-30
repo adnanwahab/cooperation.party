@@ -13,6 +13,7 @@ import {ScatterplotLayer} from '@deck.gl/layers';
 //clone zillow + airbnb + houses in other countries
 import { Transition } from '@headlessui/react'
 import { WebMercatorViewport } from '@deck.gl/core';
+import {DataFilterExtension} from '@deck.gl/extensions';
 
 const INITIAL_VIEW_STATE = {
   longitude: 12,
@@ -126,8 +127,8 @@ function AirbnbWorldMap(props) {
     fetchData();
 }, [cityNames]);
 
-  console.log('cityData.length', cityData.length)
-  window.cityData = cityData
+  //console.log('cityData.length', cityData.length)
+  //window.cityData = cityData
 
   let layers = [
     new ScatterplotLayer({
@@ -164,7 +165,14 @@ function AirbnbWorldMap(props) {
       //getPosition: d => centroid,
       getRadius: d => 10,
       getFillColor: d => [Math.random()* 255, 0, 255],
-      getLineColor: d => [0, 0, 0]
+      // getFilterValue: f => {
+      //   //console.log(f)
+      //   //f.properties.timeOfDay
+      //   return Math.random () > .5
+      // },  // in seconds
+      //filterRange: [43200, 46800],  // 12:00 - 13:00
+      //extensions: [new DataFilterExtension({filterSize: 1})]
+      
     })
   ]
 
