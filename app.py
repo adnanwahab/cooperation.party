@@ -271,6 +271,7 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
 
 import aiohttp
 import asyncio
+
 async def getAllRoutesFaster():
     routes = []
     async with aiohttp.ClientSession() as session:

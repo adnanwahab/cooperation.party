@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback} from 'react';
 import * as d3 from 'd3';
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
@@ -81,16 +80,9 @@ function AirbnbWorldMap(props) {
     //fetchData();
 }, [cityNames]);
 
-  //console.log('cityData.length', cityData.length)
-  //window.cityData = cityData
-
   let layers = [
     new ScatterplotLayer({
       id: 'scatterplot-layer',
-      //data: cityData,
-      //data:'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/scatterplot/manhattan.json',
-      //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/_houses.json',
-      //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_locations.json',
       data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
       pickable: false,
       opacity: 1.,
@@ -100,14 +92,7 @@ function AirbnbWorldMap(props) {
       radiusMinPixels: 1,
       radiusMaxPixels: 1,
       lineWidthMinPixels: 1,
-      //getPosition: d => [d[1][0], d[1][1]].map(parseFloat),
-      // getPosition: d => {
-      //   let val = [d[1][0], d[1][1]].map(parseFloat)
-      //   console.log(val)
-      //   val = [Math.random() * 90, Math.random() * 180]
-      //   val = d.location
-      //   return val
-      // },
+ 
       getPosition: d => {
         return d.reverse()
       },
