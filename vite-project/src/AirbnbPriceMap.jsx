@@ -153,8 +153,7 @@ function AirbnbWorldMap(props) {
         depthTest: false
       },
 
-      getLineColor: function (_) {
-          //console.log(_)
+      getLineColor: function (_, i, idx) {
           return [255, Math.random() * 255, 0, 255]
       },
       getLineWidth: function () {
@@ -203,7 +202,8 @@ function AirbnbWorldMap(props) {
     // const req = await fetch(
     //   `https://api.mapbox.com/directions/v5/mapbox/driving/${top},${left};${right},${bottom}?alternatives=false&geometries=geojson&language=en&overview=full&steps=false&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
     // );
-    for (let i = 0; i < 100; i++) {
+    console.log(123)
+    for (let i = 0; i < 1; i++) {
       let min_lat = left + Math.random(), 
       min_lng = top + Math.random(), 
       max_lat = right + Math.random(), 
