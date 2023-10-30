@@ -135,14 +135,15 @@ function AirbnbWorldMap(props) {
       //data: cityData,
       //data:'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/scatterplot/manhattan.json',
       //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/_houses.json',
-      data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_locations.json',
-      pickable: true,
-      opacity: 0.8,
-      stroked: true,
+      //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_locations.json',
+      data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
+      pickable: false,
+      opacity: 1.,
+      stroked: false,
       filled: true,
-      radiusScale: 6,
-      radiusMinPixels: 10,
-      radiusMaxPixels: 10,
+      radiusScale: 1,
+      radiusMinPixels: 1,
+      radiusMaxPixels: 1,
       lineWidthMinPixels: 1,
       //getPosition: d => [d[1][0], d[1][1]].map(parseFloat),
       // getPosition: d => {
@@ -153,7 +154,7 @@ function AirbnbWorldMap(props) {
       //   return val
       // },
       getPosition: d => {
-        return d
+        return d.reverse()
       },
       //getPosition: d => [d[0], d[1], 0],
       onClick: ({object}) => {
