@@ -1,4 +1,8 @@
 # Cooperation.party 
+everyone see what everyone code and zoom together man 
+code robot and so on other
+everyone see what everyone zoom
+who see who zoom ? idk 
 
 find andrew from famo.us
 show this

@@ -242,10 +242,59 @@ class OsmBbox(BaseModel):
     max_lat: float
     min_lng: float
     max_lng: float
+
+import requests 
+def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
+    # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
+    # return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
+    places = []
+
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node[amenity=drinking]({min_lat},{min_lng},{max_lat},{max_lng});
+    );
+    out body;
+    """ 
     
-@app.get("/osm_bbox/")
-async def stream():
-    return StreamingResponse(stream_content(), media_type="text/plain")
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    response = requests.get(overpass_url, params={'data': query})
+    #print(response.status_code, longitude, latitude, amenities)
+    if response.status_code == 200:
+        data = response.json()
+        coffee_shops = data['elements']
+        places += coffee_shops
+    return places
+
+
+def fetchRoad(start, end):
+    start_lng = start[0]
+    start_lat = start[1]
+    end_lng = end[0]
+    end_lat = end[1]
+    url = f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lat}%3B{end_lng}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    
+@app.post("/osm_bbox/")
+async def stream(OsmBbox: OsmBbox):
+    places = fetch_coworking(OsmBbox.min_lat, OsmBbox.min_lng, OsmBbox.max_lat, OsmBbox.max_lng)
+    routes = []
+    for place in places: 
+        for place_two in places:
+            routes.append(
+                fetchRoad(
+                    place, place_two
+                )
+            )
+    return {
+        'places': places,
+        'routes': routes
+    }
+    #return StreamingResponse(stream_content(), media_type="text/plain")
 
 # @app.get("/data/airbnb/apt/")
 # async def home():

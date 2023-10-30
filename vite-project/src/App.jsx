@@ -1,5 +1,7 @@
 //goal - get developers to make components that are scriptable with natural language
 //how to - make like 200 and then share 
+import AirbnbPriceMap from './AirbnbPriceMap'
+
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -579,8 +581,10 @@ function App() {
     <div className="grid grid-cols-4">
     {leftPanel}
 
-      <div className="col-span-3">{components} </div>
-  
+      <div className="col-span-3">
+        {/* {components}  */}
+        <AirbnbPriceMap/>
+        </div>
     </div>
     <Footer />
   </div>

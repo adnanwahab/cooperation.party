@@ -16,7 +16,7 @@ import { WebMercatorViewport } from '@deck.gl/core';
 
 
 function ProgressBar (props) {
-  let style = {width: `${props.percentage || 0}%`}
+  let style = {width: `${props.percentage}%`}
   //let [_, set_] = useState(0)
 
   // useEffect(function _() {
@@ -87,11 +87,53 @@ async function fetchData(setState) {
 }
 
 function AirbnbWorldMap(props) {
-  console.log(props.data.length)
+  const [cityData, setCityData] = useState([]);
+  const [cityNames, setCityNames] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const request = await fetch(`https://shelbernstein.ngrok.io/cityList`)
+      const cityList = await request.json()
+      setCityNames(cityList)
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const CHUNK_SIZE = 10; // Number of requests to process at once, adjust as necessary
+      
+      const fetchCity = async city_name => {
+          //await sleep(500);
+          const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
+          const json = await req.json();
+          return json;
+      };
+
+      const newCityData = [...cityData]
+  
+      for (let i = 0; i < cityNames.length; i += CHUNK_SIZE) {
+          const city_name = cityNames[i];
+          const newData = await fetchCity(city_name)
+          for (let key in newData) {
+            cityData.push(newData[key]);
+            //setCityData(cityData);
+          }
+      }
+
+      setCityData(newCityData);
+  };  
+    fetchData();
+}, [cityNames]);
+
+  console.log('cityData.length', cityData.length)
+  window.cityData = cityData
+
   let layers = [
     new ScatterplotLayer({
       id: 'scatterplot-layer',
-      data:props.data,
+      data:cityData,
+      //data:'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/scatterplot/manhattan.json',
       pickable: true,
       opacity: 0.8,
       stroked: true,
@@ -100,7 +142,14 @@ function AirbnbWorldMap(props) {
       radiusMinPixels: 10,
       radiusMaxPixels: 10,
       lineWidthMinPixels: 1,
-      getPosition: d => [d[1][1], d[1][0]].map(parseFloat),
+      //getPosition: d => [d[1][0], d[1][1]].map(parseFloat),
+      getPosition: d => {
+        let val = [d[1][0], d[1][1]].map(parseFloat)
+        //console.log(val)
+        //val = [Math.random() * 90, Math.random() * 180]
+        return val
+      },
+      //getPosition: d => [d[0], d[1], 0],
       onClick: ({object}) => {
         let url = `https://www.airbnb.com/rooms/${object[0]}`
         window.open(url)
@@ -112,19 +161,7 @@ function AirbnbWorldMap(props) {
     })
   ]
 
-  let layer = new HexagonLayer({
-    id: 'hexagon-layer',
-    data: props.data,
-    pickable: true,
-    extruded: true,
-    radius: 20000,
-    radiusScale: 100,
-    elevationScale: 4,
-//    getPosition: d => d.slice(0, 2),
-    getPosition: d => [d[1][1], d[1][0]].map(parseFloat),
-  });
-  //layers.push(layer)
-  
+
   const INITIAL_VIEW_STATE = {
     longitude: 12,
     latitude: 29,
@@ -137,9 +174,11 @@ function AirbnbWorldMap(props) {
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
+    <h3 className="">{cityData.length}</h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <ColorLabels></ColorLabels>
-    <ProgressBar percentage={props.data.length / 1e4}></ProgressBar>
+    {/* <ProgressBar percentage={props.data.length / 1e4}></ProgressBar> */}
+    <ProgressBar percentage={cityData.length / 10}></ProgressBar>
     <DeckGL
         width={1200}
         height={600}
@@ -171,8 +210,6 @@ function AirbnbWorldMap(props) {
   );
 }
 async function fetchInterestingData (min_lat, min_lng, max_lat, max_lng) {
-
-
   //SELECT * FROM points
   // WHERE amenity IS NOT NULL -- this condition filters for rows which represent some sort of amenity/POI
   // AND MbrWithin(geom, BuildMBR(xmin, ymin, xmax, ymax)); 
@@ -181,7 +218,6 @@ async function fetchInterestingData (min_lat, min_lng, max_lat, max_lng) {
 }
 
 function computeBoundingBox(viewPort) {
-
   const viewport = new WebMercatorViewport({...viewPort});
   const topLeft = viewport.unproject([0, 0]);
   const bottomRight = viewport.unproject([viewport.width, viewport.height]);
@@ -197,49 +233,7 @@ function computeBoundingBox(viewPort) {
   return boundingBox
 }
 
-
-
-export default function AirbnbPriceMap (props){
-  const [cityData, setCityData] = useState([]);
-  const [cityNames, setCityNames] = useState([])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const request = await fetch(`https://shelbernstein.ngrok.io/cityList`)
-      const cityList = await request.json()
-      setCityNames(cityList)
-    }
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    const fetchData = async (setData) => {
-      const CHUNK_SIZE = 10; // Number of requests to process at once, adjust as necessary
-      const data = [];
-      
-      const fetchCity = async city_name => {
-          //await sleep(500);
-          const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
-          const json = await req.json();
-          return json;
-      };
-  
-      for (let i = 0; i < cityNames.length; i += CHUNK_SIZE) {
-          const city_name = cityNames[i];
-          const newData = await fetchCity(city_name)
-          //console.log(newData)
-          for (let key in newData) {
-            data.push(newData[key]);
-            setData(data);
-            console.log(newData[key], data.length)
-          }
-      }
-  };  
-
-    fetchData(setCityData);
-}, [cityNames]);
-
-
+export default function AirbnbPriceMap (){
 const [isShowing, setIsShowing] = useState(true)
   return ( <>
         {/* <Transition
@@ -251,7 +245,7 @@ const [isShowing, setIsShowing] = useState(true)
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       > */}
-     <AirbnbWorldMap data={cityData}></AirbnbWorldMap>
+     <AirbnbWorldMap />
     {/* </Transition> */}
   </>)
 }
@@ -280,3 +274,16 @@ async function sleep(ms) {
     setTimeout(resolve, ms)
   })
 }
+
+let layer = new HexagonLayer({
+  id: 'hexagon-layer',
+  //data: props.data,
+  pickable: true,
+  extruded: true,
+  radius: 20000,
+  radiusScale: 100,
+  elevationScale: 4,
+//    getPosition: d => d.slice(0, 2),
+  getPosition: d => [d[1][1], d[1][0]].map(parseFloat),
+});
+//layers.push(layer)
