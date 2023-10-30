@@ -15,6 +15,8 @@ import { Transition } from '@headlessui/react'
 import { WebMercatorViewport } from '@deck.gl/core';
 import {DataFilterExtension} from '@deck.gl/extensions';
 import {IconLayer} from '@deck.gl/layers';
+import _, { map } from 'underscore'
+
 const ICON_MAPPING = {
   marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
 };
@@ -31,63 +33,6 @@ const INITIAL_VIEW_STATE = {
 function ProgressBar (props) {
   let style = {width: `${props.percentage}%`}
   return (<div className="fixed top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
-}
-
-function processChunk(list) {
-  return [list[2]?.replace(/\"/g,''), list[3]?.replace(/\"/g,'')]
-          .map(parseFloat)
-}
-
-const all_city_locations = []
-
-async function fetchData(setState) {
-  const response = await fetch("https://shelbernstein.ngrok.io/osm_bbox");
-  // If you sent the total as a header:
-  const totalChunks = 1e6
-  //parseInt(response.headers.get("X-Total-Chunks"));
-
-  const reader = response.body.getReader();
-
-  let receivedChunks = 0;
-
-  reader.read().then(function recurse(shit){
-    receivedChunks++
-    let text = new TextDecoder().decode(shit.value);
-    text = text.split('\n')
-                .map(_ => _.split(','))
-                .map(processChunk)
-    setState(text)
-    console.log(text)
-    if (! shit.done)
-    setTimeout(() => {
-      reader.read().then(recurse)
-    }, 1000)
-  })
-
-  // async function* readStream() {
-  //     while (true) {
-  //         const { done, value } = await reader.read();
-  //         if (done) break;
-  //         yield value;
-  //     }
-  // }
-
-  // for await (let chunk of readStream()) {
-  //     const text = new TextDecoder().decode(chunk);
-  //     console.log('fart', text, totalChunks)
-  //     const match = /data: (.*)\n\n/.exec(text);
-  //     if (match) {
-  //         const data = JSON.parse(match[1]);
-          
-  //         if (data.type === "init") {
-  //             console.log(`Total chunks: ${data.total}`);
-  //         } else if (data.type === "data") {
-  //             receivedChunks++;
-  //             const percentProgress = (receivedChunks / totalChunks) * 100;
-  //             console.log(`Received chunk ${receivedChunks}. Progress: ${percentProgress}%`);
-  //         }
-  //     }
-  // }
 }
 
 function AirbnbWorldMap(props) {
@@ -234,20 +179,21 @@ function AirbnbWorldMap(props) {
   })
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
 
-  useEffect(() => {
+  useEffect(_.throttle(() => {
     const fetchRoutes = async () => {
       const min_lat = currentViewState.top
       const min_lng = currentViewState.left
       const max_lat = currentViewState.bottom
       const max_lng = currentViewState.right
+      const {top, left, right, bottom} = currentViewState
       let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${min_lat}&min_lng=${min_lng}&max_lat=${max_lat}&max_lng=${max_lng}`
       const response = await fetch(url);
       const json = await response.json()
-      console.log(json)
+      //console.log(top, left, right, bottom)
+      console.log(Date.now(), json)
     }
     fetchRoutes()
-    return () => {}
-  }, [currentViewState.left])
+  }, 5000, {leading: false}), [currentViewState.left])
 
 
 
@@ -305,7 +251,8 @@ function computeBoundingBox(viewPort) {
     top: topLeft[1],
     left: topLeft[0],
     bottom: bottomRight[1],
-    right: bottomRight[0]
+    right: bottomRight[0],
+    centroid: [viewport.latitude, viewport.longitude]
   };
   //console.log('bbox', boundingBox)
   //console.log('spatial lite and get rainbow routes')

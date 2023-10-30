@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "puppeteer": "^21.4.1"
+    "puppeteer": "^21.4.1",
+    "underscore": "^1.13.6"
   }
 }

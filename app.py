@@ -245,6 +245,7 @@ class OsmBbox(BaseModel):
 
 import requests 
 def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
+
     # if (os.path.exists(f'data/airbnb/poi/{longitude}_{latitude}_places.json')):
     # return json.load(open(f'data/airbnb/poi/{longitude}_{latitude}_places.json', 'r'))
     places = []
@@ -252,11 +253,19 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     query = f"""
     [out:json][timeout:25];
     (
-        node[amenity=drinking]({min_lat},{min_lng},{max_lat},{max_lng});
+        node["amenity"="bench"]({min_lat},{min_lng},{max_lat},{max_lng});
     );
     out body;
     """ 
-    
+
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node["amenity"="bench"]({34},{138},{35},{139});
+    );
+    out body;
+    """ 
+    import random
     overpass_url = "https://overpass-api.de/api/interpreter"
     response = requests.get(overpass_url, params={'data': query})
     #print(response.status_code, longitude, latitude, amenities)
@@ -264,7 +273,11 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
         data = response.json()
         coffee_shops = data['elements']
         places += coffee_shops
-    return places
+    else: 
+        print('we are shit out of luck', response.status_code)
+        return []
+    return random.shuffle(places)[:100]
+#fetch_coworking(35, 139)
 
 
 def fetchRoad(start, end):
@@ -277,26 +290,27 @@ def fetchRoad(start, end):
 
     if response.status_code == 200:
         data = response.json()
+        print(data)
         return data
+    else: 
+        print('we are shit out of luck', response.status_code)
+        return []
+
+
 
 #use query params
 @app.get("/osm_bbox/")
-#async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
-async def stream():
-    print('OSM_BBOX')
-    # print(f'min_lat, min_lng, max_lat, max_lng',
-    #       min_lat, min_lng, max_lat, max_lng
-    # )
-    places = []
-    #fetch_coworking(OsmBbox.min_lat, OsmBbox.min_lng, OsmBbox.max_lat, OsmBbox.max_lng)
+async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
+    places = fetch_coworking(min_lat, min_lng, max_lat, max_lng)
     routes = []
-    for place in places: 
-        for place_two in places:
-            routes.append(
-                fetchRoad(
-                    place, place_two
-                )
-            )
+    # for place in places: 
+    #     for place_two in places:
+    #         routes.append(
+    #             fetchRoad(
+    #                 place, place_two
+    #             )
+    #         )
+    print(len(places))
     return {
         'places': places,
         'routes': routes
