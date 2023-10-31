@@ -1,9 +1,22 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function Example(props) {
     const {open, setOpen} = props;
+    const [listingDetails, setListingDetails] = useState({})
+
+
+    useEffect(() => {
+        async function fetch() {
+
+        }
+
+
+        fetch()
+    }, [open])
+
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>

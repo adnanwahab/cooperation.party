@@ -84,25 +84,33 @@ function AirbnbWorldMap(props) {
  
   ]
 
+  let count = 0
   layers.push( new ScatterplotLayer({
     id: 'airbnb+houses-within-bbox',
     //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
-    pickable: false,
+    data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
+    pickable: true,
     opacity: 1.,
-    stroked: false,
-    filled: true,
+    //stroked: true,
+    //filled: true,
     radiusScale: 1,
     radiusMinPixels: 1,
     radiusMaxPixels: 1,
     lineWidthMinPixels: 1,
 
     getPosition: d => {
-      return d.reverse()
+      count += 1
+      return [d[1], d[0]]
     },
     //getPosition: d => [d[0], d[1], 0],
+    onHover:() => {
+    },
+    onMouseOut: () => {
+    },
     onClick: ({object}) => {
-      let url = `https://www.airbnb.com/rooms/${object[0]}`
-      window.open(url)
+      // let url = `https://www.airbnb.com/rooms/${object[0]}`
+      // window.open(url)
+      setOpenPopover(true)
     },
     //getPosition: d => centroid,
     getRadius: (d, datum) => datum.index,
@@ -111,7 +119,9 @@ function AirbnbWorldMap(props) {
       return [rgb.r, rgb.g, rgb.b]
     },
   }))
+  window.count = count
 
+  if (false )
   layers.push( new ScatterplotLayer({
     id: 'scatterplot-layer',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
@@ -242,12 +252,12 @@ function AirbnbWorldMap(props) {
     fetchRoutes();
   }, [currentViewState.left]);
 
-  const [open, setOpen] = useState(false)
+  const [openPopover, setOpenPopover] = useState(false)
 
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
-    <PopOver open={open} setOpen={setOpen}/>
+    <PopOver open={openPopover} setOpen={setOpenPopover}/>
     <ColorLabels></ColorLabels>
     <ProgressBar percentage={100}></ProgressBar>
     <DeckGL
