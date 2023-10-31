@@ -395,3 +395,12 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 #         StaticFiles(directory=build_dir / 'dist'),
 #         name='React app static files',
 #     )
+
+@app.get("/get_apt_details/")
+async def get_apt_details(apt_id: int):
+    listing_to_city_name = json.load(open('data/listing_to_city_name.json'))
+    city_name = listing_to_city_name[apt_id]
+    #given an apt id, find the city_name
+    city_apt_details = json.load(open(f'data/airbnb/columns/{city_name}.json'))
+
+    return city_apt_details[apt_id]

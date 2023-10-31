@@ -6,13 +6,12 @@ export default function Example(props) {
     const {open, setOpen} = props;
     const [listingDetails, setListingDetails] = useState({})
 
-
     useEffect(() => {
         async function fetch() {
-
+            const req = await fetch(`https://shelbernstein.ngrok.io/apt_details`);
+            const json = await req.json();
+            setListingDetails(json)
         }
-
-
         fetch()
     }, [open])
 
