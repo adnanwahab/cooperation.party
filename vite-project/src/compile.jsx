@@ -54,12 +54,16 @@ const List = (list) =>
   </ul>)
 
 function GeoCoder ({onChange}) {
-    return <input onChange={onChange} type="text"></input>
+
+    return <>
+           <label>How much money will my house make on airbnb?</label>
+           <input onChange={onChange} type="text" class="text-black"></input>
+           </>
   }
   
   function EarningsCalculator({address}) {
     //goal make 1,000 millionaires in 30-90 days
-    return <>{address ? '1 million' : 'idk depends on where you live'}</>
+    //return <>{address ? '1 million' : 'idk depends on where you live'}</>
   }
   
   function TextPresenter(props) {

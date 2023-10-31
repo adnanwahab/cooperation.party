@@ -1753,6 +1753,11 @@ if __name__ == '__main__':
 
 #@cacheThisFunction 
 def schedule_json_converter(_, documentContext, sentence):
+    result = { "vending_machine": { "days_per_week": 3,},
+                "post_office": { "days_per_week": 4 },
+                "cafe": { "days_per_week": 2} 
+    }
+    return {'component': 'schedule', 'data': result}
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
@@ -1786,8 +1791,7 @@ def schedule_json_converter(_, documentContext, sentence):
     presence_penalty=0
     )
     result = json.loads(response['choices'][0]['message']['content'])
-    return {'component': 'schedule', 'data': result
-    }
+    return {'component': 'schedule', 'data': result}
     #return json.loads(result)
 
 

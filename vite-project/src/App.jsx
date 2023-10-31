@@ -582,8 +582,8 @@ function App() {
     {leftPanel}
 
       <div className="col-span-3">
-        {/* {components}  */}
-        <AirbnbPriceMap/>
+        {components} 
+        {/* <AirbnbPriceMap/> */}
         </div>
     </div>
     <Footer />

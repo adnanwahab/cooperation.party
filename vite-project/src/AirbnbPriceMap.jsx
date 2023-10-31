@@ -29,14 +29,12 @@ const INITIAL_VIEW_STATE = {
   pitch: 0,
   bearing: 0
 }   
-
-
 // INITIAL_VIEW_STATE.longitude = 139
 // INITIAL_VIEW_STATE.latitude = 35
 // INITIAL_VIEW_STATE.zoom = 10
 function ProgressBar (props) {
-  let style = {width: `${props.percentage}%`}
-  return (<div className="fixed top-0 progress-bar h-8 bg-blue-500" style={style}> </div>)
+  let style = {width: `${innerWidth}px`}
+  return (<div className="fixed left-0 top-0 progress-bar h-4 w-full" style={style}></div>)
 }
 
 function AirbnbWorldMap(props) {
@@ -83,46 +81,69 @@ function AirbnbWorldMap(props) {
 }, [cityNames]);
 
   let layers = [
-    new ScatterplotLayer({
-      id: 'scatterplot-layer',
-      data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
-      pickable: false,
-      opacity: 1.,
-      stroked: false,
-      filled: true,
-      radiusScale: 1,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 1,
-      lineWidthMinPixels: 1,
  
-      getPosition: d => {
-        return d.reverse()
-      },
-      //getPosition: d => [d[0], d[1], 0],
-      onClick: ({object}) => {
-        let url = `https://www.airbnb.com/rooms/${object[0]}`
-        window.open(url)
-      },
-      //getPosition: d => centroid,
-      getRadius: d => 10,
-      getFillColor: d => {
-        let rgb = d3.rgb(interpolateRainbow(d[0]))
-        return [rgb.r, rgb.g, rgb.b]
-      },
-      // getFilterValue: f => {
-      //   //console.log(f)
-      //   //f.properties.timeOfDay
-      //   return Math.random () > .5
-      // },  // in seconds
-      //filterRange: [43200, 46800],  // 12:00 - 13:00
-      //extensions: [new DataFilterExtension({filterSize: 1})]
-
-    })
   ]
-  let places = []
+
+  layers.push( new ScatterplotLayer({
+    id: 'airbnb+houses-within-bbox',
+    //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
+    pickable: false,
+    opacity: 1.,
+    stroked: false,
+    filled: true,
+    radiusScale: 1,
+    radiusMinPixels: 1,
+    radiusMaxPixels: 1,
+    lineWidthMinPixels: 1,
+
+    getPosition: d => {
+      return d.reverse()
+    },
+    //getPosition: d => [d[0], d[1], 0],
+    onClick: ({object}) => {
+      let url = `https://www.airbnb.com/rooms/${object[0]}`
+      window.open(url)
+    },
+    //getPosition: d => centroid,
+    getRadius: (d, datum) => datum.index,
+    getFillColor: d => {
+      let rgb = d3.rgb(interpolateRainbow(d[0]))
+      return [rgb.r, rgb.g, rgb.b]
+    },
+  }))
+
+  layers.push( new ScatterplotLayer({
+    id: 'scatterplot-layer',
+    data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
+    pickable: false,
+    opacity: 1.,
+    stroked: false,
+    filled: true,
+    radiusScale: 1,
+    radiusMinPixels: 1,
+    radiusMaxPixels: 1,
+    lineWidthMinPixels: 1,
+
+    getPosition: d => {
+      return d.reverse()
+    },
+    //getPosition: d => [d[0], d[1], 0],
+    onClick: ({object}) => {
+      let url = `https://www.airbnb.com/rooms/${object[0]}`
+      window.open(url)
+    },
+    //getPosition: d => centroid,
+    getRadius: (d, datum) => datum.index,
+    getFillColor: d => {
+      let rgb = d3.rgb(interpolateRainbow(d[1] / 365))
+      return [rgb.r, rgb.g, rgb.b]
+    },
+  }))
+  //i spent 2-3 years walking around 2-3 hours a day thinking about cool stuff -> could have had more optimal walking path made for me like strava  + train + world explorer
   let iconLayer = new IconLayer({
       id: 'icon-layer',
-      data: places,
+      //data: markers,
+      data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
       pickable: true,
       // iconAtlas and iconMapping are required
       // getIcon: return a string
@@ -130,18 +151,28 @@ function AirbnbWorldMap(props) {
       iconMapping: ICON_MAPPING,
       getIcon: d => 'marker',
       onClick: (_)=> _.object.url,
-      sizeScale: 15,
-      getPosition: d => [+ d.longitude, + d.latitude],
-      getSize: d => 5,
-      getColor: d => [Math.random() * 255, 140, 0]
+      sizeScale: 150,
+      getPosition: d => {
+        return d.coordinates
+        //lon first
+        //return [+ d.lat, + d.lon]
+
+        return [+ d.lon, + d.lat]
+      },
+      getSize: d => 50,
+      getColor: d => { 
+        console.log('wtf man')
+        return [Math.random() * 255, 140, 0]
+      }
     })
+  //layers.push(iconLayer)
 
   const allCoordinates = []
   routes.forEach((route) => {
     route.geometry.coordinates.forEach((list, i ) => list.push(i / route.geometry.coordinates.length))
     allCoordinates.push(...route.geometry.coordinates)
   })
-  console.log('allCoordeinates', allCoordinates)
+  //console.log('allCoordeinates', allCoordinates)
   let roads = new ScatterplotLayer({
     id: 'roads',
     data: allCoordinates,
@@ -173,15 +204,20 @@ function AirbnbWorldMap(props) {
     //extensions: [new DataFilterExtension({filterSize: 1})]
 
   })
-  layers.push(roads)
+  //layers.push(roads)
   
   const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
   const fetchRoutes = async () => {
+    //everytime you move, draw contiguous paths from center to 4 corners
     let {top, left, right, bottom} = currentViewState;
-    // let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
-    // const response = await fetch(url);
-    // const json = await response.json();
-    for (let i = 0; i < 6; i++) {
+    let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+    const response = await fetch(url);
+    const json = await response.json();
+
+    markers.push.apply(markers, json.places)
+
+    setMarkers(markers)
+    for (let i = 0; i < 1; i++) {
       let min_lat = left + .05 * Math.random(), 
       min_lng = top + .05 * Math.random(), 
       max_lat = right + .05 * Math.random(), 
@@ -194,12 +230,9 @@ function AirbnbWorldMap(props) {
       let json = await req.json();
       routes.push.apply(routes, json.routes)
       setRoutes(routes)
+
+      //console.log(window.markers = markers)
     }
-
-    
-    //console.log('json', json)
-
- 
     setPercent(0)
     setTimeout(function recur () {
       //setPercent(getPercent+.1)
@@ -215,11 +248,9 @@ function AirbnbWorldMap(props) {
 
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
-    <h3 className="">{cityData.length}</h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <ColorLabels></ColorLabels>
-    {/* <ProgressBar percentage={props.data.length / 1e4}></ProgressBar> */}
-    <ProgressBar percentage={cityData.length / 10}></ProgressBar>
+    <ProgressBar percentage={100}></ProgressBar>
     <DeckGL
         width={1200}
         height={600}
@@ -245,10 +276,19 @@ function AirbnbWorldMap(props) {
 
     </div>
     <div>
-      <div>Latitude: {currentViewState.top.toPrecision(4)} , {currentViewState.bottom.toPrecision(4)}</div>
-      <div>Longitude: {currentViewState.left.toPrecision(4)} , {currentViewState.right.toPrecision(4)}</div>
-      <div>Routes Drawn: {routes.length}</div>
+      <div>Latitude: {currentViewState.bottom.toPrecision(4)}  |   {currentViewState.top.toPrecision(4)}</div>
+      <div>Longitude: {currentViewState.left.toPrecision(4)} |  {currentViewState.right.toPrecision(4)}</div>
+      <div>Total Roads Drawn: {routes.length} / 1 billion</div>
       <div>Places Of Interest Drawn: {markers.length}</div>
+      <div>Airbnbs rendered on Screen: {routes.length} /  7 million</div>
+      <div>Benches rendered on Screen: {markers.length} /  7 million</div>
+      <div>Houses rendered on Screen:  / 135 million from  
+        <span className="text-color-blue-500"> Zillow</span> 
+        <span className="text-color-red-500">Redfin</span> 
+        <span className="text-color-green-500">Compass</span> 
+        <span className="text-color-yellow-500">immobilienscout24.de</span>
+      
+      </div>
     </div>
     </>
   );

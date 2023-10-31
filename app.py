@@ -246,17 +246,18 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     (
         node["amenity"="bench"]({min_lat},{min_lng},{min_lat + 1},{min_lng + 1});
     );
-    (._;._;);
-    out 0..100;
+    out body;
     """ 
+    #     (._;._;);
+    # out 0..100;
 
-# query = f"""
-# [out:json][timeout:25];
-# (
-#     node["amenity"="bench"]({34},{138},{35},{139});
-# );
-# out body;
-# """ 
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node["amenity"="bench"]({34},{138},{35},{139});
+    );
+    out body;
+    """ 
     import random
     overpass_url = "https://overpass-api.de/api/interpreter"
     response = requests.get(overpass_url, params={'data': query})
@@ -337,13 +338,13 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
     prev = time.time()
     places = fetch_coworking(min_lat, min_lng, max_lat, max_lng)
     routes = []
-    for place in places[:5]: 
-        for place_two in places[5:10]:
-            routes.append(
-                fetchRoad(
-                    place, place_two
-                )
-            )
+    # for place in places[:5]: 
+    #     for place_two in places[5:10]:
+    #         routes.append(
+    #             fetchRoad(
+    #                 place, place_two
+    #             )
+    #         )
     print(len(places))
     return {
         'places': places,
