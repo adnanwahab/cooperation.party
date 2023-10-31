@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "686a5c2a60d789ca": "https://api.observablehq.com/d/686a5c2a60d789ca@140.tgz?v=3",
+    "@observablehq/runtime": "5",
     "puppeteer": "^21.4.1",
     "underscore": "^1.13.6"
   }

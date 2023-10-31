@@ -1382,14 +1382,11 @@ Solution: New bills could be drafted in english and each sentence generates a UI
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-
   return (
     <header className="text-white border-b border-gray-500">
-  
       <nav className="mx-auto flex full-w items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex items-center gap-x-12">
-            <span className="text-xl font-serif">Cooperation.Party</span>
+            <span className="text-xl font-serif">Cooperation.Party - AI House Picker + Everyone chooses where Robots build houses for everyone... 1 robot and counting</span>
           {/* <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">

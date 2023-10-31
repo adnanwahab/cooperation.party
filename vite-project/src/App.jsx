@@ -580,7 +580,6 @@ function App() {
   <Header />
     <div className="grid grid-cols-4">
     {leftPanel}
-
       <div className="col-span-3">
         {components} 
         {/* <AirbnbPriceMap/> */}

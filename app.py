@@ -397,10 +397,13 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 #     )
 
 @app.get("/get_apt_details/")
-async def get_apt_details(apt_id: int):
+async def get_apt_details(apt_id: str):
+    print('get_apt_details', apt_id)
     listing_to_city_name = json.load(open('data/listing_to_city_name.json'))
     city_name = listing_to_city_name[apt_id]
     #given an apt id, find the city_name
-    city_apt_details = json.load(open(f'data/airbnb/columns/{city_name}.json'))
-
+    #city_apt_details = json.load(open(f'data/airbnb/columns/{city_name}'))
+    city_apt_details = json.load(open(f'/Users/shelbernstein/cooperation.party/data/airbnb/columns/Columbus--Ohio--United-States.json'))
+    print(city_apt_details)
+    return city_apt_details['90676']
     return city_apt_details[apt_id]

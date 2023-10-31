@@ -26,6 +26,7 @@
     "canvas-confetti": "^1.9.0",
     "d3": "^7.8.5",
     "d3-request": "^1.0.6",
+    "d95f57ca97a2495a": "https://api.observablehq.com/d/d95f57ca97a2495a.tgz?v=3",
     "deck.gl": "^8.9.27",
     "h3-js": "^4.1.0",
     "jspdf": "^2.5.1",

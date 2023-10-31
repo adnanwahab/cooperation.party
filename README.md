@@ -1,4 +1,24 @@
 # Cooperation.party 
+7 billlion people - plan together - where to put house s
+humans generate program instructions visually for robots to build houses
+
+only priority for next day or two - = build visualizations for that only that
+
+
+
+
+
+
+#
+# print list of airbnbs + zillows in viewport - make them living 
+
+
+
+
+
+
+
+
 everyone see what everyone code and zoom together man 
 code robot and so on other
 everyone see what everyone zoom

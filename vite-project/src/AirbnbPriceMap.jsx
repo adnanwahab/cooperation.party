@@ -1,4 +1,25 @@
-import React, { useEffect, useState, useCallback} from 'react';
+import {Runtime, Inspector} from "@observablehq/runtime";
+import notebook from "d95f57ca97a2495a";
+
+function Histogram() {
+  const histogramRef = useRef();
+
+  useEffect(() => {
+    const runtime = new Runtime();
+    runtime.module(notebook, name => {
+      if (name === "histogram") return new Inspector(histogramRef.current);
+    });
+    return () => runtime.dispose();
+  }, []);
+
+  return (
+    <>
+      <span ref={histogramRef} />
+    </>
+  );
+}
+
+import React, { useEffect, useState, useCallback, useRef} from 'react';
 import * as d3 from 'd3';
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
 import {Map} from 'react-map-gl';
@@ -38,53 +59,14 @@ function ProgressBar (props) {
 }
 
 function AirbnbWorldMap(props) {
-  const [cityData, setCityData] = useState([]);
-  const [cityNames, setCityNames] = useState([])
   const [routes, setRoutes] = useState([])
   const [markers, setMarkers] = useState([])
   const [getPercent, setPercent] = useState(0)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const request = await fetch(`https://shelbernstein.ngrok.io/cityList`)
-      const cityList = await request.json()
-      setCityNames(cityList)
-    }
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const CHUNK_SIZE = 10; // Number of requests to process at once, adjust as necessary
-      
-      const fetchCity = async city_name => {
-          //await sleep(500);
-          const req = await fetch(`https://shelbernstein.ngrok.io/data/airbnb/apt/${city_name}`);
-          const json = await req.json();
-          return json;
-      };
-
-      const newCityData = [...cityData]
-  
-      for (let i = 0; i < cityNames.length; i += CHUNK_SIZE) {
-          const city_name = cityNames[i];
-          const newData = await fetchCity(city_name)
-          for (let key in newData) {
-            cityData.push(newData[key]);
-            //setCityData(cityData);
-          }
-      }
-
-      //setCityData(newCityData);
-  };  
-    //fetchData();
-}, [cityNames]);
 
   let layers = [
  
   ]
 
-  let count = 0
   layers.push( new ScatterplotLayer({
     id: 'airbnb+houses-within-bbox',
     //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
@@ -99,7 +81,6 @@ function AirbnbWorldMap(props) {
     lineWidthMinPixels: 1,
 
     getPosition: d => {
-      count += 1
       return [d[1], d[0]]
     },
     //getPosition: d => [d[0], d[1], 0],
@@ -110,7 +91,8 @@ function AirbnbWorldMap(props) {
     onClick: ({object}) => {
       // let url = `https://www.airbnb.com/rooms/${object[0]}`
       // window.open(url)
-      setOpenPopover(true)
+      setOpenPopover(object[2])
+      console.log(object)
     },
     //getPosition: d => centroid,
     getRadius: (d, datum) => datum.index,
@@ -119,9 +101,8 @@ function AirbnbWorldMap(props) {
       return [rgb.r, rgb.g, rgb.b]
     },
   }))
-  window.count = count
 
-  if (false )
+  if (false)
   layers.push( new ScatterplotLayer({
     id: 'scatterplot-layer',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
@@ -255,7 +236,7 @@ function AirbnbWorldMap(props) {
   const [openPopover, setOpenPopover] = useState(false)
 
   return (<>
-    <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
+    <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution + <button className="text-black">Click here to place a house and generate program instructions for robot to build it.</button></h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <PopOver open={openPopover} setOpen={setOpenPopover}/>
     <ColorLabels></ColorLabels>
@@ -284,7 +265,7 @@ function AirbnbWorldMap(props) {
     </DeckGL>
 
     </div>
-    <div>
+    <div className="relative">
       <div>Latitude: {currentViewState.bottom.toPrecision(4)}  |   {currentViewState.top.toPrecision(4)}</div>
       <div>Longitude: {currentViewState.left.toPrecision(4)} |  {currentViewState.right.toPrecision(4)}</div>
       <div>Total Roads Drawn: {routes.length} / 1 billion</div>
@@ -292,11 +273,13 @@ function AirbnbWorldMap(props) {
       <div>Airbnbs rendered on Screen: {routes.length} /  7 million</div>
       <div>Benches rendered on Screen: {markers.length} /  7 million</div>
       <div>Houses rendered on Screen:  / 135 million from  
-        <span className="text-color-blue-500"> Zillow</span> 
-        <span className="text-color-red-500">Redfin</span> 
-        <span className="text-color-green-500">Compass</span> 
-        <span className="text-color-yellow-500">immobilienscout24.de</span>
-      
+        <span className="text-blue-500"> Zillow</span> 
+        <span className="text-red-500">Redfin</span> 
+        <span className="text-green-500">Compass</span> 
+        <span className="text-yellow-500 hidden">immobilienscout24.de</span>
+        <span className="absolute right-0 top-0">
+        <Histogram data={Math.random()} />
+        </span>
       </div>
     </div>
     </>
