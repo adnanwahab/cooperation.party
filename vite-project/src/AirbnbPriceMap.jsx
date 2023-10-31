@@ -15,7 +15,7 @@ import {DataFilterExtension} from '@deck.gl/extensions';
 import {IconLayer} from '@deck.gl/layers';
 import _ from 'underscore'
 import * as turf from '@turf/turf';
-
+import PopOver from './PopOver'
 
 const ICON_MAPPING = {
   marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -225,13 +225,9 @@ function AirbnbWorldMap(props) {
       const req = await fetch(
         `https://api.mapbox.com/directions/v5/mapbox/driving/${min_lat},${min_lng};${max_lat},${max_lng}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
       );
-  
-  
       let json = await req.json();
       routes.push.apply(routes, json.routes)
       setRoutes(routes)
-
-      //console.log(window.markers = markers)
     }
     setPercent(0)
     setTimeout(function recur () {
@@ -246,9 +242,12 @@ function AirbnbWorldMap(props) {
     fetchRoutes();
   }, [currentViewState.left]);
 
+  const [open, setOpen] = useState(false)
+
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution</h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
+    <PopOver open={open} setOpen={setOpen}/>
     <ColorLabels></ColorLabels>
     <ProgressBar percentage={100}></ProgressBar>
     <DeckGL
