@@ -1,12 +1,13 @@
 import {Runtime, Inspector} from "@observablehq/runtime";
-import notebook from "d95f57ca97a2495a";
+import histogramChart from "d95f57ca97a2495a";
+import DonutChart from "./DonutChart"
 
 function Histogram() {
   const histogramRef = useRef();
 
   useEffect(() => {
     const runtime = new Runtime();
-    runtime.module(notebook, name => {
+    runtime.module(histogramChart, name => {
       if (name === "histogram") return new Inspector(histogramRef.current);
     });
     return () => runtime.dispose();
@@ -277,7 +278,8 @@ function AirbnbWorldMap(props) {
         <span className="text-red-500">Redfin</span> 
         <span className="text-green-500">Compass</span> 
         <span className="text-yellow-500 hidden">immobilienscout24.de</span>
-        <span className="absolute right-0 top-0">
+        <span className="absolute right-0 top-0 pr-5">
+        <DonutChart data={Math.random()}/>
         <Histogram data={Math.random()} />
         </span>
       </div>

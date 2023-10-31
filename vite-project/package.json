@@ -13,6 +13,7 @@
     "last-day": "npm run build && mv dist ../last-day"
   },
   "dependencies": {
+    "98928415371f4b5e": "https://api.observablehq.com/d/98928415371f4b5e.tgz?v=3",
     "@deck.gl/layers": "^8.9.27",
     "@deck.gl/react": "^8.9.27",
     "@fullstory/browser": "^1.7.1",
@@ -24,6 +25,7 @@
     "@turf/turf": "^6.5.0",
     "add": "^2.0.6",
     "canvas-confetti": "^1.9.0",
+    "ceecbc77dc0fae86": "https://api.observablehq.com/d/ceecbc77dc0fae86@452.tgz?v=3",
     "d3": "^7.8.5",
     "d3-request": "^1.0.6",
     "d95f57ca97a2495a": "https://api.observablehq.com/d/d95f57ca97a2495a.tgz?v=3",

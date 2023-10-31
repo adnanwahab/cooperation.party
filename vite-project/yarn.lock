@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"98928415371f4b5e@https://api.observablehq.com/d/98928415371f4b5e.tgz?v=3":
+  version "655.0.0"
+  resolved "https://api.observablehq.com/d/98928415371f4b5e.tgz?v=3#b0abb1c763d84eb4b359256c357e536472f56f9d"
+
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
   resolved "https://registry.npmjs.org/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz"
@@ -2843,6 +2847,14 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.npmjs.org/caseless/-/caseless-0.12.0.tgz"
   integrity sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==
+
+"ceecbc77dc0fae86@https://api.observablehq.com/d/ceecbc77dc0fae86.tgz?v=3":
+  version "444.0.0"
+  resolved "https://api.observablehq.com/d/ceecbc77dc0fae86.tgz?v=3#97c016ba83685c8da7da43b1ada25926d523d2c9"
+
+"ceecbc77dc0fae86@https://api.observablehq.com/d/ceecbc77dc0fae86@452.tgz?v=3":
+  version "452.0.0"
+  resolved "https://api.observablehq.com/d/ceecbc77dc0fae86@452.tgz?v=3#e998c0be8a24b7fa513c2cc1e58df3888338babd"
 
 chalk@^2.4.2:
   version "2.4.2"
