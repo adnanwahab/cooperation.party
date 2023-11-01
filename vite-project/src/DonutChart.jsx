@@ -78,8 +78,8 @@ const data = [
 
 
 function DonutChart() {
-  const width = 300;
-  const height = Math.min(width, 500);
+  const width = 150;
+  const height = Math.min(width, 300);
   const radius = Math.min(width, height) / 2;
 
   const svgRef = useRef(null); // Reference to the SVG element

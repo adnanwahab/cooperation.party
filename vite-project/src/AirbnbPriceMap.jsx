@@ -1,25 +1,5 @@
-import {Runtime, Inspector} from "@observablehq/runtime";
-import histogramChart from "d95f57ca97a2495a";
 import DonutChart from "./DonutChart"
-
-function Histogram() {
-  const histogramRef = useRef();
-
-  useEffect(() => {
-    const runtime = new Runtime();
-    runtime.module(histogramChart, name => {
-      if (name === "histogram") return new Inspector(histogramRef.current);
-    });
-    return () => runtime.dispose();
-  }, []);
-
-  return (
-    <>
-      <span ref={histogramRef} />
-    </>
-  );
-}
-
+import Histogram from './Histogram'
 import React, { useEffect, useState, useCallback, useRef} from 'react';
 import * as d3 from 'd3';
 import {H3HexagonLayer} from '@deck.gl/geo-layers';
@@ -266,23 +246,27 @@ function AirbnbWorldMap(props) {
     </DeckGL>
 
     </div>
-    <div className="relative">
-      <div>Latitude: {currentViewState.bottom.toPrecision(4)}  |   {currentViewState.top.toPrecision(4)}</div>
-      <div>Longitude: {currentViewState.left.toPrecision(4)} |  {currentViewState.right.toPrecision(4)}</div>
-      <div>Total Roads Drawn: {routes.length} / 1 billion</div>
-      <div>Places Of Interest Drawn: {markers.length}</div>
-      <div>Airbnbs rendered on Screen: {routes.length} /  7 million</div>
-      <div>Benches rendered on Screen: {markers.length} /  7 million</div>
-      <div>Houses rendered on Screen:  / 135 million from  
-        <span className="text-blue-500"> Zillow</span> 
-        <span className="text-red-500">Redfin</span> 
-        <span className="text-green-500">Compass</span> 
-        <span className="text-yellow-500 hidden">immobilienscout24.de</span>
-        <span className="absolute right-0 top-0 pr-5">
-        <DonutChart data={Math.random()}/>
-        <Histogram data={Math.random()} />
+    <div className="grid grid-cols-2">
+      <div class="">
+        <div >
+          <div>Latitude: {currentViewState.bottom.toPrecision(4)}  |   {currentViewState.top.toPrecision(4)}</div>
+          <div>Longitude: {currentViewState.left.toPrecision(4)} |  {currentViewState.right.toPrecision(4)}</div>
+          <div>Total Roads Drawn: {routes.length} / 1 billion</div>
+          <div>Places Of Interest Drawn: {markers.length}</div>
+          <div>Airbnbs rendered on Screen: {routes.length} /  7 million</div>
+          <div>Benches rendered on Screen: {markers.length} /  7 million</div>
+          <div>Houses rendered on Screen:  / 135 million from  
+            <span className="text-blue-500"> Zillow</span> 
+            <span className="text-red-500">Redfin</span> 
+            <span className="text-green-500">Compass</span> 
+            <span className="text-yellow-500 hidden">immobilienscout24.de</span>
+          </div>
+          </div>
+        </div>
+        <span className="flex">
+          <DonutChart data={Math.random()}/>
+          <Histogram data={Math.random()} />
         </span>
-      </div>
     </div>
     </>
   );

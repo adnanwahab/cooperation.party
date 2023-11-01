@@ -55,10 +55,10 @@ const List = (list) =>
 
 function GeoCoder ({onChange}) {
 
-    return <>
+    return <div>
            <label>How much money will my house make on airbnb?</label>
-           <input onChange={onChange} type="text" className="text-black"></input>
-           </>
+           <input onChange={onChange} type="text" className="text-black block"></input>
+           </div>
   }
   
   function EarningsCalculator({address}) {
