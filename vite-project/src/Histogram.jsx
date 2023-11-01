@@ -1,33 +1,12 @@
-import histogramChart from "d95f57ca97a2495a";
 import React, { useEffect, useState, useCallback, useRef} from 'react';
-import {Runtime, Inspector} from "@observablehq/runtime";
 import * as d3 from 'd3';
 
-
-// export default function Histogram() {
-//   const histogramRef = useRef();
-
-//   useEffect(() => {
-//     const runtime = new Runtime();
-//     runtime.module(histogramChart, name => {
-//       if (name === "histogram") return new Inspector(histogramRef.current);
-//     });
-//     return () => runtime.dispose();
-//   }, []);
-
-//   return (
-//     <>
-//       <span ref={histogramRef} />
-//     </>
-//   );
-// }
-export default function histogram () {
-    // const width = 150;
-    // const height = Math.min(width, 300);
+export default function histogram (props) {
     const width = 300;
     const height = 150;
     const svgRef = useRef(null); // Reference to the SVG element
-  
+    let totalCount = 1;
+
     useEffect(() => {
       if (!svgRef.current) return;
   
@@ -55,6 +34,7 @@ export default function histogram () {
     
       const chart = svg
         .append("g")
+        .attr('class', 'histogram')
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
       const prob = false;
@@ -97,7 +77,6 @@ export default function histogram () {
             .tickSizeOuter(0)
         );
     
-      let totalCount = 1;
       if (prob) {
         totalCount = data.length;
       }
@@ -135,10 +114,42 @@ export default function histogram () {
         .attr("height", (d) => y(0) - y(d.length / totalCount));
     
   
-    }, []); // Empty dependency array ensures D3 code runs only once
-  
+    }, []);
 
-    return (
+    useEffect(() => {
+        const data = d3.map(Array(1000), (d, i) => ({
+            pos: i,
+            value: d3.randomNormal(1, 10)()
+          }));
+        let bins = d3
+        .bin()
+        .thresholds(40)
+        .value((d) => d.value)(data);
+        const svg = d3.select(svgRef.current);
+
+        const chart = svg.select('.histogram')
+        let y = d3
+        .scaleLinear()
+        .domain([0, d3.max(bins, (d) => d.length / totalCount)])
+        .range([height, 0]);
+
+            
+      let x = d3
+      .scaleLinear()
+      .domain([bins[0].x0, bins[bins.length - 1].x1])
+      .range([0, width]);
+ 
+        chart
+        .selectAll('rect')
+        .data(bins)
+        .attr("x", (d) => x(d.x0) + 1)
+        .attr("width", (d) => x(d.x1) - x(d.x0) - 1)
+        .attr("y", (d) => y(d.length / totalCount))
+        .attr("height", (d) => y(0) - y(d.length / totalCount));
+
+    }, [props.random])
+    console.log(props.random)
+      return (
         <svg 
           ref={svgRef}
           width={width} 

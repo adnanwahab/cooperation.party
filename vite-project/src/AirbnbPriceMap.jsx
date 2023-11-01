@@ -264,8 +264,8 @@ function AirbnbWorldMap(props) {
           </div>
         </div>
         <span className="flex">
-          <DonutChart data={Math.random()}/>
-          <Histogram data={Math.random()} />
+          <DonutChart random={Math.random()}/>
+          <Histogram random={Math.random()} />
         </span>
     </div>
     </>
