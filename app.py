@@ -205,7 +205,6 @@ import requests
 
 def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     places = []
-    print(min_lat, min_lng, max_lat, max_lng)
     query = f"""
     [out:json][timeout:25];
     (
@@ -216,11 +215,11 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     query = f"""
     [out:json][timeout:25];
     (
-        node["amenity"="bench"]({max_lat-1},{max_lng-1},{max_lat+1},{max_lat+1});
+        node["amenity"="bench"]({min_lat},{min_lng},{max_lat},{max_lng});
     );
-    out body;
+    out 100;
     """ 
-    print(query)
+    #print(query)
 
     # query = f"""
     # [out:json][timeout:25];
@@ -252,62 +251,31 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
         print(response.text)
         return []
     random.shuffle(places)
-    return places[:100]
-
+    return places
+    #return places[:100]
 
 import aiohttp
 import asyncio
 
-async def getAllRoutesFaster():
+async def getAllRoutesFaster(places):
     routes = []
     async with aiohttp.ClientSession() as session:
-        tasks = [fetch(session, apt) for city in apt_json for apt in apt_json[city]  ]
-        print(len(tasks))
+        tasks = [fetch(session, place_1, place_2) for place_1 in places[:5] for place_2 in places[10:15]  ]
         routes = await asyncio.gather(*tasks)
-        #apt_json[city] = sorted(apt_json[city], key=lambda _: _['good_deal'])[:100]
-    #apt_json, h3_complaints = compute_311(apt_json)
-    #print(h3_complaints)
-    #apt_json, routes = compute_travel_time(apt_json, schedule)
     return routes
 
-async def fetch(session, apt):
+async def fetch(session, place_1, place_2):
     routes = []
-    travel_time = 0
-    start_lng = float(apt['longitude'])
-    start_lat = float(apt['latitude'])
-    for todo in schedule:
-        result = await fetch_overpass_data(todo, start_lat, start_lng)
-        await asyncio.sleep(1.5)
-        if not result or 'elements' not in result or len(result['elements']) == 0: 
-            print('no ' + todo)
-            continue
-        result = result['elements'][0]
-        print('result', result)
-        end_lng = result['lon']
-        end_lat = result['lat']
-        url = f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lat}%3B{end_lng}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
-        async with session.get(url) as response:
-            route = await response.json()
-            if route and len(route['routes']) > 0: 
-                travel_time += route['routes'][0]['duration']
-                routes.append(route)
-    apt['commute_distance'] = travel_time
-    return routes
-
-def fetchRoad(start, end):
-    print(start, end)
-    start_lng = start['lon']
-    start_lat = start['lat']
-    end_lng = end['lon']
-    end_lat = end['lat']
+    start_lng = place_1['lon']
+    start_lat = place_1['lat']
+    end_lng = place_2['lon']
+    end_lat = place_2['lat']
     url = f'https://api.mapbox.com/directions/v5/mapbox/driving/{start_lng}%2C{start_lat}%3B{end_lng}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg'
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        return data
-    else: 
-        print('we are shit out of luck', response.status_code)
-        return []
+    async with session.get(url) as response:
+        route = await response.json()
+        if route and len(route['routes']) > 0: 
+            routes.append(route)
+    return routes
 
 prev = time.time()
 @app.get("/osm_bbox/")
@@ -319,19 +287,11 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
     prev = time.time()
     places = fetch_coworking(min_lat, min_lng, max_lat, max_lng)
     routes = []
-    # for place in places[:5]: 
-    #     for place_two in places[5:10]:
-    #         routes.append(
-    #             fetchRoad(
-    #                 place, place_two
-    #             )
-    #         )
-    print(len(places))
+    routes = await getAllRoutesFaster(places)
     return {
         'places': places,
         'routes': routes
     }
-    #return StreamingResponse(stream_content(), media_type="text/plain")
 
 app.mount("/", StaticFiles(directory="vite-project/dist", html=True), name="frontend")
 

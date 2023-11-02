@@ -12,5 +12,5 @@ let makeBaseName = {
 // }
 
 
-let baseName = makeBaseName[window.location.hostname]
+let baseName = makeBaseName[window.location.hostname] || 'https://cooperation-party.fly.dev'
 export default baseName

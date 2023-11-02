@@ -44,9 +44,9 @@ const INITIAL_VIEW_STATE = {
   pitch: 0,
   bearing: 0
 }   
-// INITIAL_VIEW_STATE.longitude = 139
-// INITIAL_VIEW_STATE.latitude = 35
-// INITIAL_VIEW_STATE.zoom = 10
+INITIAL_VIEW_STATE.longitude = 139
+INITIAL_VIEW_STATE.latitude = 35
+INITIAL_VIEW_STATE.zoom = 10
 
 function AirbnbWorldMap(props) {
   const [routes, setRoutes] = useState([])
@@ -57,8 +57,8 @@ function AirbnbWorldMap(props) {
 
   let layers = []
 
-  if (false && currentViewState.zoom > 5.5)
   layers.push( new ScatterplotLayer({
+    visible:currentViewState.zoom < 10 && currentViewState.zoom > 5.5,
     id: 'airbnb+houses-within-bbox-dot-matrix',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
     pickable: true,
@@ -78,8 +78,8 @@ function AirbnbWorldMap(props) {
     },
   }))
 
-if (false && currentViewState.zoom < 5.5)
   layers.push( new ScreenGridLayer({
+    visible: currentViewState.zoom < 5.5,
     id: 'airbnb+houses-within-bbox-screengrid',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
     opacity: 1.,
@@ -124,7 +124,7 @@ if (false && currentViewState.zoom < 5.5)
 
   let iconLayer = new IconLayer({
       id: 'icon-layer',
-      data: markers.slice(0, 100),
+      data: markers,
       //data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
       pickable: true,
       // iconAtlas and iconMapping are required
@@ -147,11 +147,13 @@ if (false && currentViewState.zoom < 5.5)
   layers.push(iconLayer)
 
   const allCoordinates = []
+  if (currentViewState.zoom > 5)
   routes.forEach((route) => {
-    route.geometry.coordinates.forEach((list, i ) => list.push(i / route.geometry.coordinates.length))
-    allCoordinates.push(...route.geometry.coordinates)
+    console.log(route[0].routes[0].geometry.coordinates)
+    //route[0].routes[0].geometry.coordinates.forEach((list, i ) => allCoordinates.push(list))
+    allCoordinates.push(...route[0].routes[0].geometry.coordinates)
   })
-
+  console.log('allcoordinates', allCoordinates, routes.length)
   let roads = new ScatterplotLayer({
     id: 'roads',
     data: allCoordinates,
@@ -170,7 +172,7 @@ if (false && currentViewState.zoom < 5.5)
     //getPosition: d => centroid,
     getRadius: d => 10,
     getFillColor: (_, datum) => {
-      let rgb = d3.rgb(interpolateRainbow(_[2]))
+      let rgb = d3.rgb(interpolateRainbow(Math.random()))
       return [rgb.r, rgb.g, rgb.b]
       return [0, 255 * _[2], 255]
     },
@@ -183,31 +185,19 @@ if (false && currentViewState.zoom < 5.5)
     //extensions: [new DataFilterExtension({filterSize: 1})]
 
   })
-  //layers.push(roads)
+  layers.push(roads)
   
   const fetchRoutes = async () => {
     //everytime you move, draw contiguous paths from center to 4 corners
     let {top, left, right, bottom} = currentViewState;
-    let url = `${baseName}/osm_bbox/?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+    //console.log(top,bottom, right, left)
+   //console.log(bottom,left, top, right)
 
+    let url = `${baseName}/osm_bbox/?min_lat=${bottom}&min_lng=${left}&max_lat=${top}&max_lng=${right}`;
     const response = await fetch(url);
     const json = await response.json();
-
-    markers.push.apply(markers, json.places)
-
-    setMarkers(markers)
-    for (let i = 0; i < 1; i++) {
-      let min_lat = left + .05 * Math.random(), 
-      min_lng = top + .05 * Math.random(), 
-      max_lat = right + .05 * Math.random(), 
-      max_lng = bottom + .05 * Math.random();
-      const req = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${min_lat},${min_lng};${max_lat},${max_lng}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiYXdhaGFiIiwiYSI6ImNrdjc3NW11aTJncmIzMXExcXRiNDNxZWYifQ.tqFU7uVd6mbhHtjYsjtvlg`
-      );
-      let json = await req.json();
-      routes.push.apply(routes, json.routes)
-      setRoutes(routes)
-    }
+    setRoutes(json.routes)
+    setMarkers(json.places)
     setPercent(0)
     setTimeout(function recur () {
       //setPercent(getPercent+.1)
@@ -221,7 +211,7 @@ if (false && currentViewState.zoom < 5.5)
     fetchRoutes();
   }, [currentViewState.left]);
 
-  console.log(markers)
+  //console.log(markers)
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution + <button className="text-black">Click here to place a house and generate program instructions for robot to build it.</button></h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
