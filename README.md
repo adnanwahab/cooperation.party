@@ -1166,4 +1166,4 @@ like kaggle but reproducability
 3. write sentences -> each one makes a diagram -> edits real world -> plants a tree -> build house w/ robots
 4. starcraft mode but add pylons - measure apm + effective resource utilization (everyone in government wants to see how each resource is utilized - make more people vote)
 
-signed aw
+signed aw.
