@@ -35,9 +35,6 @@ config = {
 }
 import os
 
-
-# # # Open a HTTP tunnel on the specified port
-
 if os.getcwd() != '/Users/shelbernstein/cooperation.party':
     for i in range(10): print('this is fly.io')
     ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
@@ -48,19 +45,6 @@ else:
     config['subdomain'] = 'shelbernstein'
     public_url = ngrok.connect(**config)
 
-
-# import fastapi_vite
-
-# templates = Jinja2Templates(directory='templates')
-# templates.env.globals['vite_hmr_client'] = fastapi_vite.vite_hmr_client
-# templates.env.globals['vite_asset'] = fastapi_vite.vite_asset
-
-#public_url = ngrok.connect(**config)
-# #print(f"ngrok tunnel '{config['name']}' is running at {public_url}")
-# # Keep the tunnel running until terminated
-# #input("Press Enter to exit...")
-# # Terminate the ngrok tunnel when the script is interrupted
-# #ngrok.kill()
 def substitute(name):
     for k in jupyter_functions:
         if (len(name)) < 1: return name
@@ -93,13 +77,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-#app.mount("/data/airbnb/h3_poi/", StaticFiles(directory="data/airbnb/h3_poi/"), name="demo")
 class FnText(BaseModel):
     fn: list[str]
     documentContext: dict
     hashUrl: Optional[str] = ''
-
 
 class neighborhoodDetails(BaseModel):
     apt_url: str
@@ -154,20 +135,12 @@ async def callFn(neighborhoodDetails: neighborhoodDetails):
     schedule = schedule_json_converter(neighborhoodDetails.schedule_text)
     routes, time =  getRoutes(neighborhoodDetails.city_name, neighborhoodDetails.apt_url, schedule)
     return {'key': routes, 'schedule_places': schedule}
-    return {'key': 123}
 
 @app.post("/makeFn")
 async def makeFn(FnText:FnText):
     sentences = FnText.fn
     documentContext = {}
-    # args = [
-    #     jupyter_functions['given a favorite pokemon']('', '', '')
-    # ]
-    #return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
-    # if len(FnText.hashUrl):
-    #     sentences = json.load(open('documents/' + FnText.hashUrl))
     functions = [substitute(fn) for fn in sentences]
-    
     val = False
     args = []
     documentContext = FnText.documentContext
@@ -188,9 +161,8 @@ def admin(): return FileResponse('./templates/admin.html')
 
 @app.get("/ls")
 async def home():
-    called = subprocess.run(["ls", "-l"], capture_output=True)
+    called = subprocess.run(["ls"], capture_output=True)
     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
-
 
 def get_airbnb_data_for_city(city_name: str):
     #return [{"id": 1, "name": "Sample Airbnb 1"}, {"id": 2, "name": "Sample Airbnb 2"}]
@@ -359,9 +331,11 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
 #     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
 
 #serve vite aplpication
-@app.get("/")
-async def index():
-    return HTMLResponse("Hello happy healthy and safe world!")
+# @app.get("/")
+# async def index():
+#     return HTMLResponse("Hello happy healthy and safe world!")
+
+#app.mount("/static", StaticFiles(directory="vite-project/dist"), name="static")
 
     # StaticFiles(
     #     '*',
