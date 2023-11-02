@@ -7,6 +7,8 @@ import underscore from 'underscore';
 import compile from './compile'
 import templates from './templates'
 import baseName from './httpFunctions'
+import WelcomeInstructions from './WelcomeInstructions'
+
 let templateNames = Object.keys(templates).slice(0, 12)
 let templateContent = Object.values(templates).slice(0, 12)
 let documentContext = {}
@@ -97,8 +99,11 @@ function App() {
   </div>
   )
   
+  let [isOpen, setIsOpen] = useState(true)
+
   return (
   <div className="overflow-scroll h-screen">
+  <WelcomeInstructions isOpen={isOpen} setIsOpen={setIsOpen} />
   <Header />
     <div className="grid grid-cols-4">
     {leftPanel}
