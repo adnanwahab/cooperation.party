@@ -335,6 +335,9 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
 # async def index():
 #     return HTMLResponse("Hello happy healthy and safe world!")
 
+app.mount("/", StaticFiles(directory="vite-project/dist", html=True), name="frontend")
+
+
 #app.mount("/static", StaticFiles(directory="vite-project/dist"), name="static")
 
     # StaticFiles(
