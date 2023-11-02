@@ -19,8 +19,6 @@ vite-project/**/pnpm-debug.log*
 vite-project/**/lerna-debug.log*
 
 vite-project/**/node_modules
-vite-project/**/dist
-vite-project/**/dist-ssr
 vite-project/**/*.local
 
 # Editor directories and files
