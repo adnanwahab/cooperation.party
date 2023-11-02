@@ -4,6 +4,10 @@ import HexagonWorld from './hexagon_world';
 import AirbnbPriceMap from './AirbnbPriceMap'
 import AnabelleMap from './AnabelleMap'
 
+// import MapComponent from './Map'
+// import HexagonMap from './HexagonMap' //commute and so on
+// import BarChart from './BarChart';
+// import TravelTimeMap from './TravelTimeMap'
 
 function ShitAss() {
   const notificationMethods = [

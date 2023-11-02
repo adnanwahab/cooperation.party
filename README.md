@@ -1167,3 +1167,92 @@ like kaggle but reproducability
 4. starcraft mode but add pylons - measure apm + effective resource utilization (everyone in government wants to see how each resource is utilized - make more people vote)
 
 signed shel bernstein
+
+//choose your own adventure
+
+//poll
+//go to place -> geohashing 
+//make pokemon go
+///find a list of all pokemon
+//for each pokemon -> list counters
+//for each counter -> list all possible technique combinations 
+//given 10 different teams of 6, estimate probability of them winning 
+//do a "simulation" of 10 teams in a round robin and then find the best win rate
+
+
+//twitter -> watch for pizza -> stream sentiment analyis 
+//stream sentiment analysis for region
+//if you see a spike or anomoly -> visit that region
+//confirm whether bread or cheese supply has gone down 
+//invest in new farm to produce better bread
+//profit 
+
+//make it so the python async functions return value with a generator 
+//this generator steps through the tiem series paginates 1billion tweets 
+//in a 10,000 item page so that the javascript component renders realtime 
+
+//jupyter cant really do this -> cant server files from jupyter
+//javascript cant exec on files that cant fit in browser which is lots 
+//javascript max = 200mb -> python services can upload 200mb in chunks so it streams 40x faster so you can do proper analysis 
+
+
+
+
+
+//what can you do with a mix of python and javascript that you cant do with one alone
+//english -> generate javascript UI component -> generate python service that generates data and then ui co
+
+
+//program synthesis -> make that better 
+
+//given two subjects on arxiv -> find cool papers that relate to both of them
+
+//use a IDE to think of things you would not have thought of 
+//from a sentence -> generate a program
+//from a program -> generate an a comment
+//from a program -> generate a data 
+//from a data -> generate helper functions to prep that data for applying statistics
+//from a statistics output, you can exectue a program in ways that affect stfuf
+//exampel -> reccomendation engine -> generates links on page
+//from a list of links -> generate intersection or pairwise stuff
+
+//list of favorite authors -> find common themes
+//from a theme -> reccomend movies 
+
+
+//5 people take a quiz that comes from a document describing questions
+
+//depending on their ansewr they plan a movie + game night w/ apple cider vinegar and popcorn
+//ok watch this movie 
+
+
+//the more you type -> the more the autocomplete assistant knows exactly what you mean -> or even things you might like -> things you might not know
+//as you type it helps you think -> renders shit on the right hand panel
+
+//write stuff -> computer tells you if it makes sense
+//if it thinks it doesnt make sense it tell you why
+
+//write a note that has live updating sentences
+//and you have diagrams that are UI components that can change the sentences
+//you have a list of sentences
+//ask LLM is this statement true
+//sentences which evaluate to 
+
+//look up all git hub repos
+//find all books on gutenberg project
+//find all events on gdelt
+
+//transcribe all audio on youtube
+
+//is this idea good?
+//poll people 
+//if its good -> add tech specs
+
+//create tech spec
+//generate tests
+//tests are assertions that run on previous lines of code
+
+//english  = glue language 
+//linked diagrams
+//javascript -> display + run queries on UI
+//python -> automatically create services on infinte data streams 

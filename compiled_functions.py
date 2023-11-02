@@ -1360,11 +1360,15 @@ def forEachCity(_, documentContext, ___):
 def world_map(_, __, ___):
     print('world map' + 'fix bugs?')
     cols = [s.replace('.json', '') for s in os.listdir('data/airbnb/h3_poi/')]
+    data = {}
+    for _ in glob.glob('data/airbnb/apt/*.json'):
+        print(_)
+        data[_] = len(json.load(open(_)))
     return {
         # 'airbnbsInEachCity': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/apt/*.json')},
         # 'data': {_:json.load(open(_)) for _ in glob.glob('data/airbnb/h3_poi/*.json')},
         #     'hexAgonations': retrieveAggregation(cols),
-        'data': {_:len(json.load(open(_))) for _ in glob.glob('data/airbnb/apt/*.json')},
+        'data': data,
         'component': '<Hexagonworld>'
     }
 
