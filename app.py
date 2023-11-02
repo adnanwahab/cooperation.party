@@ -70,6 +70,7 @@ def substitute(name):
     return name
 
 origins = [
+    "https://groundbear.static.observableusercontent.com",
     "https://cooperation.party",
     "https://cooperation.party",
     "http://cooperation.party",
@@ -357,6 +358,7 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
 #     called = subprocess.run(["ls", "-l"], capture_output=True)
 #     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
 
+#serve vite aplpication
 @app.get("/")
 async def index():
     return HTMLResponse("Hello happy healthy and safe world!")
