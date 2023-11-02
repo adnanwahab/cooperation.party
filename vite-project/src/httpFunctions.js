@@ -1,7 +1,7 @@
 let makeBaseName = {
     'cooperation.party':'https://cooperation-party.fly.dev',
     'localhost':'http://localhost:8000',
-    'cooperation-party.fly.dev': 'https://cooperation-party.fly.dev/'
+    'cooperation-party.fly.dev': 'https://cooperation-party.fly.dev'
 }
 
 // if (window.location.hostname == 'cooperation.party' || ) {
