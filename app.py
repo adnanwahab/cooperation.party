@@ -318,23 +318,6 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
 
 app.mount("/", StaticFiles(directory="vite-project/dist", html=True), name="frontend")
 
-
-# def SPA(app: FastAPI, build_dir: Union[Path, str]) -> FastAPI:
-# # Serves a React application in the root directory
-#     @app.exception_handler(StarletteHTTPException)
-#     async def _spa_server(req: Request, exc: StarletteHTTPException):
-#         if exc.status_code == 404:
-#             return FileResponse(f'{build_dir}/index.html', media_type='text/html')
-#         else:
-#             return await http_exception_handler(req, exc)
-#     if isinstance(build_dir, str):
-#         build_dir = Path(build_dir)
-#     app.mount(
-#         '/vite-app/dit',
-#         StaticFiles(directory=build_dir / 'dist'),
-#         name='React app static files',
-#     )
-
 @app.get("/get_apt_details/")
 async def get_apt_details(apt_id: str):
     print('get_apt_details', apt_id)

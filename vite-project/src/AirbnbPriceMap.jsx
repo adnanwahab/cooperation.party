@@ -187,7 +187,8 @@ function AirbnbWorldMap(props) {
   const fetchRoutes = async () => {
     //everytime you move, draw contiguous paths from center to 4 corners
     let {top, left, right, bottom} = currentViewState;
-    let url = `${baseName}/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+    let url = `${baseName}/osm_bbox/?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+
     const response = await fetch(url);
     const json = await response.json();
 
