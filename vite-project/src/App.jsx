@@ -6,21 +6,14 @@ import Footer from './Footer'
 import underscore from 'underscore';
 import compile from './compile'
 import templates from './templates'
+import baseName from './httpFunctions'
 let templateNames = Object.keys(templates).slice(0, 12)
 let templateContent = Object.values(templates).slice(0, 12)
 let documentContext = {}
 
 async function _() {
   let text = get('textarea').value.split('\n').map(_ => _.trim()).filter(_ => _)
-  let port = 8000
-  let url = `http://127.0.0.1:${port}/makeFn`
-  if (window.location.hostname == 'cooperation.party') {
-    url = 'http://cooperation-party.fly.dev/makeFn'
-    url = 'https://pypypy.ngrok.io/makeFn'
-  } else if (window.location.hostname === 'localhost:5173') {
-  }
-url = 'https://shelbernstein.ngrok.io/makeFn'
-    let fn = await fetch( url , {
+    let fn = await fetch(`${baseName}/makeFn` , {
       method: 'POST',
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", 
@@ -28,7 +21,6 @@ url = 'https://shelbernstein.ngrok.io/makeFn'
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
       headers: { 
         "Content-Type": "application/json",
-      //"ngrok-skip-browser-warning": true,
       "Access-Control-Allow-Origin": "*"
     },
                 body: JSON.stringify({fn:text,

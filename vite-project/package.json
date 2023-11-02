@@ -10,10 +10,9 @@
     "deploy": "vite build && surge dist",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "last-day": "npm run build && mv dist ../last-day"
+    "last-day": "nodemon npm run build"
   },
   "dependencies": {
-    "98928415371f4b5e": "https://api.observablehq.com/d/98928415371f4b5e.tgz?v=3",
     "@deck.gl/layers": "^8.9.27",
     "@deck.gl/react": "^8.9.27",
     "@fullstory/browser": "^1.7.1",
@@ -23,6 +22,7 @@
     "@observablehq/runtime": "5",
     "@react-pdf/renderer": "^3.1.13",
     "@turf/turf": "^6.5.0",
+    "98928415371f4b5e": "https://api.observablehq.com/d/98928415371f4b5e.tgz?v=3",
     "add": "^2.0.6",
     "canvas-confetti": "^1.9.0",
     "ceecbc77dc0fae86": "https://api.observablehq.com/d/ceecbc77dc0fae86@452.tgz?v=3",
@@ -45,6 +45,7 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
+    "nodemon": "^3.0.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",

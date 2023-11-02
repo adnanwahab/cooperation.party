@@ -20,6 +20,7 @@ import * as turf from '@turf/turf';
 import PopOver from './PopOver'
 import {isWebGL2} from '@luma.gl/core';
 import {ScreenGridLayer} from '@deck.gl/aggregation-layers';
+import baseName from './httpFunctions'
 
 const colorRange = [
   [255, 255, 178, 25],
@@ -186,7 +187,7 @@ function AirbnbWorldMap(props) {
   const fetchRoutes = async () => {
     //everytime you move, draw contiguous paths from center to 4 corners
     let {top, left, right, bottom} = currentViewState;
-    let url = `https://shelbernstein.ngrok.io/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
+    let url = `${baseName}/osm_bbox?min_lat=${top}&min_lng=${left}&max_lat=${bottom}&max_lng=${right}`;
     const response = await fetch(url);
     const json = await response.json();
 

@@ -1,10 +1,11 @@
-"""
-Application definition
-"""
-
+from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.exception_handlers import http_exception_handler
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from compiled_functions import jupyter_functions
 import inspect
@@ -18,14 +19,7 @@ import json
 import openai
 from pyngrok import ngrok
 import subprocess
-# import fastapi_vite
-
-# templates = Jinja2Templates(directory='templates')
-# templates.env.globals['vite_hmr_client'] = fastapi_vite.vite_hmr_client
-# templates.env.globals['vite_asset'] = fastapi_vite.vite_asset
-
-
-#Set configuration options
+from getRoutes import getRoutes 
 config = {
     'name': 'example',
     'proto': 'http',
@@ -33,7 +27,6 @@ config = {
     'host_header': 'rewrite',
     'subdomain': 'pypypy'
 }
-import os
 
 if os.getcwd() != '/Users/shelbernstein/cooperation.party':
     for i in range(10): print('this is fly.io')
@@ -87,7 +80,6 @@ class neighborhoodDetails(BaseModel):
     schedule_text: str
     city_name: str
 
-
 def schedule_json_converter(_):
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -128,7 +120,6 @@ def schedule_json_converter(_):
     print(_, 'scheduling result', result)
     return result
 
-from getRoutes import getRoutes 
 @app.post("/neighborhoodDetails")
 async def callFn(neighborhoodDetails: neighborhoodDetails):
     print('this is my neighborhoodDetails', neighborhoodDetails.schedule_text)
@@ -325,35 +316,9 @@ async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):
     }
     #return StreamingResponse(stream_content(), media_type="text/plain")
 
-# @app.get("/data/airbnb/apt/")
-# async def home():
-#     called = subprocess.run(["ls", "-l"], capture_output=True)
-#     return HTMLResponse("Hello happy healthy and safe world!" + str(called.stdout))
-
-#serve vite aplpication
-# @app.get("/")
-# async def index():
-#     return HTMLResponse("Hello happy healthy and safe world!")
-
 app.mount("/", StaticFiles(directory="vite-project/dist", html=True), name="frontend")
 
 
-#app.mount("/static", StaticFiles(directory="vite-project/dist"), name="static")
-
-    # StaticFiles(
-    #     '*',
-    #     directory=None,
-    #     packages=None,
-    #     html=False,
-    #     check_dir=True,
-    #     follow_symlink=False
-
-from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.exception_handlers import http_exception_handler
-from starlette.exceptions import HTTPException as StarletteHTTPException
 # def SPA(app: FastAPI, build_dir: Union[Path, str]) -> FastAPI:
 # # Serves a React application in the root directory
 #     @app.exception_handler(StarletteHTTPException)
