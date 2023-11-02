@@ -59,13 +59,15 @@ background-image: linear-gradient(to right,#5e513f,#a5765c,#ff7e6a,#ffb47e,#ffe6
         height: 100vh;
       } */
 </style>
-    <script type="module" crossorigin src="/assets/index-356988c7.js"></script>
+    <script type="module" crossorigin src="/assets/index-f7d1d4c7.js"></script>
     <link rel="stylesheet" href="/assets/index-7ac41629.css">
   </head>
   <body class="font-serif opacity-1 text-white">
     <div id="root" class="h-full w-full fixed top-0"></div> 
     
     <script async defer>
+function addFullStory(){
+  console.log('adding fullstory to cooperation.party')
       window['_fs_host'] = 'fullstory.com';
       window['_fs_script'] = 'edge.fullstory.com/s/fs.js';
       window['_fs_org'] = '10XSCS';
@@ -87,6 +89,8 @@ background-image: linear-gradient(to right,#5e513f,#a5765c,#ff7e6a,#ffb47e,#ffe6
           if(m[y])m[y]=function(){return g._w[y].apply(this,arguments)};
           g._v="1.3.0";
       })(window,document,window['_fs_namespace'],'script','user');
+    }
+    if (window.location.host.indexOf('localhost') !== 0) addFullStory()
       </script>
   </body>
 </html>

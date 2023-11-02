@@ -18,6 +18,18 @@ import {IconLayer} from '@deck.gl/layers';
 import _ from 'underscore'
 import * as turf from '@turf/turf';
 import PopOver from './PopOver'
+import {isWebGL2} from '@luma.gl/core';
+import {ScreenGridLayer} from '@deck.gl/aggregation-layers';
+
+const colorRange = [
+  [255, 255, 178, 25],
+  [254, 217, 118, 85],
+  [254, 178, 76, 127],
+  [253, 141, 60, 170],
+  [240, 59, 32, 212],
+  [189, 0, 38, 255]
+];
+
 
 const ICON_MAPPING = {
   marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -34,49 +46,45 @@ const INITIAL_VIEW_STATE = {
 // INITIAL_VIEW_STATE.longitude = 139
 // INITIAL_VIEW_STATE.latitude = 35
 // INITIAL_VIEW_STATE.zoom = 10
-function ProgressBar (props) {
-  let style = {width: `${innerWidth}px`}
-  return (<div className="fixed left-0 top-0 progress-bar h-4 w-full" style={style}></div>)
-}
 
 function AirbnbWorldMap(props) {
   const [routes, setRoutes] = useState([])
   const [markers, setMarkers] = useState([])
   const [getPercent, setPercent] = useState(0)
+  const [openPopover, setOpenPopover] = useState(false)
+  const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
 
-  let layers = [
- 
-  ]
+  let layers = []
 
+  if (false)
   layers.push( new ScatterplotLayer({
     id: 'airbnb+houses-within-bbox',
-    //data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
     pickable: true,
     opacity: 1.,
-    //stroked: true,
-    //filled: true,
     radiusScale: 1,
     radiusMinPixels: 1,
     radiusMaxPixels: 1,
     lineWidthMinPixels: 1,
+    getPosition: d => [d[1], d[0]],
+    onHover:() => {},
+    onMouseOut: () => {},
+    onClick: ({object}) => setOpenPopover(object[2]),
+    getRadius: 1,
+    getFillColor: d => {
+      let rgb = d3.rgb(interpolateRainbow(d[0]))
+      return [rgb.r, rgb.g, rgb.b]
+    },
+  }))
 
-    getPosition: d => {
-      return [d[1], d[0]]
-    },
-    //getPosition: d => [d[0], d[1], 0],
-    onHover:() => {
-    },
-    onMouseOut: () => {
-    },
-    onClick: ({object}) => {
-      // let url = `https://www.airbnb.com/rooms/${object[0]}`
-      // window.open(url)
-      setOpenPopover(object[2])
-      console.log(object)
-    },
-    //getPosition: d => centroid,
-    getRadius: (d, datum) => datum.index,
+  layers.push( new ScreenGridLayer({
+    id: 'airbnb+houses-within-bbox',
+    data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
+    opacity: 1.,
+    getPosition: d => [d[1], d[0]],
+    getWeight: () => 1,
+    cellSizePixels: 30 - 10 * currentViewState.zoom,  //change on zoomLevel
+    //colorRange,
     getFillColor: d => {
       let rgb = d3.rgb(interpolateRainbow(d[0]))
       return [rgb.r, rgb.g, rgb.b]
@@ -111,7 +119,7 @@ function AirbnbWorldMap(props) {
       return [rgb.r, rgb.g, rgb.b]
     },
   }))
-  //i spent 2-3 years walking around 2-3 hours a day thinking about cool stuff -> could have had more optimal walking path made for me like strava  + train + world explorer
+
   let iconLayer = new IconLayer({
       id: 'icon-layer',
       //data: markers,
@@ -126,9 +134,6 @@ function AirbnbWorldMap(props) {
       sizeScale: 150,
       getPosition: d => {
         return d.coordinates
-        //lon first
-        //return [+ d.lat, + d.lon]
-
         return [+ d.lon, + d.lat]
       },
       getSize: d => 50,
@@ -144,7 +149,7 @@ function AirbnbWorldMap(props) {
     route.geometry.coordinates.forEach((list, i ) => list.push(i / route.geometry.coordinates.length))
     allCoordinates.push(...route.geometry.coordinates)
   })
-  //console.log('allCoordeinates', allCoordinates)
+
   let roads = new ScatterplotLayer({
     id: 'roads',
     data: allCoordinates,
@@ -178,7 +183,6 @@ function AirbnbWorldMap(props) {
   })
   //layers.push(roads)
   
-  const [currentViewState, setViewState] = useState(computeBoundingBox(INITIAL_VIEW_STATE))
   const fetchRoutes = async () => {
     //everytime you move, draw contiguous paths from center to 4 corners
     let {top, left, right, bottom} = currentViewState;
@@ -214,7 +218,6 @@ function AirbnbWorldMap(props) {
     fetchRoutes();
   }, [currentViewState.left]);
 
-  const [openPopover, setOpenPopover] = useState(false)
 
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution + <button className="text-black">Click here to place a house and generate program instructions for robot to build it.</button></h3>
@@ -230,14 +233,10 @@ function AirbnbWorldMap(props) {
       controller={true}
       getTooltip={getTooltip}
       glOptions={{preserveDrawingBuffer: true}}
+      onWebGLInitialized={onInitialized}
       onViewStateChange={_.debounce(({viewState}) => {
-        //console.log('wtf dont do that')
         setViewState(computeBoundingBox(viewState))
       }, 1000)}
-      // parameters={
-      //   blendFunc: [GL.ONE, GL.ONE, GL.ONE, GL.ONE],
-      //   depthTest: false
-      // }
     >
       <Map 
        glOptions={{preserveDrawingBuffer: true}}
@@ -247,7 +246,7 @@ function AirbnbWorldMap(props) {
 
     </div>
     <div className="grid grid-cols-2">
-      <div class="">
+      <div className="">
         <div >
           <div>Latitude: {currentViewState.bottom.toPrecision(4)}  |   {currentViewState.top.toPrecision(4)}</div>
           <div>Longitude: {currentViewState.left.toPrecision(4)} |  {currentViewState.right.toPrecision(4)}</div>
@@ -271,17 +270,6 @@ function AirbnbWorldMap(props) {
     </>
   );
 }
-async function fetchInterestingData (min_lat, min_lng, max_lat, max_lng) {
-  //SELECT * FROM points
-  // WHERE amenity IS NOT NULL -- this condition filters for rows which represent some sort of amenity/POI
-  // AND MbrWithin(geom, BuildMBR(xmin, ymin, xmax, ymax)); 
-  const request = await fetch(`https://shelbernstein.ngrok.io/cityList`)
-  const cityList = await request.json()
-}
-function clamp (_, min, max) {
-  return Math.max(Math.min(_, max), min)
-}
-
 
 function computeBoundingBox(viewPort) {
   const viewport = new WebMercatorViewport({...viewPort});
@@ -293,10 +281,10 @@ function computeBoundingBox(viewPort) {
     left: clamp(topLeft[0], -180, 180),
     bottom: clamp(bottomRight[1], -90, 90),
     right: clamp(bottomRight[0], -180, 180),
-    centroid: [viewport.latitude, viewport.longitude]
+    centroid: [viewport.latitude, viewport.longitude],
+    zoom: viewPort.zoom
   };
-  //console.log('bbox', boundingBox)
-  //console.log('spatial lite and get rainbow routes')
+  console.log(viewPort)
   return boundingBox
 }
 
@@ -318,39 +306,27 @@ const [isShowing, setIsShowing] = useState(true)
 }
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
 
-export const colorRange = [
-  [1, 152, 189],
-  [73, 227, 206],
-  [216, 254, 181],
-  [254, 237, 177],
-  [254, 173, 84],
-  [209, 55, 78]
-];
-
 function getTooltip(params) {
     if (! params.picked) return 
     return JSON.stringify(params.object, null, 2)
-    return params.object.url
 }
-//hex colors
+
 function ColorLabels() {
     return <></>
 }
-async function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
+function clamp(_, min, max) {
+  return Math.max(Math.min(_, max), min)
+}
+function ProgressBar (props) {
+  let style = {width: `${innerWidth}px`}
+  return (<div className="fixed left-0 top-0 progress-bar h-4 w-full" style={style}></div>)
 }
 
-let layer = new HexagonLayer({
-  id: 'hexagon-layer',
-  //data: props.data,
-  pickable: true,
-  extruded: true,
-  radius: 20000,
-  radiusScale: 100,
-  elevationScale: 4,
-//    getPosition: d => d.slice(0, 2),
-  getPosition: d => [d[1][1], d[1][0]].map(parseFloat),
-});
-//layers.push(layer)
+function onInitialized (gl) {
+  if (!isWebGL2(gl)) {
+    console.warn('GPU aggregation is not supported'); // eslint-disable-line
+    if (disableGPUAggregation) {
+      disableGPUAggregation();
+    }
+  }
+};
