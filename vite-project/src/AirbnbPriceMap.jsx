@@ -44,9 +44,9 @@ const INITIAL_VIEW_STATE = {
   pitch: 0,
   bearing: 0
 }   
-INITIAL_VIEW_STATE.longitude = 139
-INITIAL_VIEW_STATE.latitude = 35
-INITIAL_VIEW_STATE.zoom = 10
+// INITIAL_VIEW_STATE.longitude = 139
+// INITIAL_VIEW_STATE.latitude = 35
+// INITIAL_VIEW_STATE.zoom = 10
 
 function AirbnbWorldMap(props) {
   const [routes, setRoutes] = useState([])
