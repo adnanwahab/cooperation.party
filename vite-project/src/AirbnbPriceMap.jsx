@@ -57,9 +57,9 @@ function AirbnbWorldMap(props) {
 
   let layers = []
 
-  if (false)
+  if (false && currentViewState.zoom > 5.5)
   layers.push( new ScatterplotLayer({
-    id: 'airbnb+houses-within-bbox',
+    id: 'airbnb+houses-within-bbox-dot-matrix',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
     pickable: true,
     opacity: 1.,
@@ -78,8 +78,9 @@ function AirbnbWorldMap(props) {
     },
   }))
 
+if (false && currentViewState.zoom < 5.5)
   layers.push( new ScreenGridLayer({
-    id: 'airbnb+houses-within-bbox',
+    id: 'airbnb+houses-within-bbox-screengrid',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/all-airbnb.json',
     opacity: 1.,
     getPosition: d => [d[1], d[0]],
@@ -123,8 +124,8 @@ function AirbnbWorldMap(props) {
 
   let iconLayer = new IconLayer({
       id: 'icon-layer',
-      //data: markers,
-      data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
+      data: markers.slice(0, 100),
+      //data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
       pickable: true,
       // iconAtlas and iconMapping are required
       // getIcon: return a string
@@ -132,18 +133,18 @@ function AirbnbWorldMap(props) {
       iconMapping: ICON_MAPPING,
       getIcon: d => 'marker',
       onClick: (_)=> _.object.url,
-      sizeScale: 150,
+      sizeScale: 15,
       getPosition: d => {
-        return d.coordinates
         return [+ d.lon, + d.lat]
+
       },
-      getSize: d => 50,
+      getSize: d => 5,
       getColor: d => { 
-        console.log('wtf man')
         return [Math.random() * 255, 140, 0]
       }
     })
-  //layers.push(iconLayer)
+    //console.log(markers)
+  layers.push(iconLayer)
 
   const allCoordinates = []
   routes.forEach((route) => {
@@ -220,7 +221,7 @@ function AirbnbWorldMap(props) {
     fetchRoutes();
   }, [currentViewState.left]);
 
-
+  console.log(markers)
   return (<>
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution + <button className="text-black">Click here to place a house and generate program instructions for robot to build it.</button></h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
@@ -286,7 +287,6 @@ function computeBoundingBox(viewPort) {
     centroid: [viewport.latitude, viewport.longitude],
     zoom: viewPort.zoom
   };
-  console.log(viewPort)
   return boundingBox
 }
 

@@ -205,23 +205,40 @@ import requests
 
 def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
     places = []
+    print(min_lat, min_lng, max_lat, max_lng)
     query = f"""
     [out:json][timeout:25];
     (
-        node["amenity"="bench"]({min_lat},{min_lng},{min_lat + 1},{min_lng + 1});
+        node["amenity"="bench"]({max_lat},{max_lng},{min_lat},{min_lng});
     );
     out body;
     """ 
+    query = f"""
+    [out:json][timeout:25];
+    (
+        node["amenity"="bench"]({max_lat-1},{max_lng-1},{max_lat+1},{max_lat+1});
+    );
+    out body;
+    """ 
+    print(query)
+
+    # query = f"""
+    # [out:json][timeout:25];
+    # (
+    #     node["amenity"="bench"]({min_lng},{min_lat},{max_lng},{max_lat});
+    # );
+    # out body;
+    # """ 
     #     (._;._;);
     # out 0..100;
 
-    query = f"""
-    [out:json][timeout:25];
-    (
-        node["amenity"="bench"]({34},{138},{35},{139});
-    );
-    out body;
-    """ 
+    # query = f"""
+    # [out:json][timeout:25];
+    # (
+    #     node["amenity"="bench"]({34},{138},{35},{139});
+    # );
+    # out body;
+    # """ 
     import random
     overpass_url = "https://overpass-api.de/api/interpreter"
     response = requests.get(overpass_url, params={'data': query})
@@ -232,6 +249,7 @@ def fetch_coworking(min_lat, min_lng, max_lat, max_lng):
         places += coffee_shops
     else: 
         print('we are shit out of luck', response.status_code)
+        print(response.text)
         return []
     random.shuffle(places)
     return places[:100]
@@ -291,7 +309,6 @@ def fetchRoad(start, end):
         print('we are shit out of luck', response.status_code)
         return []
 
-#use query params
 prev = time.time()
 @app.get("/osm_bbox/")
 async def stream(min_lat:float, min_lng:float, max_lat:float, max_lng:float):

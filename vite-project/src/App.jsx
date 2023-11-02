@@ -16,7 +16,7 @@ let documentContext = {}
 async function _() {
   let text = get('textarea').value.split('\n').map(_ => _.trim()).filter(_ => _)
   const url = `${baseName}/makeFn`
-  console.log('url', url)
+  //console.log('url', url)
     let fn = await fetch(url, {
       method: 'POST',
       redirect: "follow", // manual, *follow, error

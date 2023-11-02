@@ -148,7 +148,7 @@ export default function histogram (props) {
         .attr("height", (d) => y(0) - y(d.length / totalCount));
 
     }, [props.random])
-    console.log(props.random)
+
       return (
         <svg 
           ref={svgRef}

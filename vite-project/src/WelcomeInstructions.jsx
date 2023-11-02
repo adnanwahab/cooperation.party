@@ -12,6 +12,7 @@ export default function MyModal(props) {
     setIsOpen(true)
   }
 
+  return <></>
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center">
