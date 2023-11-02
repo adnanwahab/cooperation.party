@@ -13,7 +13,9 @@ let documentContext = {}
 
 async function _() {
   let text = get('textarea').value.split('\n').map(_ => _.trim()).filter(_ => _)
-    let fn = await fetch(`${baseName}/makeFn` , {
+  const url = `${baseName}/makeFn`
+  console.log('url', url)
+    let fn = await fetch(url, {
       method: 'POST',
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", 
