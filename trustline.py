@@ -3,6 +3,39 @@ import threading
 import sys
 import time
 
+
+#make sure cant pay -150
+
+
+#one client and server
+#both computers - CLI - should have their own clients
+
+#one computer = client, the other computer = server
+
+
+#both computers = client
+#another computer = server that validates and verifies both bank accounts in a Sql / kv store
+
+
+#one server exists somewhere else -> make sure that the security 
+
+
+
+#client server + server 
+
+#multiple 
+
+
+#simpler way - flask + http routes 
+
+#make a route for each client
+
+
+#3rd computer r-pi -> cloud instance -> flask server
+
+
+#clients = command line program -> send request(/pay/) 
+# requestBody = { userId, amount }
 class Trustline:
     def __init__(self, balance=0):
         self.balance = balance
@@ -34,7 +67,10 @@ class TrustlineServer:
     def listen_for_transactions(self):
         while True:
             try:
+
                 data = self.client_socket.recv(1024)
+                if data.startswith('message:'):
+                    print(data.replace('message:', ''))
                 if not data:
                     break
                 amount = int(data.decode('utf-8'))
@@ -51,6 +87,8 @@ class TrustlineServer:
         self.server_socket.close()
 
 
+
+#client allows client to pay server -> but not the other way around
 class TrustlineClient:
     def __init__(self, host, port, trustline):
         self.host = host
@@ -65,12 +103,20 @@ class TrustlineClient:
                 print("Connection refused, retrying...")
                 time.sleep(1)
 
+    def send_message(self, message):
+        self.socket.sendall(str(message).encode('utf-8'))
+
     def send_payment(self, amount):
         self.socket.sendall(str(amount).encode('utf-8'))
         self.trustline.pay(amount)
 
     def close_connection(self):
         self.socket.close()
+
+
+#send message from client -> server prints out 
+#
+
 
 
 def start_trustline_interface(role, host, port):
@@ -91,6 +137,10 @@ def start_trustline_interface(role, host, port):
             command = input("> ").strip().lower()
             if command == 'balance':
                 print(trustline.get_balance())
+
+            elif command.startswith('say '):
+                connection.send_message('message:' + command.replace('say ', ''))
+
             elif command.startswith('pay '):
                 amount = int(command.split()[1])
                 if role.lower() == 'client':
