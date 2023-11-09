@@ -1,6 +1,7 @@
 import socket
 import threading
 import sys
+import time
 
 class Trustline:
     def __init__(self, balance=0):
