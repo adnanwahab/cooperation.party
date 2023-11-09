@@ -22,6 +22,20 @@ import {isWebGL2} from '@luma.gl/core';
 import {ScreenGridLayer} from '@deck.gl/aggregation-layers';
 import baseName from './httpFunctions'
 
+
+
+
+function Robot() {
+  return <div>
+    <h3>Cool visualizations of RoS</h3>
+    {/* button for every pick up able object in view */}
+
+  </div>
+}
+
+
+
+
 const colorRange = [
   [255, 255, 178, 25],
   [254, 217, 118, 85],
@@ -30,7 +44,6 @@ const colorRange = [
   [240, 59, 32, 212],
   [189, 0, 38, 255]
 ];
-
 
 const ICON_MAPPING = {
   marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -49,6 +62,7 @@ const INITIAL_VIEW_STATE = {
 // INITIAL_VIEW_STATE.zoom = 10
 
 function AirbnbWorldMap(props) {
+  return <Robot />
   const [routes, setRoutes] = useState([])
   const [markers, setMarkers] = useState([])
   const [getPercent, setPercent] = useState(0)
@@ -93,7 +107,7 @@ function AirbnbWorldMap(props) {
     },
   }))
 
-  if (false)
+  //if (false)
   layers.push( new ScatterplotLayer({
     id: 'scatterplot-layer',
     data: 'https://raw.githubusercontent.com/adnanwahab/cooperation.party/turkey2/data/city_location.json',

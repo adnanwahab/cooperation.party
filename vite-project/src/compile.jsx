@@ -58,6 +58,7 @@ const List = (list) =>
   </ul>)
 
 function GeoCoder ({onChange}) {
+  return <></>
 
     return <div>
            <label>How much money will my house make on airbnb?</label>

@@ -80,6 +80,42 @@ class neighborhoodDetails(BaseModel):
     schedule_text: str
     city_name: str
 
+from nbformat import v4 as nbf
+from nbclient import NotebookClient
+
+
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import RedirectResponse
+
+app = FastAPI()
+
+@app.get("/notebooks")
+def read_notebooks():
+    return RedirectResponse(url="http://127.0.0.1:8888/notebooks")
+
+@app.get("/execute")
+async def execute_code():
+    code = 'print(500)'
+    # Create a new notebook object
+    nb = nbf.new_notebook()
+    nb.cells.append(nbf.new_code_cell(code))
+
+    # Set up the client to execute the notebook
+    # It will use the kernel specified in your current Jupyter environment
+    client = NotebookClient(nb, timeout=60, kernel_name='python3')
+
+    try:
+        # Execute the notebook
+        client.execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    # Extract the output from the last cell (assuming it's the code cell)
+    output = client.nb.cells[-1].outputs
+
+    # Process the output as needed, here we're just returning it as a string
+    return {"output": output}
+
 def schedule_json_converter(_):
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -146,6 +182,42 @@ async def makeFn(FnText:FnText):
             val = fn 
         args.append(val)
     return {'fn': args, 'documentContext': documentContext, 'isFromDisk': len(FnText.hashUrl) > 0 }
+
+
+@app.get("/current_frame")
+def admin(): return FileResponse('./frame.jpg')
+
+@app.get("/ipad")
+def admin(): return FileResponse('./templates/ipad-face.html')
+
+from fastapi import FastAPI, File, UploadFile
+from typing import Annotated
+
+
+@app.post("/cameraframe")
+async def upload(file: UploadFile = File(...)):
+    content = await file.read()
+    with open(f"{file.filename}", "wb") as f:
+        f.write(content)
+    return JSONResponse(content={"message": "File received"})
+    #if file.content_type == "image/jpeg" or file.content_type == "image/png":
+        #file_path = os.path.join(os.path.dirname(__file__), "static", file.filename)
+        #print(file.content_type)
+    # with open('camera.jpg', 'wb+') as buffer:
+    #     buffer.write(file.read())
+    # return {'message': 'thanks'}
+    #     return {"message": f"File {file.filename} uploaded"}
+    # else:
+    #     return {"error": "Invalid file type"}
+
+# @app.post("/cameraframe")
+# def cameraframe(data): 
+#     #return FileResponse('./templates/ipad-face.html')
+#     print('data', data)
+#     with open('camera.png', 'w+') as file:
+#         file.write(data)
+#     return {'thankyou': "denada"}
+
 
 @app.get("/admin")
 def admin(): return FileResponse('./templates/admin.html')

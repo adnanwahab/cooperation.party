@@ -1,0 +1,91 @@
+
+<div class="background">
+    <div class="face">Ipad Streaming!</div>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>  
+  </style>
+      <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+
+      <video id="webcam" autoplay playsinline width="640" height="480"></video>
+<canvas id="canvas" class="d-none"></canvas>
+<audio id="snapSound" src="audio/snap.wav" preload = "auto"></audio>
+    <script>
+ // Inside your <script> tag and after the getUserMedia call
+  const webcamElement = document.getElementById('webcam');
+const canvasElement = document.getElementById('canvas');
+const snapSoundElement = document.getElementById('snapSound');
+const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+
+  
+const canvas = document.querySelector('canvas');
+const context = canvas.getContext('2d');
+
+webcam.start()
+   .then(result =>{
+      console.log("webcam started");
+   })
+   .catch(err => {
+       console.log(err);
+   });
+// Function to capture a frame and send it to the server
+function captureFrame() {
+  let picture = webcam.snap();
+  //document.querySelector('#download-photo').href = picture;
+
+
+  canvas.toBlob(blob => {
+        // Prepare the blob for sending
+        const formData = new FormData();
+        formData.append('file', blob, 'frame.jpg');
+        
+        // Send the image to the server
+        fetch('/cameraframe', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }, 'image/jpeg');
+
+
+  // var file = new File([canvas.toDataURL('image/jpeg', 0.9)], 'image.jpg', {
+  //               type: 'image/jpeg'
+  //   });
+
+  //   var formData = new FormData();
+  //   formData.append('file', file);
+
+  //   fetch('/cameraframe', {
+  //       method: 'POST',
+  //       body: formData
+  //   })
+  //   .then(response => response.json())
+  //   .then(data => {
+  //       console.log('File uploaded:', data.message);
+  //   });
+
+    // canvas.toBlob(blob => {
+    //     // Send the blob to your FastAPI server
+    //     fetch('http://localhost:8000/cameraframe', {
+    //         method: 'POST',
+    //         body: blob,
+    //         headers: {
+    //             'Content-Type': 'image/jpeg',
+    //         },
+    //     })
+    //     .then(response => console.log('Frame sent', response))
+    //     .catch(error => console.error('Error sending frame', error));
+    // }, 'image/jpeg');
+}
+
+// Call captureFrame at a set interval (e.g., every 100 ms)
+setInterval(captureFrame, 100);
+
+  </script>
+</div>
+  
