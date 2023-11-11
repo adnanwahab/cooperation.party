@@ -27,6 +27,11 @@ import baseName from './httpFunctions'
 
 function Robot() {
   return <div>
+    <div >cat roomba</div>
+    <div>they want you to finsih blog and deploy today for SEO </div>
+    <>Smartest robot that follows your cat - needs 50 million views</>
+    <div>inspired by botparty.org</div>
+    <>make a better robot from scratch that can make cat happier? - roomba create is only 500</>
     <h3>Cool visualizations of RoS</h3>
     <button class="text-black">find cat</button>
     <canvas></canvas>
@@ -35,6 +40,8 @@ function Robot() {
     <div>make an scv that can acquire objets and place them near cat</div>
     <div>track position of cat last seen and store them in database</div>
     <div>roomba + arm + ipad + realsense to all connect to pytorch x 3 (scene reconstruction, object detection)</div>
+    <div>Detect when cat likes roomba </div>
+
     {/* button for every pick up able object in view */}
     <img src="http://shelbernstein.ngrok.io/current_frame" />
 
