@@ -9,6 +9,9 @@ import templates from './templates'
 import baseName from './httpFunctions'
 import WelcomeInstructions from './WelcomeInstructions'
 
+//code to see the best in the whole world come out.
+
+
 let templateNames = Object.keys(templates).slice(0, 12)
 let templateContent = Object.values(templates).slice(0, 12)
 let documentContext = {}
@@ -109,7 +112,7 @@ function App() {
     {leftPanel}
       <div className="col-span-3">
         {components} 
-        {/* <AirbnbPriceMap/> */}
+        <AirbnbPriceMap/>
         </div>
     </div>
     <Footer />

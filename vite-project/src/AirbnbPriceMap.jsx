@@ -28,7 +28,15 @@ import baseName from './httpFunctions'
 function Robot() {
   return <div>
     <h3>Cool visualizations of RoS</h3>
+    <button class="text-black">find cat</button>
+    <canvas></canvas>
+    <div>draw starcraft mode for roomba + robotic arm</div>
+    <div>click on list of objects that ipad camera sees </div>
+    <div>make an scv that can acquire objets and place them near cat</div>
+    <div>track position of cat last seen and store them in database</div>
+    <div>roomba + arm + ipad + realsense to all connect to pytorch x 3 (scene reconstruction, object detection)</div>
     {/* button for every pick up able object in view */}
+    <img src="http://shelbernstein.ngrok.io/current_frame" />
 
   </div>
 }

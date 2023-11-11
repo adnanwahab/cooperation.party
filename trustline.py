@@ -69,8 +69,9 @@ class TrustlineServer:
             try:
 
                 data = self.client_socket.recv(1024)
-                if data.startswith('message:'):
-                    print(data.replace('message:', ''))
+                if data.decode('utf-8').startswith('message:'):
+                    print(data.decode('utf-8').replace('message:', ''))
+                    continue
                 if not data:
                     break
                 amount = int(data.decode('utf-8'))
@@ -139,6 +140,7 @@ def start_trustline_interface(role, host, port):
                 print(trustline.get_balance())
 
             elif command.startswith('say '):
+                ##todo -> only replace the first say 
                 connection.send_message('message:' + command.replace('say ', ''))
 
             elif command.startswith('pay '):
