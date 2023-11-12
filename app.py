@@ -17,7 +17,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import json
 import openai
-from pyngrok import ngrok
+#from pyngrok import ngrok
 import subprocess
 from getRoutes import getRoutes 
 config = {
@@ -30,13 +30,13 @@ config = {
 
 if os.getcwd() != '/Users/shelbernstein/cooperation.party':
     for i in range(10): print('this is fly.io')
-    ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
+    #ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
     #public_url = ngrok.connect(**config)
 else: 
     for i in range(10): print('this is mbp')
-    ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
-    config['subdomain'] = 'shelbernstein'
-    public_url = ngrok.connect(**config)
+    #ngrok.set_auth_token('2TUCQ8cPQuaI0FJDPRhOXrxeEl3_81nTfvqtKfv9TYpCvAzBE')
+    #config['subdomain'] = 'shelbernstein'
+    #public_url = ngrok.connect(**config)
 
 def substitute(name):
     for k in jupyter_functions:

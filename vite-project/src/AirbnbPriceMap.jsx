@@ -28,10 +28,11 @@ import baseName from './httpFunctions'
 function Robot() {
   return <div>
     <div >cat roomba</div>
-    <div>they want you to finsih blog and deploy today for SEO </div>
-    <>Smartest robot that follows your cat - needs 50 million views</>
+    <div>they want you to finsih blog and deploy today</div>
+    <>100 million cats</>
+    <>50 million cat owners</>
+    <>50 million roombas</>
     <div>inspired by botparty.org</div>
-    <>make a better robot from scratch that can make cat happier? - roomba create is only 500</>
     <h3>Cool visualizations of RoS</h3>
     <button class="text-black">find cat</button>
     <canvas></canvas>

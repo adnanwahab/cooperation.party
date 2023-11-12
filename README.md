@@ -1,5 +1,11 @@
 # Cooperation.party 
 
+https://store.stereolabs.com/?_gl=1*y6l3db*_ga*NjgwMjgzODA1LjE2OTk3OTcwMzI.*_ga_LQLTWBS792*MTY5OTc5NzAzMS4xLjAuMTY5OTc5NzAzMS42MC4wLjA.&_ga=2.84080537.1837953028.1699797032-680283805.1699797032
+
+https://github.com/stereolabs/zed-ros2-wrapper
+https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_visual_slam
+https://nanosaur.ai/architecture/#realsense
+
 This is for rosie + bret victor
 user interface + bidrectional inference + data + whatever 
 what you worked on before yay
