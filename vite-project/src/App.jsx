@@ -10,8 +10,6 @@ import baseName from './httpFunctions'
 import WelcomeInstructions from './WelcomeInstructions'
 
 //code to see the best in the whole world come out.
-
-
 let templateNames = Object.keys(templates).slice(0, 12)
 let templateContent = Object.values(templates).slice(0, 12)
 let documentContext = {}
@@ -109,10 +107,19 @@ function App() {
   <WelcomeInstructions isOpen={isOpen} setIsOpen={setIsOpen} />
   <Header />
     <div className="grid grid-cols-4">
-    {leftPanel}
+    {/* {leftPanel} */}
       <div className="col-span-3">
         {components} 
+        <>
+        <div class="flex items-center justify-center h-screen">
+        <div class="w-1/3">
+          {/* <!-- First Column Content --> */}
+        </div>
+        <div class="w-1/2">
         <AirbnbPriceMap/>
+        </div>
+      </div>
+        </>
         </div>
     </div>
     <Footer />

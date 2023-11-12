@@ -27,12 +27,14 @@ import baseName from './httpFunctions'
 
 function Robot() {
   return <div>
-    <div >cat roomba</div>
-    <div>they want you to finsih blog and deploy today</div>
+    <></>
+    <div>cat roomba</div>
+    <>A roomba could follow a cat because robots should take care of cats because there are too many humans to take care of too few cats</>
+    <>3 years ago i wanted my roomba to follow my cat</>
     <>100 million cats</>
     <>50 million cat owners</>
-    <>50 million roombas</>
-    <div>inspired by botparty.org</div>
+    <>50 million roombas sold</>
+    
     <h3>Cool visualizations of RoS</h3>
     <button class="text-black">find cat</button>
     <canvas></canvas>
@@ -42,10 +44,12 @@ function Robot() {
     <div>track position of cat last seen and store them in database</div>
     <div>roomba + arm + ipad + realsense to all connect to pytorch x 3 (scene reconstruction, object detection)</div>
     <div>Detect when cat likes roomba </div>
-
     {/* button for every pick up able object in view */}
     <img src="http://shelbernstein.ngrok.io/current_frame" />
-
+    <div>Robotic Art</div>
+    <div>inspired by botparty.org</div>
+    <div>inspired by nanosaur</div>
+    <div>written by an expert who knows everything there is to know about GPUs</div>
   </div>
 }
 
