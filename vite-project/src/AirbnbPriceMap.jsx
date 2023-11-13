@@ -50,6 +50,11 @@ function Robot() {
     <div>inspired by botparty.org</div>
     <div>inspired by nanosaur</div>
     <div>written by an expert who knows everything there is to know about GPUs</div>
+    {/* show continual progress for the rest of your life */}
+    {/* fix it by - not doing whippets for remainder of life */}
+    {/* all of telepathy will make it a good story - if you quit and stick to that. */}
+    {/* please get out of my head for the rest of the year -because of zoox  */}
+    {/* get rid of the whippets - and the ywill let you code in peace */}
   </div>
 }
 
