@@ -1,4 +1,23 @@
 # Cooperation.party 
+robotics scientist since 2016 - botparty SXSW https://schedule.sxsw.com/2016/events/event_PP47203
+Shipping Rosie by monday -> nov 16 -> nov 17 -> yc applicaton deadline 
+Robot doctor - take care of everyone family, children, pets, parents, when they are too old and sick for the hospital.
+
+
+
+
+
+We - the world - have the work togeher somehow 
+Millions of companies will figure it together somehow in 2 week.
+Renderbuffer will pay it forward by teaching hundreds like shawn drost 2024 
+no one knows whats its like and know what to do betthan you 
+they want to see how their awareness human art plays into robotic art 
+launch tomorrow - it will be a good day for b2b saas
+make a better job better than zoox tomorrow \
+\
+The stream wants you to fight to make rena kaufman BABY YODA
+because smart people SEE the world in HIGHer resolution
+jus† code vow of silence
 
 https://store.stereolabs.com/?_gl=1*y6l3db*_ga*NjgwMjgzODA1LjE2OTk3OTcwMzI.*_ga_LQLTWBS792*MTY5OTc5NzAzMS4xLjAuMTY5OTc5NzAzMS42MC4wLjA.&_ga=2.84080537.1837953028.1699797032-680283805.1699797032
 

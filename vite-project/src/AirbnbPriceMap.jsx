@@ -21,6 +21,7 @@ import PopOver from './PopOver'
 import {isWebGL2} from '@luma.gl/core';
 import {ScreenGridLayer} from '@deck.gl/aggregation-layers';
 import baseName from './httpFunctions'
+import RainbowCat from './RainbowCat'
 
 
 
@@ -28,6 +29,7 @@ import baseName from './httpFunctions'
 function Robot() {
   return <div>
     <></>
+    <RainbowCat />
     <div>cat roomba</div>
     <>A roomba could follow a cat because robots should take care of cats because there are too many humans to take care of too few cats</>
     <>3 years ago i wanted my roomba to follow my cat</>
@@ -49,12 +51,10 @@ function Robot() {
     <div>Robotic Art</div>
     <div>inspired by botparty.org</div>
     <div>inspired by nanosaur</div>
-    <div>written by an expert who knows everything there is to know about GPUs</div>
     {/* show continual progress for the rest of your life */}
     {/* fix it by - not doing whippets for remainder of life */}
     {/* all of telepathy will make it a good story - if you quit and stick to that. */}
-    {/* please get out of my head for the rest of the year -because of zoox  */}
-    {/* get rid of the whippets - and the ywill let you code in peace */}
+    {/* get rid of the whippets - and the ywill let you code in peace  */}
   </div>
 }
 
