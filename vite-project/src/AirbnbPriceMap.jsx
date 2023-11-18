@@ -29,7 +29,6 @@ import RainbowCat from './RainbowCat'
 function Robot() {
   return <div>
     <></>
-    <RainbowCat />
     <div>cat roomba</div>
     <>A roomba could follow a cat because robots should take care of cats because there are too many humans to take care of too few cats</>
     <>3 years ago i wanted my roomba to follow my cat</>
@@ -87,7 +86,7 @@ const INITIAL_VIEW_STATE = {
 // INITIAL_VIEW_STATE.zoom = 10
 
 function AirbnbWorldMap(props) {
-  return <Robot />
+  
   const [routes, setRoutes] = useState([])
   const [markers, setMarkers] = useState([])
   const [getPercent, setPercent] = useState(0)
@@ -250,8 +249,8 @@ function AirbnbWorldMap(props) {
     fetchRoutes();
   }, [currentViewState.left]);
 
-  //console.log(markers)
   return (<>
+    <Robot />
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution + <button className="text-black">Click here to place a house and generate program instructions for robot to build it.</button></h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <PopOver open={openPopover} setOpen={setOpenPopover}/>
