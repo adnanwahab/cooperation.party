@@ -107,8 +107,8 @@ function App() {
   <WelcomeInstructions isOpen={isOpen} setIsOpen={setIsOpen} />
   <Header />
     <div className="grid grid-cols-4">
-    {/* {leftPanel} */}
-      <div className="col-span-3">
+    {leftPanel}
+      <div className="col-span-2">
         {components} 
         <>
         <div class="flex items-center justify-center h-screen">

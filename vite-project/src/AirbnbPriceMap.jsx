@@ -250,7 +250,7 @@ function AirbnbWorldMap(props) {
   }, [currentViewState.left]);
 
   return (<>
-    <Robot />
+    {/* <Robot /> */}
     <h3 className="">World Map! - Scroll to zoom in to see every home in the world at a higher resolution + <button className="text-black">Click here to place a house and generate program instructions for robot to build it.</button></h3>
     <div className="relative" style={{left: `${props.left}px`, height: '600px'}}>
     <PopOver open={openPopover} setOpen={setOpenPopover}/>

@@ -1386,7 +1386,8 @@ export default function Header() {
     <header className="text-white border-b border-gray-500">
       <nav className="mx-auto flex full-w items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex items-center gap-x-12">
-          <span className="text-xl font-serif">Roomba Cat - Using GPUs to follow your cat!!!</span>
+          <span className="text-xl font-serif">Cooperation.party</span>
+          {/* <span className="text-xl font-serif">Roomba Cat - Using GPUs to follow your cat!!!</span> */}
 
             {/* <span className="text-xl font-serif">Cooperation.Party - AI House Picker + Everyone chooses where Robots build houses for everyone... 1 robot and counting</span> */}
           {/* <div className="hidden lg:flex lg:gap-x-12">

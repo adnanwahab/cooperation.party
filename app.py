@@ -378,3 +378,6 @@ async def get_apt_details(apt_id: str):
     print(city_apt_details)
     return city_apt_details['90676']
     return city_apt_details[apt_id]
+
+
+app.mount("portal", StaticFiles(directory="./assets"), name="assets")
